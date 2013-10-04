@@ -1,0 +1,2 @@
+module TimechecksHelper
+end
