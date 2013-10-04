@@ -1,0 +1,17 @@
+<h1> Check-Out </h1>
+
+<strong><%= "Check-out time: " %></strong>
+<%= Time.now %> </br>
+
+<strong><%= "Current user ID: " %></strong>
+<%= User.current.id %> </br>
+
+<strong><%= "Current user Name: " %></strong>
+<%= User.current.name %></br>
+
+
+<% if(@out == nil) %>
+  <h3><%= "Did not checked-in yet" %></h3>
+<% else %>
+  <%  @out.update_attributes(check_out_time: DateTime.now) %>
+<% end %>
