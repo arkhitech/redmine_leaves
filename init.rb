@@ -1,6 +1,6 @@
-Redmine::Plugin.register :tracker do
-  name 'Tracker plugin'
-  author 'Abuzar Hasan'
+Redmine::Plugin.register :redmine_leaves do
+  name 'Redmine Leaves Plugin'
+  author 'Arkhitech'
   description 'This is a plugin for user check-in/check-out'
   version '1.0.0'
   

@@ -7,7 +7,7 @@ class LeaveSummaryController < ApplicationController
     @all_users = User.all
     @selected_user
     
-    @all_leaves = Setting.plugin_tracker['leave_types'].split(",")
+    @all_leaves = (Setting.plugin_redmine_leaves['leave_types']||"").split(",")
     @selected_leave
   end
   
