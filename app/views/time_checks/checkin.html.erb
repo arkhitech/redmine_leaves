@@ -9,8 +9,7 @@
 <strong><%= "Current user Name: " %></strong> 
 <%= User.current.name %> </br>
 
-
-<% if(@u) && @u.check_out_time == nil %>
+<% if(@user_checkin) && @user_checkin.check_out_time == nil %>
   <h3><%= "Did not checked-out the last time" %></h3>
 <% else %>
   <% TimeCheck.create(user_id: User.current.id, check_in_time: DateTime.now) %>

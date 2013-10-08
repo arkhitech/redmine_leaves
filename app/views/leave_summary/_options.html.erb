@@ -1,0 +1,40 @@
+<%=  form_tag controller: 'leave_summary', action: 'report' do %>
+
+  <table>
+    <tr>
+      <th>From</th>
+    </tr>
+
+    <tr>
+      <td><%= text_field_tag "entered_date[date_from]" %></td>    
+    </tr>
+    <tr>
+      <th>To</th>
+    </tr>
+    <tr>
+      <td> <%= text_field_tag "entered_date[date_to]" %> </td>    
+    </tr>
+  </table>
+
+  <table>
+    <tr>
+      <th>User</th>
+      <th>Leave Types</th>
+    </tr>
+    <tr>
+      <td>
+        <%= select_tag("report[selected_users][]",
+          user_options(params['report'] && params['report']['selected_users']),
+          :multiple => true) %>
+      </td>
+      <td>
+        <%= select_tag("report[selected_leave_types][]",
+          leave_options(params['report'] && params['report']['selected_leave_types']),
+          :multiple => true) %> 
+      </td>
+    </tr>
+  </table>
+
+  <%= submit_tag 'Show' %>
+
+<% end %>

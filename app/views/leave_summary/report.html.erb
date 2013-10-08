@@ -1,0 +1,66 @@
+<h1> Leave Summary </h1>
+
+<%= render 'options' %>
+
+<% if params['report'] == nil %>
+  <!-- do not display the report -->
+<% else %>
+  <% if params['report']['selected_users'] == nil %>
+    <% selected_users = nil %>
+  <% else %>
+    <% selected_users = User.find(params['report']['selected_users'])%>
+  <% end %>
+
+  <% selected_leave_types = params['report']['selected_leave_types']%>
+
+  <% if(selected_users == nil || selected_leave_types == nil) %>
+    <!-- do not display the report -->
+  <% else %>
+    <% if params['entered_date']['date_from'] == "" || params['entered_date']['date_from'] == "" %>
+      <% reported_user = UserLeave.
+            where(['user_id IN (?) AND leave_type IN (?)',
+            selected_users, selected_leave_types]) %>
+    <% else %>
+      <% reported_user = UserLeave.
+            where(['user_id IN (?) AND leave_type IN (?) AND leave_date <= ? AND leave_date >= ?',
+            selected_users, selected_leave_types,
+            params['entered_date']['date_to'].to_date, params['entered_date']['date_from'].to_date]) %>
+    <%end%>
+    
+    <% if reported_user == [] %>
+      <!-- do not display the table -->
+    <% else %>
+
+      <table>
+        <tbody>
+
+          <tr>
+            <th>User ID</th>
+            <th></th>
+            <th>Name</th>
+            <th></th>
+            <th>Leave Type</th>
+            <th></th>
+            <th>Leave Date</th>      
+          </tr>
+
+          <%reported_user.each do |user|%>
+
+            <tr>
+              <td><%= user.user_id %></td>
+              <td></td>
+              <td><%= User.find(user.user_id).name %></td>
+              <td></td>
+              <td><%= user.leave_type %></td>
+              <td></td>
+              <td><%= user.leave_date %></td>      
+            </tr>
+          <% end %>
+
+        </tbody>
+      </table>
+    
+    <% end %>   
+  <% end %>  
+<% end %>
+        

@@ -5,13 +5,11 @@ class LeaveSummaryController < ApplicationController
   
   def index
     @all_users = User.all
-    @selected_user
-    
     @all_leaves = (Setting.plugin_redmine_leaves['leave_types']||"").split(",")
-    @selected_leave
   end
   
-  def show
+  def report
   end
 
 end
+

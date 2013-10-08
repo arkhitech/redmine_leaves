@@ -9,9 +9,8 @@
 <strong><%= "Current user Name: " %></strong>
 <%= User.current.name %></br>
 
-
-<% if(@out == nil) %>
+<% if(@user_checkout == nil) %>
   <h3><%= "Did not checked-in yet" %></h3>
 <% else %>
-  <%  @out.update_attributes(check_out_time: DateTime.now) %>
+  <%  @user_checkout.update_attributes(check_out_time: DateTime.now) %>
 <% end %>
