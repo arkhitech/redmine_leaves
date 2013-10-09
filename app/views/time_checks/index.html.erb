@@ -1,6 +1,6 @@
-<h1> Check-In/Check-Out </h1>
+<h2> Check-In/Check-Out </h2>
 
-<h3><% "Welcome, " + User.current.name + "!" %></h3>
+<h3><%= "Welcome, " + User.current.name.upcase + "!" %></h3>
 
 <p><%= button_to 'Check-in', checkin_path %></p>
 

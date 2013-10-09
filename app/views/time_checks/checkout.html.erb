@@ -1,16 +1,25 @@
-<h1> Check-Out </h1>
+<h2> Check-Out </h2>
 
-<strong><%= "Check-out time: " %></strong>
-<%= Time.now %> </br>
+<table>
+  <tr align="left" >
+    <th><strong><%= "Check-in time: " %></strong></th>
+    <td><%= Time.now %></td>
+  </tr>
+  <tr align="left" >
+    <th><strong><%= "Current user ID: " %></strong></th>
+    <td><%= User.current.id %></td>
+  </tr>
+  <tr align="left" >
+    <th><strong><%= "Current user Name: " %></strong> </th>
+    <td><%= User.current.name %></td>
+  </tr>
+</table>
 
-<strong><%= "Current user ID: " %></strong>
-<%= User.current.id %> </br>
-
-<strong><%= "Current user Name: " %></strong>
-<%= User.current.name %></br>
+<br/><br/>
 
 <% if(@user_checkout == nil) %>
   <h3><%= "Did not checked-in yet" %></h3>
 <% else %>
   <%  @user_checkout.update_attributes(check_out_time: DateTime.now) %>
+  <h3><%= "Checked-Out" %></h3>
 <% end %>
