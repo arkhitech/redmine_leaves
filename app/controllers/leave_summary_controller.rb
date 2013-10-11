@@ -11,7 +11,7 @@ class LeaveSummaryController < ApplicationController
   def report
     @reported_user = nil
     if params[:report].nil?
-      flash.now[:error] = 'Please, select user(s) / leave type(s)'
+      flash.now[:error] = 'Please select user(s) / leave type(s)'
     else
       if params[:report][:selected_users] == nil
         selected_users = nil
@@ -22,7 +22,7 @@ class LeaveSummaryController < ApplicationController
       selected_leave_types = params[:report][:selected_leave_types]
 
       if(selected_users == nil || selected_leave_types == nil)
-        flash.now[:error] = 'Please, select user(s) / leave type(s)'
+        flash.now[:error] = 'Please select user(s) / leave type(s)'
       else
         if params[:entered_date][:date_from].blank? || params[:entered_date][:date_from].blank?
           @reported_user = UserLeave.
@@ -36,12 +36,6 @@ class LeaveSummaryController < ApplicationController
         end
       end
     end
-  end
-  
-  def add_leave
-  end
-  
-  def add_leave_confirmation
   end
 
 end

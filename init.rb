@@ -2,7 +2,7 @@ Redmine::Plugin.register :redmine_leaves do
   name 'Redmine Leaves Plugin'
   author 'Arkhitech'
   description 'This is a plugin for user check-in/check-out'
-  version '1.0.0'
+  version '0.0.1'
   
   menu :top_menu, :time_check_in, { controller: 'time_checks', action: 'checkin' }, 
     caption: 'CHECK-IN', if: Proc.new {!TimeCheck.checked_in?(User.current.id)}, last: true

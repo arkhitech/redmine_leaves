@@ -2,6 +2,8 @@
 
 <%= render 'options' %>
 
+<br/><br/>
+
 <% if @reported_user.nil? %>
   <!-- Do nothing -->    
 <% elsif @reported_user.empty? %>
@@ -13,7 +15,7 @@
         <th>User ID</th>
         <th>Name</th>
         <th>Leave Type</th>
-        <th>Leave Date</th>      
+        <th>Leave Date</th>     
       </tr>
 
       <%@reported_user.each do |user|%>
@@ -21,7 +23,12 @@
           <td><%= user.user_id %></td>
           <td><%= User.find(user.user_id).name %></td>
           <td><%= user.leave_type %></td>
-          <td><%= user.leave_date %></td>      
+          <td><%= user.leave_date %></td>
+          <%if(User.current.admin == true)%>
+            <td><%=link_to 'Delete', leafe_path(user),
+                  method: :delete, data: { confirm: 'Are you sure?' }%></td>
+          <% else %>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
