@@ -1,0 +1,16 @@
+<h2> Add Leave </h2>
+
+<%= render 'add' %>
+<br/>
+
+<% if params['leave_date'] == "" %>
+  <% flash.now[:error] = 'Please, enter the Leave Date' %>
+<% else %>
+  <% UserLeave.create(user_id: params['add_leave']['selected_user'], leave_type: params['add_leave']['selected_type'],
+        leave_date: params['leave_date'].to_date) %>
+  <% flash.now[:notice] = 'Leave Added!' %>
+<% end %>
+
+
+
+

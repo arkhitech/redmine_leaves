@@ -1,13 +1,34 @@
 module LeaveSummaryHelper
 
+  def plugin_setting(setting_name)
+    (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
+  end
+  
   def user_options(selected_users)
-    all_users = User.active
-    options_from_collection_for_select(all_users, :id, :name, selected_users)
+    group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
+    #group_ids   = Group.where(['lastname IN (?)', group_names]).id
+    eligible_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => group_ids)
+    options_from_collection_for_select(eligible_users, :id, :name, selected_users)
   end
   
   def leave_options(selected_leave_types)
-    all_leave_types = (Setting.plugin_redmine_leaves['leave_types']||"").split(",")
+    all_leave_types = plugin_setting('leave_types')
     options_for_select(all_leave_types, selected_leave_types)
+  end
+  
+  def add_user_options(selected_user)
+    if(User.current.id == 1)
+      all_users = User.active
+    else
+      all_users = User.where(['id = ?', User.current.id]).active
+    end
+    options_from_collection_for_select(all_users, :id, :name, selected_user)
+  end
+  
+  def add_leave_options(selected_leave_type)
+    all_leave_types = plugin_setting('leave_types')
+    options_for_select(all_leave_types, selected_leave_type)
   end
   
 end

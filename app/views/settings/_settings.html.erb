@@ -1,26 +1,22 @@
 <table>
   <tbody>
-    <tr>
+    <tr align="left">
       <th>Leave Type(s)</th>
-      <td><input type="text" id="settings_leave_types" 
-                     value="<%= settings['leave_types'] %>" 
-             name="settings[leave_types]" >
+      <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
         <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
     </tr>
-    <tr>
+    <tr align="left" >
       <th>Default Type</th>
-      <td><input type="text" id="settings_default_type" 
-                     value="<%= settings['default_type'] %>" 
-             name="settings[default_type]" >
+      <td><%= text_field_tag('settings[default_type]', settings['default_type']) %> 
     </tr>
-    <tr><th></th></tr>
-    <tr><th></th></tr>
-    <tr>
-      <th>Eligible User(s)</th>
-      <td><input type="text" id="settings_eligible_users" 
-                     value="<%= settings['eligible_for_leave'] %>" 
-             name="settings[eligible_for_leave]" >
-        <th><small> For multiple Eligible Users, enter values separated by comma (,) </small></th>
+    <tr align="left">
+      <th>Eligible for Leave Group(s)</th>
+      <td><%= select_tag('settings[eligible_for_leave_groups]', 
+              options_from_collection_for_select(Group.all, :id, :name, 
+                settings['eligible_for_leave_groups']), 
+              multiple: true) %>
+      </td>
     </tr>
   </tbody>
 </table>
+ 

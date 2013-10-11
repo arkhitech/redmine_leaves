@@ -2,65 +2,30 @@
 
 <%= render 'options' %>
 
-<% if params['report'] == nil %>
-  <br/><strong> Please, select user(s) / leave type(s) </strong>
+<% if @reported_user.nil? %>
+  <!-- Do nothing -->    
+<% elsif @reported_user.empty? %>
+  <% flash.now[:error] = 'No Results Found!' %>
 <% else %>
-  <% if params['report']['selected_users'] == nil %>
-    <% selected_users = nil %>
-  <% else %>
-    <% selected_users = User.find(params['report']['selected_users'])%>
-  <% end %>
+  <table border="1">
+    <tbody>
+      <tr align="left">
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Leave Type</th>
+        <th>Leave Date</th>      
+      </tr>
 
-  <% selected_leave_types = params['report']['selected_leave_types']%>
+      <%@reported_user.each do |user|%>
+        <tr align="left" class="<%= cycle("odd", "even")%>">
+          <td><%= user.user_id %></td>
+          <td><%= User.find(user.user_id).name %></td>
+          <td><%= user.leave_type %></td>
+          <td><%= user.leave_date %></td>      
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-  <% if(selected_users == nil || selected_leave_types == nil) %>
-    <br/><strong> Please, select user(s) / leave type(s) </strong>
-  <% else %>
-    <% if params['entered_date']['date_from'] == "" || params['entered_date']['date_from'] == "" %>
-      <% reported_user = UserLeave.
-            where(['user_id IN (?) AND leave_type IN (?)',
-            selected_users, selected_leave_types]) %>
-    <% else %>
-      <% reported_user = UserLeave.
-            where(['user_id IN (?) AND leave_type IN (?) AND leave_date <= ? AND leave_date >= ?',
-            selected_users, selected_leave_types,
-            params['entered_date']['date_to'].to_date, params['entered_date']['date_from'].to_date]) %>
-    <%end%>
-    
-    <% if reported_user == [] %>
-      <br/><strong> No Results Found! </strong>
-    <% else %>
-
-      <table>
-        <tbody>
-
-          <tr>
-            <th>User ID</th>
-            <th></th>
-            <th>Name</th>
-            <th></th>
-            <th>Leave Type</th>
-            <th></th>
-            <th>Leave Date</th>      
-          </tr>
-
-          <%reported_user.each do |user|%>
-
-            <tr>
-              <td><%= user.user_id %></td>
-              <td></td>
-              <td><%= User.find(user.user_id).name %></td>
-              <td></td>
-              <td><%= user.leave_type %></td>
-              <td></td>
-              <td><%= user.leave_date %></td>      
-            </tr>
-          <% end %>
-
-        </tbody>
-      </table>
-    
-    <% end %>   
-  <% end %>  
-<% end %>
+<% end %>   
         

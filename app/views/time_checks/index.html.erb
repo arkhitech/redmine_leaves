@@ -2,6 +2,9 @@
 
 <h3><%= "Welcome, " + User.current.name.upcase + "!" %></h3>
 
-<p><%= button_to 'Check-in', checkin_path %></p>
-
-<p><%= button_to 'Check-out', checkout_path %></p>
+<table>
+  <tr>
+    <td><%= button_to 'Check-in' , checkin_path %></td>
+    <td><%= button_to 'Check-out', checkout_path %></td>
+  </tr>
+</table>

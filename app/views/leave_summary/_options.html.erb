@@ -1,40 +1,45 @@
+<%= button_to 'Add Leave', add_leave_path %>
+<br/>
+
 <%=  form_tag controller: 'leave_summary', action: 'report' do %>
 
   <table>
-    <tr>
+    <tr align="left">
       <th>From</th>
     </tr>
-
-    <tr>
+    
+    <tr align="left">
       <td><%= text_field_tag "entered_date[date_from]" %></td>    
     </tr>
-    <tr>
+    <tr align="left">
       <th>To</th>
     </tr>
-    <tr>
+    <tr align="left">
       <td> <%= text_field_tag "entered_date[date_to]" %> </td>    
     </tr>
   </table>
 
   <table>
-    <tr>
+    <tr align="left">
       <th>User</th>
       <th>Leave Types</th>
     </tr>
-    <tr>
+    <tr align="left">
       <td>
         <%= select_tag("report[selected_users][]",
-          user_options(params['report'] && params['report']['selected_users']),
+          user_options(params[:report] && params[:report][:selected_users]),
           :multiple => true) %>
       </td>
       <td>
         <%= select_tag("report[selected_leave_types][]",
-          leave_options(params['report'] && params['report']['selected_leave_types']),
+          leave_options(params[:report] && params[:report][:selected_leave_types]),
           :multiple => true) %> 
       </td>
     </tr>
   </table>
+  
+  <br/>
 
-  <%= submit_tag 'Show' %>
+  <%= submit_tag 'Apply' %>
 
 <% end %>

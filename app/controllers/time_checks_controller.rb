@@ -4,6 +4,9 @@ class TimeChecksController < ApplicationController
   before_filter :require_login
 
   def index
+#    a=Redmine::MenuManager::MenuItem.new(:time_checks,
+#      { :controller => 'time_checks', :action => 'index' }, :caption => 'Check-in/Check-out')
+#    a.caption()
   end
   
   def checkin

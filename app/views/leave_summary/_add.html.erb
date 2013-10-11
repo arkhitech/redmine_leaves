@@ -1,0 +1,22 @@
+<%=  form_tag controller: 'leave_summary', action: 'add_leave_confirmation' do %>
+
+  <table>
+    <tr>
+      <th align="left">User</th>
+      <td><%= select_tag("add_leave[selected_user]",
+          add_user_options(params['add_leave'] && params['add_leave']['selected_users'])) %></td>
+    </tr>
+    <tr>
+      <th align="left">Leave Type</th>
+      <td><%= select_tag("add_leave[selected_type]",
+          add_leave_options(params['add_leave'] && params['add_leave']['selected_type'])) %></td>
+    </tr>
+    <tr>
+      <th align="left">Leave Date</th>
+      <td><%= text_field_tag "leave_date" %></td>
+    </tr>
+  </table>
+
+  <%= submit_tag 'Add' %>
+
+<% end %>
