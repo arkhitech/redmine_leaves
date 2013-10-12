@@ -1,5 +1,4 @@
-<%=  form_tag controller: 'leaves', action: 'create' do %>
-
+<%= form_for @leave do |details| %>
   <table>
     <tr>
       <th align="left">User</th>
@@ -16,7 +15,5 @@
       <td><%= text_field_tag "leave_date" %></td>
     </tr>
   </table>
-
-  <%= submit_tag 'Add' %>
-
+  <%= details.submit 'Add' %>
 <% end %>

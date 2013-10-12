@@ -1,24 +1,15 @@
 <h2> Check-In </h2>
-
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
     <th><strong><%= "Check-in time: " %></strong></th>
-    <td><%= Time.now %></td>
+    <td><%= @user_time_check.check_in_time  %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
     <th><strong><%= "Current user ID: " %></strong></th>
-    <td><%= User.current.id %></td>
+    <td><%= @user_time_check.user_id %></td>
   </tr>
   <tr align="left" class="<%= cycle("odd")%>">
     <th><strong><%= "Current user Name: " %></strong> </th>
     <td><%= User.current.name %></td>
   </tr>
 </table>
-
-<br/><br/>
-
-<% if(@user_checkin) && @user_checkin.check_out_time == nil %>
-  <h3><%= "Did not checked-out the last time" %></h3>
-<% else %>
-  <% TimeCheck.create(user_id: User.current.id, check_in_time: DateTime.now) %>
-<% end %>

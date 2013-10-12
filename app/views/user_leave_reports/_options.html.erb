@@ -1,14 +1,9 @@
-<strong><%= link_to 'Add Leave', new_leafe_path %></strong>
-
-<br/>
-
-<%=  form_tag controller: 'leave_summary', action: 'report' do %>
-
+<strong><%= link_to 'Add Leave', new_user_leafe_path %></strong><br/>
+<%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
   <table>
     <tr align="left">
       <th>From</th>
-    </tr>
-    
+    </tr>  
     <tr align="left">
       <td><%= text_field_tag "entered_date[date_from]" %></td>    
     </tr>
@@ -19,7 +14,6 @@
       <td> <%= text_field_tag "entered_date[date_to]" %> </td>    
     </tr>
   </table>
-
   <table>
     <tr align="left">
       <th>User</th>
@@ -37,10 +31,6 @@
           :multiple => true) %> 
       </td>
     </tr>
-  </table>
-  
-  <br/>
-
+  </table><br/>
   <%= submit_tag 'Apply' %>
-
 <% end %>

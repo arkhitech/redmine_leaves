@@ -1,8 +1,8 @@
-resources :time_checks
-resources :leave_summary
-resources :leaves
+resources :user_time_checks
+resources :user_leaves
+resources :user_leave_reports
 
-match '/checkin' => 'time_checks#checkin'
-match '/checkout' => 'time_checks#checkout'
+match '/check_in' => 'user_time_checks#check_in'
+match '/check_out' => 'user_time_checks#check_out'
 
-match '/report' => 'leave_summary#report'
+match '/user_leave_report' => 'user_leave_reports#report'

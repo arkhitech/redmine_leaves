@@ -1,14 +1,17 @@
-class LeaveSummaryController < ApplicationController
+class UserLeaveReportsController < ApplicationController
   unloadable
   
   before_filter :require_login
   
   def index
+
     @all_users = User.all
     @all_leaves = (Setting.plugin_redmine_leaves['leave_types']||"").split(",")
+
   end
   
   def report
+
     @reported_user = nil
     if params[:report].nil?
       flash.now[:error] = 'Please select user(s) / leave type(s)'
@@ -20,23 +23,23 @@ class LeaveSummaryController < ApplicationController
       end
 
       selected_leave_types = params[:report][:selected_leave_types]
-
+  
       if(selected_users == nil || selected_leave_types == nil)
         flash.now[:error] = 'Please select user(s) / leave type(s)'
       else
-        if params[:entered_date][:date_from].blank? || params[:entered_date][:date_from].blank?
+        if params[:entered_date][:date_from].blank? || params[:entered_date][:date_to].blank?
           @reported_user = UserLeave.
                 where(['user_id IN (?) AND leave_type IN (?)',
-                selected_users, selected_leave_types])
+                selected_users, selected_leave_types]).group(:leave_date)
         else
           @reported_user = UserLeave.
                 where(['user_id IN (?) AND leave_type IN (?) AND leave_date <= ? AND leave_date >= ?',
                 selected_users, selected_leave_types,
-                params['entered_date']['date_to'].to_date, params['entered_date']['date_from'].to_date])
+                params['entered_date']['date_to'].to_date, params['entered_date']['date_from'].to_date]).group(:leave_date)
         end
       end
     end
+  
   end
 
 end
-

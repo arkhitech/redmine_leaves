@@ -1,19 +1,12 @@
 <h2> Check-Out </h2>
-
-<% if(@user_checkout == nil) %>
-  <h3><%= "Did not checked-in yet" %></h3>
-<% else %>
-  <%  @user_checkout.update_attributes(check_out_time: DateTime.now) %>
-<% end %>
-
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
     <th><strong><%= "Check-out time: " %></strong></th>
-    <td><%= Time.now %></td>
+    <td><%= @user_time_check.check_out_time %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
     <th><strong><%= "Current user ID: " %></strong></th>
-    <td><%= User.current.id %></td>
+    <td><%= @user_time_check.user_id %></td>
   </tr>
   <tr align="left" class="<%= cycle("odd")%>">
     <th><strong><%= "Current user Name: " %></strong> </th>
@@ -22,10 +15,8 @@
   <tr align="left" class="<%= cycle("even")%>">
     <th><strong><%= "Time spent: " %></strong> </th>
     <td>
-      <% time = @user_checkout.check_out_time - @user_checkout.check_in_time %>
-      <%= Time.at(time).utc.strftime("%H:%M:%S")%>
+      <% time_difference = @user_time_check.check_out_time - @user_time_check.check_in_time %>
+      <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%>
     </td>
   </tr>
 </table>
-
-<br/><br/>
