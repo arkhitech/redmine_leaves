@@ -1,0 +1,36 @@
+<h2> Leave Summary </h2>
+
+<%= render 'options' %><br/><br/>
+<% if @reported_user.nil? %>
+  <!-- Do nothing -->    
+<% elsif @reported_user.empty? %>
+  <% flash.now[:error] = 'No Results Found!' %>
+<% else %>
+  <table border="1">
+    <tbody>
+      <tr align="left">
+        <th>User ID</th>
+        <th>Name</th>
+        <th>Leave Type</th>
+        <th>Leave Date</th>     
+      </tr>
+      <%@reported_user.each do |user|%>
+        <tr align="left" class="<%= cycle("odd", "even")%>">
+          <td><%= user.user_id %></td>
+          <td><%= User.find(user.user_id).name %></td>
+          <td><%= user.leave_type %></td>
+          <td><%= user.leave_date %></td>
+          <%if(User.current.admin == true)%>
+            <td>
+              <%= link_to 'Edit', edit_user_leafe_path(user) %> | 
+              <%= link_to 'Delete', user_leafe_path(user),
+                  method: :delete, data: { confirm: 'Are you sure?' }%>
+            </td>
+          <% else %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>   
+        
