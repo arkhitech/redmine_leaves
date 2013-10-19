@@ -1,6 +1,7 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-class TimeChecksControllerTest < ActionController::TestCase
+class UserTimeCheckTest < ActiveSupport::TestCase
+
   # Replace this with your real tests.
   def test_truth
     assert true

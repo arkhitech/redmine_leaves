@@ -7,7 +7,7 @@ class UserLeavesController < ApplicationController
   
   def create    
     
-    if params['leave_date'] == ""
+    if params['leave_date'].blank?
       flash[:error] = 'Please enter the Leave Date'
       redirect_to user_leave_reports_path
     else
