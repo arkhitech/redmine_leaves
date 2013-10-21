@@ -2,43 +2,36 @@ class UserLeavesController < ApplicationController
   unloadable
 
   def new
-    @leave = UserLeave.new
+    @user_leave = UserLeave.new
   end
   
   def create    
+    @user_leave = UserLeave.create(params[:user_leave])
     
-    if params['leave_date'].blank?
-      flash[:error] = 'Please enter the Leave Date'
-      redirect_to user_leave_reports_path
-    else
-      @leave = UserLeave.new(user_id: params['add_leave']['selected_user'], leave_type: params['add_leave']['selected_type'],
-          leave_date: params['leave_date'].to_date)
-      @leave.save
+    if @user_leave.errors.empty?
       flash[:notice] = 'Leave Added!'
       redirect_to user_leave_reports_path
+    else 
+      render 'new'
     end
-    
   end
   
   def edit
-    @leave = UserLeave.find(params[:id])
+    @user_leave = UserLeave.find(params[:id])
   end
   
-  def update
-    
-    @leave = UserLeave.find(params[:id])
-    if @leave.update_attributes(user_id: params['add_leave']['selected_user'], leave_type: params['add_leave']['selected_type'],
-          leave_date: params['leave_date'].to_date)
+  def update    
+    @user_leave = UserLeave.find(params[:id])
+    if @user_leave.update_attributes(params[:user_leave])
       redirect_to user_leave_reports_path
     else
       render 'edit'
-    end
-    
+    end    
   end
     
   def destroy
-    @delete = UserLeave.find(params[:id])
-    @delete.destroy
+    @user_leave = UserLeave.find(params[:id])
+    @user_leave.destroy
     redirect_to user_leave_reports_path
   end
   

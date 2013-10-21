@@ -1,19 +1,20 @@
-<%= form_for @leave do |details| %>
+<%= form_for @user_leave do |leave_form| %>
+  <%= error_messages_for @user_leave %>
   <table>
     <tr>
       <th align="left">User</th>
-      <td><%= select_tag("add_leave[selected_user]",
-          add_user_options(params['add_leave'] && params['add_leave']['selected_users'])) %></td>
+      <td><%= leave_form.select(:user_id,
+              add_user_options(@user_leave.user_id)) %></td>
     </tr>
     <tr>
       <th align="left">Leave Type</th>
-      <td><%= select_tag("add_leave[selected_type]",
-          add_leave_options(params['add_leave'] && params['add_leave']['selected_type'])) %></td>
+      <td><%= leave_form.select(:leave_type,
+              add_leave_options(@user_leave.leave_type)) %></td>
     </tr>
     <tr>
       <th align="left">Leave Date</th>
-      <td><%= text_field_tag "leave_date" %></td>
+      <td><%= leave_form.date_select :leave_date %></td>
     </tr>
   </table>
-  <%= details.submit 'Add' %>
+  <%= leave_form.submit 'Add' %>
 <% end %>
