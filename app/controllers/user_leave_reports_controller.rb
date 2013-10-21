@@ -4,13 +4,27 @@ class UserLeaveReportsController < ApplicationController
   before_filter :require_login
   
   def index
+    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+    @mark_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
+    
+    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+    @mark_own_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
 
     @all_users = User.all
     @all_leaves = (Setting.plugin_redmine_leaves['leave_types']||"").split(",")
 
   end
   
-  def report
+  def report    
+    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+    @mark_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
+    
+    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+    @mark_own_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
 
     @reported_user = nil
     if params[:report].nil?
@@ -30,12 +44,12 @@ class UserLeaveReportsController < ApplicationController
         if params[:entered_date][:date_from].blank? || params[:entered_date][:date_to].blank?
           @reported_user = UserLeave.
                 where(['user_id IN (?) AND leave_type IN (?)',
-                selected_users, selected_leave_types]).group(:leave_date)
+                selected_users, selected_leave_types]).order('leave_date desc')
         else
           @reported_user = UserLeave.
                 where(['user_id IN (?) AND leave_type IN (?) AND leave_date <= ? AND leave_date >= ?',
                 selected_users, selected_leave_types,
-                params['entered_date']['date_to'].to_date, params['entered_date']['date_from'].to_date]).group(:leave_date)
+                params['entered_date']['date_to'].to_date, params['entered_date']['date_from'].to_date]).order('leave_date desc')
         end
       end
     end
