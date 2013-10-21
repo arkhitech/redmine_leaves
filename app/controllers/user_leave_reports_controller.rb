@@ -6,11 +6,27 @@ class UserLeaveReportsController < ApplicationController
   include UserLeaveReportsHelper
   
   def index
+    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+    @mark_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
+    
+    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+    @mark_own_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
+
     @all_users = User.all
     @all_leaves = plugin_setting('leave_types')
   end
   
-  def report
+  def report    
+    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+    @mark_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
+    
+    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+    @mark_own_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
+
     @user_leaves = nil
     if params[:user_leave_report].nil?
       flash.now[:error] = 'Please provide a report criteria'
@@ -40,7 +56,7 @@ class UserLeaveReportsController < ApplicationController
       end
 
       where_clause[0] = where_statements.join(' AND ') 
-      @user_leaves = UserLeave.where(where_clause)
+      @user_leaves = UserLeave.where(where_clause).order('leave_date desc')
     end
   
   end
