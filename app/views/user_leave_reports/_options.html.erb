@@ -5,13 +5,17 @@
       <th>From</th>
     </tr>  
     <tr align="left">
-      <td><%= text_field_tag "entered_date[date_from]" %></td>    
+      <td><%= text_field_tag "user_leave_report[date_from]", params[:user_leave_report] && params[:user_leave_report][:date_from] %>
+      <%= calendar_for 'user_leave_report_date_from' %>
+      </td>    
     </tr>
     <tr align="left">
       <th>To</th>
     </tr>
     <tr align="left">
-      <td> <%= text_field_tag "entered_date[date_to]" %> </td>    
+      <td> <%= text_field_tag "user_leave_report[date_to]", params[:user_leave_report] && params[:user_leave_report][:date_to] %> 
+      <%= calendar_for 'user_leave_report_date_to' %>
+      </td>    
     </tr>
   </table>
   <table>
@@ -21,14 +25,14 @@
     </tr>
     <tr align="left">
       <td>
-        <%= select_tag("report[selected_users][]",
-          user_options(params[:report] && params[:report][:selected_users]),
-          :multiple => true) %>
+        <%= select_tag("user_leave_report[selected_users][]",
+          user_options(params[:user_leave_report] && params[:user_leave_report][:selected_users]),
+          multiple: true) %>
       </td>
       <td>
-        <%= select_tag("report[selected_leave_types][]",
-          leave_options(params[:report] && params[:report][:selected_leave_types]),
-          :multiple => true) %> 
+        <%= select_tag("user_leave_report[selected_leave_types][]",
+          leave_options(params[:user_leave_report] && params[:user_leave_report][:selected_leave_types]),
+          multiple: true) %> 
       </td>
     </tr>
   </table><br/>
