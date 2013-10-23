@@ -1,19 +1,42 @@
 module UserLeaveReportsHelper
 
+  def mark_leave_users
+    @mark_leave_users ||= begin
+      if Group.count == 0
+        User.active.all
+      else
+        mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+        User.active.joins(:groups).
+          where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
+      end      
+    end
+  end
+  
+  def mark_own_leave_users
+    @mark_own_leave_users ||= begin
+      if Group.count == 0
+        User.active.all
+      else
+        mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+        @mark_own_leave_users = User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
+      end      
+    end
+  end
+  
   def plugin_setting(setting_name)
     (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
   end
 
   def eligible_for_leave_users
-    if Group.count == 0
+    group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
+    if group_ids.blank?
       User.active.all
     else
-      group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
       User.active.joins(:groups).
-        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
-          group_ids).group("#{User.table_name}.id")
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
+        group_ids).group("#{User.table_name}.id")
     end
-    
   end
 
   def user_options(selected_users)

@@ -1,6 +1,4 @@
-<% if(!@mark_leave_users.include?(User.current) && !@mark_own_leave_users.include?(User.current)) %>
-  <!-- do not show 'Add Leave' link -->
-<% else %>
+<% if !(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current)) %>
   <strong><%= link_to 'Add Leave', new_user_leafe_path %></strong><br/>
 <% end %>  
   
