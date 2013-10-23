@@ -4,9 +4,7 @@ module UserLeavesHelper
     (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
   end
   
-  def add_user_options(selected_user)
-    
-    #####################################################################################################
+  def add_user_options(selected_user)    
     mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
     mark_leave_users = User.active.joins(:groups).
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
@@ -14,7 +12,6 @@ module UserLeavesHelper
     mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
     mark_own_leave_users = User.active.joins(:groups).
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
-    
     
     if(mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))
       # if current user have both permissions
@@ -28,17 +25,6 @@ module UserLeavesHelper
       # if current user have permission to mark own leaves
       all_users = User.where(['id = ?', User.current.id]).active
     end
-    if(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))      
-      all_users = nil
-    end
-    
-    #####################################################################################################    
-
-#    if(User.current.admin?)
-#      all_users = User.active
-#    else
-#      all_users = User.where(['id = ?', User.current.id]).active
-#    end
     
     options_from_collection_for_select(all_users, :id, :name, selected_user)
     

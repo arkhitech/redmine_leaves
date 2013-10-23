@@ -16,7 +16,8 @@
       <% @user_leaves.each do |user_leave|%>
         <tr align="left" class="<%= cycle("odd", "even")%>">
           <td><%= user_leave.user_id %></td>
-          <td><%= user_leave.user.name %></td>
+
+          <td><%= User.find(user_leave.user_id).name %></td>
           <td><%= user_leave.leave_type %></td>
           <td><%= user_leave.leave_date %></td>
           <% if User.current.admin? %>
@@ -26,6 +27,7 @@
                   method: :delete, data: { confirm: 'Are you sure?' }%>
             </td>
           <% else %>
+            <!-- do not display the 'Edit' & 'Delete' link -->
           <% end %>
         </tr>
       <% end %>

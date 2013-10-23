@@ -5,9 +5,15 @@ module UserLeaveReportsHelper
   end
 
   def eligible_for_leave_users
-    group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
-    User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => group_ids)
+    if Group.count == 0
+      User.active.all
+    else
+      group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
+      User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
+          group_ids).group("#{User.table_name}.id")
+    end
+    
   end
 
   def user_options(selected_users)

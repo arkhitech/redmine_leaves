@@ -5,28 +5,28 @@ class UserLeaveReportsController < ApplicationController
 
   include UserLeaveReportsHelper
   
-  def index
-    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
-    @mark_leave_users = User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
-    
-    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
-    @mark_own_leave_users = User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
+  def get_group_users
+    if Group.count == 0
+      @mark_leave_users = User.active.all
+    else
+      mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+      @mark_leave_users = User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
 
+      mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+      @mark_own_leave_users = User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
+    end
+  end
+  
+  def index
+    get_group_users
     @all_users = User.all
     @all_leaves = plugin_setting('leave_types')
   end
   
   def report    
-    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
-    @mark_leave_users = User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
-    
-    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
-    @mark_own_leave_users = User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
-
+    get_group_users
     @user_leaves = nil
     if params[:user_leave_report].nil?
       flash.now[:error] = 'Please provide a report criteria'

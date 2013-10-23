@@ -2,17 +2,17 @@
   <tbody>
     <tr align="left">
       <th>Leave Type(s)</th>
-      <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
+      <td><%= text_field_tag('settings[leave_types]', settings['leave_types'].presence || 'Annual, Sick, Unannounced') %>
         <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
     </tr>
     <tr align="left" >
       <th>Default Type</th>
-      <td><%= text_field_tag('settings[default_type]', settings['default_type']) %> 
+      <td><%= text_field_tag('settings[default_type]', settings['default_type'].presence || 'Unannounced') %> 
     </tr>
     <tr align="left">
       <th>Eligible for Leave Group(s)</th>
       <td><%= select_tag('settings[eligible_for_leave_groups]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
+              options_from_collection_for_select(Group.all.presence || User.all, :id, :name, 
                 settings['eligible_for_leave_groups']), 
               multiple: true) %>
       </td>
@@ -20,7 +20,7 @@
     <tr align="left">
       <th>Mark Leaves</th>
       <td><%= select_tag('settings[mark_leaves]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
+              options_from_collection_for_select(Group.all.presence || User.all, :id, :name, 
                 settings['mark_leaves']), 
               multiple: true) %>
       </td>
@@ -28,7 +28,7 @@
     <tr align="left">
       <th>Mark Own Leave</th>
       <td><%= select_tag('settings[mark_own_leave]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
+              options_from_collection_for_select(Group.all.presence || User.all, :id, :name, 
                 settings['mark_own_leave']), 
               multiple: true) %>
       </td>
