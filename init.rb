@@ -2,6 +2,8 @@ Redmine::Plugin.register :redmine_leaves do
   name 'Redmine Leaves Plugin'
   author 'Arkhitech'
   description 'This is a plugin for user check-in/check-out'
+  url 'http://github.com/arkhitech/redmine_leaves'
+  author_url 'https://github.com/arkhitech'  
   version '0.0.1'
   
   menu :top_menu, :time_check_in, { controller: 'user_time_checks', action: 'check_in' }, 
