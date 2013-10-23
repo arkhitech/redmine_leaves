@@ -12,7 +12,6 @@ class UserLeaveReportsController < ApplicationController
   end
   
   def report    
-    init_group_users
     @user_leaves = nil
     where_statements = []
     where_clause = ['']
