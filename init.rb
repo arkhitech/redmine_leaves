@@ -13,5 +13,8 @@ Redmine::Plugin.register :redmine_leaves do
   
   menu :top_menu, :user_leave_reports, { controller: 'user_leave_reports', action: 'index' }, caption: 'Leave Report'
   
-  settings default: {'empty' => true}, partial: 'settings'
+  settings default: {'leave_types' => 'Annual, Sick, Unannounced',
+                     'default_type' => 'Unannounced',
+                    }, 
+           partial: 'settings'
 end

@@ -17,6 +17,21 @@
               multiple: true) %>
       </td>
     </tr>
+    <tr align="left">
+      <th>Mark Leaves</th>
+      <td><%= select_tag('settings[mark_leaves]', 
+              options_from_collection_for_select(Group.all, :id, :name, 
+                settings['mark_leaves']), 
+              multiple: true) %>
+      </td>
+    </tr>
+    <tr align="left">
+      <th>Mark Own Leave</th>
+      <td><%= select_tag('settings[mark_own_leave]', 
+              options_from_collection_for_select(Group.all, :id, :name, 
+                settings['mark_own_leave']), 
+              multiple: true) %>
+      </td>
+    </tr>
   </tbody>
 </table>
- 

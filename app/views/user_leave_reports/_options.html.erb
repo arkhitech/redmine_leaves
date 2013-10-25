@@ -1,4 +1,7 @@
-<strong><%= link_to 'Add Leave', new_user_leafe_path %></strong><br/>
+<% if !(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current)) %>
+  <strong><%= link_to 'Add Leave', new_user_leafe_path %></strong><br/>
+<% end %>  
+  
 <%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
   <table>
     <tr align="left">
