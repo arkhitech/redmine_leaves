@@ -11,7 +11,9 @@
         <th>Name</th>
         <th>Leave Type</th>
         <th>Leave Date</th>
-	<th></th>
+        <% if User.current.admin? %>
+          <th></th>
+        <% end %>
       </tr>
       <% @user_leaves.each do |user_leave|%>
         <tr align="left" class="<%= cycle("odd", "even")%>">

@@ -10,29 +10,29 @@ Installation:
 
 - To install plugin, go to plugins folder of your Redmine repository and run:
 
-    git clone http://github.com/arkhitech/redmine_leaves
+        git clone http://github.com/arkhitech/redmine_leaves
 
 - Run db migrations for the plugin
 
-    rake redmine:plugins:migrate RAILS_ENV=production
+        rake redmine:plugins:migrate RAILS_ENV=production
 
 - Bundle install all the gems using the following command
 
-    bundle install
+        bundle install
 
 - After bundle install, go to Redmine leave plugin folder and run the following command
 
-    wheneverize .
+        wheneverize .
 
 - Above command creates a file “schedule.rb” in config folder. Go to config/schedule.rb and type the following code
 
-    every :weekday, :at => '12:01 pm' do
-        rake "redmine_leaves:auto_leave_mark"
-    end
+        every :weekday, :at => '12:01 pm' do
+            rake "redmine_leaves:auto_leave_mark"
+        end
 
 - Run the following command to automate the leave marking process
 
-    whenever --update-crontab store
+        whenever --update-crontab store
 
 - After installation, log in to Redmine as administrator and go to plugin settings for Redmine leaves plugin configuration.
 
@@ -40,3 +40,7 @@ Instructions:
 -------------
 
 - After installing Redmine leave plugin, it is advised to make Redmine groups and add users into these groups. This will allow the admin to assign permissions to users accordingly.
+
+- Admin will be required to always update the "Auto-Mark" process whenever the server restarts. To do so, go to congif/schedule.rb and run the following command
+
+        whenever --update-crontab store
