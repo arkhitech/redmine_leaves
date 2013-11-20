@@ -19,7 +19,7 @@ module UserLeaveReportsHelper
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
     end
   end
-  
+    
   def plugin_setting(setting_name)
     (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
   end
