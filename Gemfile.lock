@@ -53,5 +53,5 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  rspec-rails (= 2.13.1)
+  rspec-rails (>= 2.13.1)
   whenever (>= 0.8.4)

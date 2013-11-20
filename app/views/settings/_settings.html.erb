@@ -3,11 +3,11 @@
     <tr align="left">
       <th>Leave Type(s)</th>
       <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
-        <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
+      <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
     </tr>
     <tr align="left" >
       <th>Default Type</th>
-      <td><%= text_field_tag('settings[default_type]', settings['default_type']) %> 
+      <td><%= text_field_tag('settings[default_type]', settings['default_type']) %>
     </tr>
     <tr align="left">
       <th>Eligible for Leave Group(s)</th>
@@ -23,7 +23,7 @@
               options_from_collection_for_select(Group.all, :id, :name, 
                 settings['mark_leaves']), 
               multiple: true) %>
-      </td>
+      </td>      
     </tr>
     <tr align="left">
       <th>Mark Own Leave</th>

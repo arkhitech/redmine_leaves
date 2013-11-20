@@ -7,8 +7,7 @@ namespace :redmine_leaves do
 
     missing_timecheck_users.each do |auto_leave|
       UserLeave.create(user_id: auto_leave.id, leave_type: Setting.plugin_redmine_leaves['default_type'],
-        leave_date: Date.today)
+        leave_date: Date.today, comments: 'Auto-Marked Leave')
     end
-
   end
 end

@@ -15,6 +15,13 @@
       <th align="left">Leave Date</th>
       <td><%= leave_form.date_select :leave_date %></td>
     </tr>
+    <tr>
+      <th align="top">Comments</th>
+      <td>
+        <%= leave_form.text_field :comments %>
+        <small>(Optional)</small>
+      </td>
+    </tr>
   </table>
   <%= leave_form.submit 'Add' %>
 <% end %>
