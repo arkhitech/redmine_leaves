@@ -16,14 +16,14 @@ module UserLeavesHelper
     if(mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))
       # if current user have both permissions
       all_users = User.active
-    end
-    if(mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))      
+    elsif(mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))      
       # if current user have permission to mark leaves only
       all_users = User.active - User.where(['id = ?', User.current.id])
-    end
-    if(!mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))      
+    elsif(!mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))      
       # if current user have permission to mark own leaves
       all_users = User.where(['id = ?', User.current.id]).active
+    else
+      all_users = User.active
     end
     
     options_from_collection_for_select(all_users, :id, :name, selected_user)
