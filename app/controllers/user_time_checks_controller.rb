@@ -21,7 +21,16 @@ class UserTimeChecksController < ApplicationController
     else
       @user_time_check = checkout_timechecks.first
       @user_time_check.update_attributes(check_out_time: DateTime.now)
+      
+      #if loggedintime<0.9*(user_time_check.check_out_time-@user_time_check.check_in_time)
+         #flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
+         @issue= Issue.where(assigned_to_id: User.current.id)
+         @time_entry= TimeEntry.where(user_id: User.current.id , spent_on: Date.today)
+         #@issue= Issue.find(1)
+     # end
     end
   end
+  
+  
   
 end

@@ -17,6 +17,107 @@
     <td>
       <% time_difference = @user_time_check.check_out_time - @user_time_check.check_in_time %>
       <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%>
+      
     </td>
+    
   </tr>
+</table>
+
+<br><br><br>
+
+  
+  <%if (@issue!= nil) then%>
+  <table>
+  <%puts "this is the issuepopulated at controller #{@issue}"%>   
+  <tr></tr>  
+  
+  <tr>
+   <b> Your Check Time duration is: <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%>  Hours </b>
+  </tr>
+   <tr>
+     <% logged_hours=@time_entry.sum(:hours)%>
+    <b> You have Logged in : <%= logged_hours%>  Hours For Today </b>
+    </tr>
+  <br><br>
+  
+  <tr align="center" class="<%= cycle("even")%>" >
+    <th><strong>Time #</strong></th>
+    <th><strong>Issue #</strong></th>
+    <th><strong>Title</strong></th>
+    <th><strong>Time logged for the day</strong></th>
+    <th><strong>Time to log </strong> </th>
+    <th><strong>Activity to log</strong></th>
+    <th><strong>Comments</strong></th>
+    <th></th>
+  </tr>
+  <tr></tr>
+
+  
+  <% @time_entry.each do |time_entry| %>
+    <tr align="center" class="<%= cycle("odd")%>" >
+    <td><%= link_to time_entry.id, time_entry_path(time_entry.id) %></td>
+      <td><%= link_to time_entry.issue_id, issue_path(time_entry.issue_id) %></td>
+      <td><%= link_to time_entry.issue.subject,issue_path(time_entry.issue_id) %></td>
+      <td><%= time_entry.hours %></td>
+      <td><%= time_entry.hours %></td><!-- Check this one kia minus karna -->
+      <td><%= time_entry.activity.name %></td>
+      <td><%= time_entry.comments %></td>
+    <td></td>
+    </tr>
+  <% end %>
+    
+   
+    
+  
+</table>
+
+<br><br><br>
+
+<tr>
+    <% remaining_time=time_difference-logged_hours%>
+    <b> Please Log Remaining  <%= remaining_time%> Hours</b>
+    </tr>
+ <br><br>   
+<table>
+
+  <tr align="center" class="<%= cycle("even")%>" >
+    <th>Issue #</th>
+    <th>Tracker</th>
+    <th>Status</th>
+    <th>Priority</th>
+    <th>Subject</th>
+    <!--<th>Description</th> -->
+    <th>Assignee</th>
+    <th>Creation Date</th>
+    <th>Start Date</th>
+    <th>Estimated time</th>
+    <th>Complete Ratio</th>
+    <th>Updated</th>
+    <th></th>
+  </tr>
+
+   <tr></tr>
+   
+<% @issue.each do |issue| %>
+  <tr align="center" class="<%= cycle("odd")%>" >
+    <td><%= link_to issue.id, issue_path(issue.id) %></td>
+    <td><%= Tracker.find(issue.tracker_id).name %></td>
+    <td><%= issue.status.name %></td>
+    <td><%= issue.priority.name %></td>
+    <td><%= link_to issue.subject, issue_path(issue.id) %></td>
+    <!--<td><%= issue.description%></td> -->
+    <td><%= link_to issue.assigned_to,user_path(issue.assigned_to_id) %></td>
+    <td><%= issue.created_on %></td>
+    <td><%= issue.start_date %></td>
+    <td><%= issue.estimated_hours%></td>
+    <td><%= issue.done_ratio %></td>
+    <td><%= issue.updated_on %></td>
+  
+  </tr>
+  
+<% end %>
+  
+
+  
+<% end %>
 </table>
