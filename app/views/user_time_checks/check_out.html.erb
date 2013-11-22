@@ -1,3 +1,4 @@
+<% unless @user_time_check.check_out_time.nil? %>
 <h2> Check-Out </h2>
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
@@ -24,11 +25,11 @@
 </table>
 
 <br><br><br>
-
   
-  <%if (@issue!= nil) then%>
+  <%if (@assigned_issues!= nil) then%>
+
+  <%puts "this is the issuepopulated at controller #{@assigned_issues}"%> 
   <table>
-  <%puts "this is the issuepopulated at controller #{@issue}"%>   
   <tr></tr>  
   
   <tr>
@@ -36,39 +37,29 @@
   </tr>
    <tr>
      <% logged_hours=@time_entry.sum(:hours)%>
-    <b> You have Logged in : <%= logged_hours%>  Hours For Today </b>
+    <b> <br>You have Logged : <%= logged_hours%>  Hours For Today </b>
     </tr>
   <br><br>
   
   <tr align="center" class="<%= cycle("even")%>" >
-    <th><strong>Time #</strong></th>
     <th><strong>Issue #</strong></th>
-    <th><strong>Title</strong></th>
-    <th><strong>Time logged for the day</strong></th>
-    <th><strong>Time to log </strong> </th>
+    <th><strong>Subject</strong></th>
+    <th><strong>Time Logged</strong></th>
     <th><strong>Activity to log</strong></th>
-    <th><strong>Comments</strong></th>
     <th></th>
   </tr>
+  
   <tr></tr>
 
-  
   <% @time_entry.each do |time_entry| %>
     <tr align="center" class="<%= cycle("odd")%>" >
-    <td><%= link_to time_entry.id, time_entry_path(time_entry.id) %></td>
       <td><%= link_to time_entry.issue_id, issue_path(time_entry.issue_id) %></td>
       <td><%= link_to time_entry.issue.subject,issue_path(time_entry.issue_id) %></td>
       <td><%= time_entry.hours %></td>
-      <td><%= time_entry.hours %></td><!-- Check this one kia minus karna -->
       <td><%= time_entry.activity.name %></td>
-      <td><%= time_entry.comments %></td>
     <td></td>
     </tr>
   <% end %>
-    
-   
-    
-  
 </table>
 
 <br><br><br>
@@ -82,42 +73,44 @@
 
   <tr align="center" class="<%= cycle("even")%>" >
     <th>Issue #</th>
-    <th>Tracker</th>
-    <th>Status</th>
-    <th>Priority</th>
+    <th>Tracker </th>
+    <th>Status< /th>
     <th>Subject</th>
-    <!--<th>Description</th> -->
-    <th>Assignee</th>
-    <th>Creation Date</th>
-    <th>Start Date</th>
-    <th>Estimated time</th>
-    <th>Complete Ratio</th>
-    <th>Updated</th>
+    <th>Hours To Log</th>
+    <th>Activity</th>
+    <th>Comments</th>
     <th></th>
   </tr>
 
    <tr></tr>
+
+
    
-<% @issue.each do |issue| %>
+<% @assigned_issues.each_index do |idx| %>
+   <%issue = @assigned_issues[idx]%>
   <tr align="center" class="<%= cycle("odd")%>" >
     <td><%= link_to issue.id, issue_path(issue.id) %></td>
     <td><%= Tracker.find(issue.tracker_id).name %></td>
     <td><%= issue.status.name %></td>
-    <td><%= issue.priority.name %></td>
     <td><%= link_to issue.subject, issue_path(issue.id) %></td>
-    <!--<td><%= issue.description%></td> -->
-    <td><%= link_to issue.assigned_to,user_path(issue.assigned_to_id) %></td>
-    <td><%= issue.created_on %></td>
-    <td><%= issue.start_date %></td>
-    <td><%= issue.estimated_hours%></td>
-    <td><%= issue.done_ratio %></td>
-    <td><%= issue.updated_on %></td>
+    
+     <!-- Form elemets start here -->
+    <%= form_for @new_time_entries[idx], url: time_entries_path do |f| %>
+     <%= f.hidden_field :issue_id %>
+    <td> <%= f.text_field :hours, :size => 6, :required => true %></td>
+    <td><%= f.select :activity_id, activity_collection_for_select_options(@new_time_entry), :required => true %>
+    <td> <%= f.text_field :comments, :size => 100, :maxlength => 255 %></td>
+    <td> <%= f.submit 'Add' %></td>
+   </tr>
+  <% end %> <!--  End of Form-->
   
-  </tr>
   
+<% end %><!--  End of Form-->
 <% end %>
+<%end%>
   
-
   
-<% end %>
+ TimeEntry(id: integer, project_id: integer, user_id: integer,
+ issue_id: integer, hours: float, comments: string, activity_id: integer, spent_on: date, 
+ tyear: integer, tmonth: integer, tweek: integer, created_on: datetime, updated_on: datetime) 
 </table>
