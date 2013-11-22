@@ -33,10 +33,13 @@ class UserTimeChecksController < ApplicationController
        #logged_in_time=@time_entry.sum(:hours)
       #if logged_in_time<(@user_time_check.check_out_time-@user_time_check.check_in_time)
          #flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
+         
          @assigned_issues= Issue.where(assigned_to_id: User.current.id)
+         
+         #@new_time_entries = Array.new(3) { assigned_issue.time_entries.build }
          @new_time_entries = []
          @assigned_issues.each do |assigned_issue|
-#          @new_time_entries << TimeEntry.new(:issue_id => assigned_issue.id)
+          #@new_time_entries << TimeEntry.new(:issue_id => assigned_issue.id)
           @new_time_entries << assigned_issue.time_entries.build
          end
     #end

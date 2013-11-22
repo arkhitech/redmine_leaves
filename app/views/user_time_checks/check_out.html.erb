@@ -84,30 +84,34 @@
 
    <tr></tr>
 
-
+<%= form_tag time_entries_path do %>
    
-<% @assigned_issues.each_index do |idx| %>
-   <%issue = @assigned_issues[idx]%>
+<%= @new_time_entries.each do |new_time_entry| %>
   <tr align="center" class="<%= cycle("odd")%>" >
-    <td><%= link_to issue.id, issue_path(issue.id) %></td>
-    <td><%= Tracker.find(issue.tracker_id).name %></td>
-    <td><%= issue.status.name %></td>
-    <td><%= link_to issue.subject, issue_path(issue.id) %></td>
+    <% assigned_issue = new_time_entry.issue %>
+    <td><%= link_to assigned_issue.id, issue_path(assigned_issue.id) %></td>
+    <td><%= Tracker.find(assigned_issue.tracker_id).name %></td>
+    <td><%= assigned_issue.status.name %></td>
+    <td><%= link_to assigned_issue.subject, issue_path(assigned_issue.id) %></td>
     
      <!-- Form elemets start here -->
-    <%= form_for @new_time_entries[idx], url: time_entries_path do |f| %>
-     <%= f.hidden_field :issue_id %>
-    <td> <%= f.text_field :hours, :size => 6, :required => true %></td>
-    <td><%= f.select :activity_id, activity_collection_for_select_options(@new_time_entry), :required => true %>
-    <td> <%= f.text_field :comments, :size => 100, :maxlength => 255 %></td>
-    <td> <%= f.submit 'Add' %></td>
+    <%= hidden_field_tag "issue_id[]", new_time_entry.issue_id %>
+     <td> <%= text_field_tag "hours[]", new_time_entry.hours, :size => 6, :required => true %></td>
+     <td><%= select_tag "activity_id[]", options_for_select(activity_collection_for_select_options(new_time_entry)), :required => true %>
+     <td> <%= text_field_tag "comments[]", new_time_entry.comments, :size => 100, :maxlength => 255 %></td>
+   
+ <% end %>
    </tr>
-  <% end %> <!--  End of Form-->
-  
+< <td> <%= submit_tag( 'Add' ) %></td>
   
 <% end %><!--  End of Form-->
-<% end %>
-<%end%>
+
+
+<% end %><!--  If Ends-->
+
+
+
+<%end%><!--  Unless condition End->
   
   
  TimeEntry(id: integer, project_id: integer, user_id: integer,
