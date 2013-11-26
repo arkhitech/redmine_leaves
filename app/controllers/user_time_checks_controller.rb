@@ -29,15 +29,17 @@ class UserTimeChecksController < ApplicationController
       
       @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
   
-      #@new_time_entry=TimeEntry.new
+
        logged_in_time= @time_entries.sum(:hours)
          checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time
          
-      if logged_in_time<0.9*(checked_time/360)
+      if logged_in_time<0.9*(checked_time/3600)
          flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
-         @assigned_issues= Issue.where(assigned_to_id: User.current.id)
-         
-         #@new_time_entries = Array.new(3) { assigned_issue.time_entries.build }
+         @assigned_issues= Issue.where(assigned_to_id: User.current.id,status_id: [1,2])
+      
+         #@assigned_issues= Issue.where("assigned_to_id=? AND  issue_id =?"",  User.current.id)
+       
+      
          @new_time_entries = []
          @assigned_issues.each do |assigned_issue|
           #@new_time_entries << TimeEntry.new(:issue_id => assigned_issue.id)
@@ -72,7 +74,7 @@ class UserTimeChecksController < ApplicationController
          logged_time= @time_entries.sum(:hours)
          checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time
          
-         if logged_time<0.90*(checked_time/360) #may changed this
+         if logged_time<0.90*(checked_time/3600) #may changed this
            render 'check_out'
          else
            render 'checkout_timelog_success'
