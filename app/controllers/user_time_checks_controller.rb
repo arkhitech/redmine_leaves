@@ -27,13 +27,14 @@ class UserTimeChecksController < ApplicationController
       
       @user_time_check.inspect
       
-      @time_entry= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time)
+      @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
   
       #@new_time_entry=TimeEntry.new
-       #logged_in_time=@time_entry.sum(:hours)
-      #if logged_in_time<(@user_time_check.check_out_time-@user_time_check.check_in_time)
-         #flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
+       logged_in_time= @time_entries.sum(:hours)
+         checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time
          
+      if logged_in_time<0.9*(checked_time/360)
+         flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
          @assigned_issues= Issue.where(assigned_to_id: User.current.id)
          
          #@new_time_entries = Array.new(3) { assigned_issue.time_entries.build }
@@ -42,10 +43,44 @@ class UserTimeChecksController < ApplicationController
           #@new_time_entries << TimeEntry.new(:issue_id => assigned_issue.id)
           @new_time_entries << assigned_issue.time_entries.build
          end
-    #end
+    end
     end
   end
   
+  def create_time_entries
+    puts "#{'*'*80}\nReceived parameters: #{params.inspect}\n#{'*'*80}"
+    #"time_entries"=>{"issue_id"=>["1", "2"], "hours"=>["1", "2"], "activity_id"=>["8", "8"], "comments"=>["asim", "hello"]}
+    @new_time_entries = []
+#    issue_ids = params[:issue_id]
+#    issue_ids.each_index do |idx|
+#      time_entries << TimeEntry.create(:issue_id => issue_ids[idx], :hours => params[:hours][idx])
+#    end
+
+    time_entry_paramss = params[:time_entries]    
+    time_entry_paramss.each do |time_entry_params|
+      time_entry_this = TimeEntry.new(time_entry_params) #  This solves the .permit problem : See Model <user_id: protected>
+      time_entry_this.user_id = User.current.id
+      time_entry_this.save  
+      @new_time_entries << time_entry_this
+    end
+    
+         @assigned_issues= Issue.where(assigned_to_id: User.current.id)
+         @user_time_check = UserTimeCheck.where(["user_id = ? and check_out_time IS NOT NULL", User.current.id]).limit(1).order('id DESC').first
+        # @time_entries= TimeEntry.where(user_id: User.current.id , spent_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time)
+        @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time+1.hour, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
+   
+         logged_time= @time_entries.sum(:hours)
+         checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time
+         
+         if logged_time<0.90*(checked_time/360) #may changed this
+           render 'check_out'
+         else
+           render 'checkout_timelog_success'
+         end
+         
+    
+  end
   
+ 
   
 end
