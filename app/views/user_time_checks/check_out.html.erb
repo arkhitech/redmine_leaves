@@ -81,7 +81,7 @@
    
   <tr align="center" class="<%= cycle("odd")%>" >
     <% assigned_issue = new_time_entry.issue %>
-    <%if assigned_issue.status.is_closed==false%>
+    <%#if assigned_issue.status.is_closed==false%>
     
     <td><%= link_to assigned_issue.id, issue_path(assigned_issue.id) %></td>
     <td><%= Tracker.find(assigned_issue.tracker_id).name %></td>
@@ -95,7 +95,8 @@
      <td> <%= text_field_tag "time_entries[][hours]", new_time_entry.hours, :size => 10%></td>
      <td><%= select_tag "time_entries[][activity_id]", options_for_select(activity_collection_for_select_options(new_time_entry))%> </td>
      <td> <%= text_field_tag "time_entries[][comments]", new_time_entry.comments, :size => 100, :maxlength => 255 %></td>
-     <% end %>
+   
+     <%# end %>
     <% end %>
     </tr>
     <td> <%= submit_tag( 'Add' ) %></td>

@@ -27,7 +27,8 @@ class UserTimeChecksController < ApplicationController
       
       @user_time_check.inspect
       
-      @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
+      @time_entries= TimeEntry.where(user_id: User.current.id , 
+        created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
   
 
        logged_in_time= @time_entries.sum(:hours)
@@ -35,7 +36,8 @@ class UserTimeChecksController < ApplicationController
          
       if logged_in_time<0.9*(checked_time/3600)
          flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
-         @assigned_issues= Issue.where(assigned_to_id: User.current.id,status_id: [1,2])
+         @assigned_issues= Issue.where(assigned_to_id: User.current.id).joins(:status).
+           where("#{IssueStatus.table_name}.is_closed" => false)
       
          #@assigned_issues= Issue.where("assigned_to_id=? AND  issue_id =?"",  User.current.id)
        
@@ -66,7 +68,10 @@ class UserTimeChecksController < ApplicationController
       @new_time_entries << time_entry_this
     end
     
-         @assigned_issues= Issue.where(assigned_to_id: User.current.id)
+         #@assigned_issues= Issue.where(assigned_to_id: User.current.id)
+          @assigned_issues= Issue.where(assigned_to_id: User.current.id).joins(:status).
+           where("#{IssueStatus.table_name}.is_closed" => false)
+         
          @user_time_check = UserTimeCheck.where(["user_id = ? and check_out_time IS NOT NULL", User.current.id]).limit(1).order('id DESC').first
         # @time_entries= TimeEntry.where(user_id: User.current.id , spent_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time)
         @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time+1.hour, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
