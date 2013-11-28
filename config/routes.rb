@@ -5,6 +5,8 @@ match '/create_time_entries' => 'user_time_checks#create_time_entries'
 
 get "user_time_checks/home"
 get "user_time_checks/check_in"
+get "user_time_checks/check_out"
+get "user_time_checks/checkout_timelog_success"
  
 match '/home', to: 'user_time_checks#home', via: 'get'
 match '/check_in' => 'user_time_checks#check_in'

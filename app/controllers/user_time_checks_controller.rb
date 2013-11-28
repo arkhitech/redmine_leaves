@@ -1,7 +1,7 @@
 class UserTimeChecksController < ApplicationController
   unloadable
   
-  #before_filter :require_login
+  before_filter :require_login
   
   def check_in
     checkin_timechecks = UserTimeCheck.where(['user_id = ? AND check_out_time IS NULL', User.current.id])
