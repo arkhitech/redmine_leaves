@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-
-
 describe "UserTimeChecks" do
   #works for all users to get them login
  before (:all) do
@@ -16,25 +14,10 @@ describe "UserTimeChecks" do
      
  end
  
-  describe "GET /user_time_checks/home" do
-    before :each do
-      User.stubs(:current).returns(@user)
-    end
-    
-    it "should have the content 'Sample App'" do
-      visit '/user_time_checks/home'
-      expect(page).to have_content('Sample App')
-    end
-  
-  it "should have the title 'Home'" do
-      visit '/user_time_checks/home'
-      expect(page).to have_title("Ruby on Rails Tutorial Sample App | Home")
-    end
-  end
 
 
 describe "Check In Page" do
-
+  #Used to check the Check-in and Refresh Functionality <Check in Twice>
    before :each do
       User.stubs(:current).returns(@user)
     end
@@ -44,32 +27,26 @@ describe "Check In Page" do
       expect(page).to have_content('Check-in time:')
       
     end
-     it "Should Display error flash message if reloaded'" do
+     it "Should Display error flash message if Check-in is Refreshed [Pressed Twice]" do
       visit("/")
       click_link("CHECK-IN")
       visit '/user_time_checks/check_in'
-#      visit '/user_time_checks/check_in'
-#      expect(page).to have_content('Check-in time:')
        expect(page).to have_content('You did not check-out last time, please check-out first')
-       #redirect_to check_in_url
     end
   end
   
   describe "Check Out Page" do
     
-    
+    #Used to check the Check-out and Refresh Functionality <Checkout Twice>
       before :each do
       User.stubs(:current).returns(@user)
       
-      #@user_time_check=UserTimeCheck.find_by_user_id(User.current.id)
       @user_time_check ||= begin
-      user_time_check = UserTimeCheck.new(user_id: User.current.id, check_in_time: "2013-11-20 11:25:57")
-#      user_time_check.check_out_time="2013-11-20 11:27:57" 
+      user_time_check = UserTimeCheck.new(user_id: User.current.id, check_in_time: Time.now - 8.hours)
       user_time_check.save!
       user_time_check
       end
-      
-      #UserTimeCheck.stubs(:current).returns(@user_time_check)
+   
       
     end
     
@@ -83,17 +60,62 @@ describe "Check In Page" do
       expect(page).to have_content('Check-out time:')
     end
     
-     it "Should Display error flash message if reloaded'" do
+     it "Should display error flash message if Check-out is Refreshed [Pressed Twice]" do
       visit("/")
       click_link("CHECK-OUT")
       visit '/user_time_checks/check_out'
-      #context "when logged_time not complete"
-      #let() {}
+      expect(page).to have_content('You did not check-in last time, please check-in first')
+     end
+     
+      before do
+      time_entries = TimeEntry.where(user_id: User.current.id , 
+      spent_on: [@user_time_check.check_in_time, @user_time_check.check_in_time + 8.hours])
+      time_entries.destroy_all
+      end
+    
+      it "Should display error Flash meesage when Logged Time is less than Checked Time" do
+      visit("/")
+      click_link("CHECK-OUT")
+      #visit '/user_time_checks/check_out'
       expect(page).to have_content('Your logged in  time is less than required Percentage. Log your remaining time')
-      
-     # expect(page).to have_content('You did not check-in last time, please check-in first')
-      #redirect_to check_in_url
+      click_button('Add')
+      visit '/user_time_checks/checkout_timelog_success'
     end
+    
+   
+    
   end
+  
+#    describe "Check Out Time Log Success" do
+#      
+#      before :each do
+#      User.stubs(:current).returns(@user)
+#    
+#      @user_time_check ||= begin
+#      user_time_check = UserTimeCheck.new(user_id: User.current.id, check_in_time: Time.now - 8.hours,check_out_time: Time.now+1.hours) 
+#      user_time_check.save!
+#      user_time_check
+#      end 
+#  
+#      time_entries = TimeEntry.where(user_id: User.current.id , 
+#      spent_on: [@user_time_check.check_in_time, @user_time_check.check_in_time + 8.hours])
+#  
+#      end
+#      
+#      it "Should display 'Time Logged Successfully' " do
+##        visit("/")
+##        click_link("CHECK-OUT")
+##        visit '/user_time_checks/check_out'
+##        render :action => "create_time_entries"
+##        click_button('Add')
+##        visit '/user_time_checks/checkout_timelog_success'
+#        expect(view).to render_template("/user_time_checks/checkout_timelog_success")
+#        expect(page).to have_content('Time Logged Successfully')
+#        
+#      end
+#      
+#  end
+      
+    
   
 end
