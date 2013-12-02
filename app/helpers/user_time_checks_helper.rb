@@ -13,17 +13,11 @@ module UserTimeChecksHelper
     is_current_user_in_edit_own_leave_users = edit_own_leave_users.include?(User.current)
     
     if is_current_user_in_edit_leave_users
-      if !is_current_user_in_edit_own_leave_users and User.current.id == user_leave_user_id
-        return false
-      else
-        return true
-      end            
+      return false if User.current.id == user_leave_user_id && !is_current_user_in_edit_own_leave_users
+      return true
     else
-      if is_current_user_in_edit_own_leave_users and User.current.id == user_leave_user_id
-        return true
-      else
-        return false
-      end
+      return true if User.current.id == user_leave_user_id && is_current_user_in_edit_own_leave_users
+      return false
     end    
   end  
 end
