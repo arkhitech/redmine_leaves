@@ -1,12 +1,20 @@
 namespace :redmine_leaves do
   desc "Sends email to user who have not logged their time and are not marked as off"
   task :email_reminder_for_time_log, [:arg1] => :environment do |t, args|
+
+    cc_group = []
+    reminder_time = ""
     
-    rake_arg = args.arg1.split ' '
-    rake_arg = Setting.plugin_redmine_leaves['daily_reminder']
-    
-    #NEED TO ADD A CONDITION FOR DAILY, WEEKLY AND MONTHLY REMINDER MAILS
-    #WILL SET RECIPIENTS ACCORDINGLY (cc: )
+    if args.arg1 == "daily"
+      cc_group = Setting.plugin_redmine_leaves['daily_reminder']
+      reminder_time = "Daily"
+    elsif args.arg1 == "weekly"
+      cc_group = Setting.plugin_redmine_leaves['weekly_reminder']
+      reminder_time = "Weekly"
+    elsif args.arg1 == "monthly"
+      cc_group = Setting.plugin_redmine_leaves['monthly_reminder']
+      reminder_time = "Monthly"
+    end
     
     all_users = User.active
     all_users.each do |user|
@@ -17,10 +25,10 @@ namespace :redmine_leaves do
         time_entry = TimeEntry.find_by_issue_id(issue)
         if time_entry.nil?
           #if user never logged time for this issue
-          LogTimeReminderMailer.reminder_email(user, issue, rake_arg).deliver          
+          LogTimeReminderMailer.reminder_email(user, issue, cc_group, reminder_time).deliver          
         elsif !(time_entry.updated_on.to_date == Date.today) && user_leave.empty?
-          #if user is present and did not logged time today
-          LogTimeReminderMailer.reminder_email(user, issue, rake_arg).deliver
+          #if user is present and did not log time today
+          LogTimeReminderMailer.reminder_email(user, issue, cc_group, reminder_time).deliver
         end        
       end
     end

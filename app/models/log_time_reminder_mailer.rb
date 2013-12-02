@@ -1,12 +1,12 @@
 class LogTimeReminderMailer < ActionMailer::Base
   
-  default from: 'mail@example.com'
+  default from: 'timelog_reminder@redmine.com'
   
   def self.default_url_options
     Mailer.default_url_options
   end
   
-  def reminder_email(user, issue, group)
+  def reminder_email(user, issue, group, reminder)
     @user = user
     @issue = issue
     group_emails=[]
@@ -17,8 +17,8 @@ class LogTimeReminderMailer < ActionMailer::Base
         group_emails << user.mail        
       end    
     end
-    puts group_emails    
-    mail(to: @user.mail, subject: "Time Log Reminder for Issue##{@issue.id}",
+    
+    mail(to: @user.mail, subject: "#{reminder} Time Log Reminder for Issue##{@issue.id}",
       cc: group_emails)
   end
   
