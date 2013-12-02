@@ -5,29 +5,25 @@ module UserTimeChecksHelper
     edit_leave_users = User.active.joins(:groups).
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => edit_leave_groups)
     
-    edit_own_leave_groups = Setting.plugin_redmine_leaves['edit_own_attendance']
-    edit_own_leave_users = User.active.joins(:groups).
+    edit_own_leave_groups ||= Setting.plugin_redmine_leaves['edit_own_attendance']
+    edit_own_leave_users  ||= User.active.joins(:groups).
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => edit_own_leave_groups)
-    if(edit_leave_users.include?(User.current) && edit_own_leave_users.include?(User.current))
-      # if current user have both permissions
-      return true
-    elsif(edit_leave_users.include?(User.current) && !edit_own_leave_users.include?(User.current))      
-      # if current user have permission to mark leaves only
-      if user_leave_user_id == User.current.id
+    
+    is_current_user_in_edit_leave_users = edit_leave_users.include?(User.current)
+    is_current_user_in_edit_own_leave_users = edit_own_leave_users.include?(User.current)
+    
+    if is_current_user_in_edit_leave_users
+      if !is_current_user_in_edit_own_leave_users and User.current.id == user_leave_user_id
         return false
       else
         return true
-      end
-    elsif(!edit_leave_users.include?(User.current) && edit_own_leave_users.include?(User.current))      
-      # if current user have permission to mark own leaves
-      if user_leave_user_id == User.current.id
+      end            
+    else
+      if is_current_user_in_edit_own_leave_users and User.current.id == user_leave_user_id
         return true
       else
         return false
       end
-    elsif(!edit_leave_users.include?(User.current) && !edit_own_leave_users.include?(User.current))
-      return false
     end    
-  end
-  
+  end  
 end
