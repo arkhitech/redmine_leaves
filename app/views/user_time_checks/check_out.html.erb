@@ -13,7 +13,7 @@
     <td><%= User.current.name %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
-    <th><strong><%= "Time spent: " %></strong> </th>
+    <th><strong><%= "Spent time: " %></strong> </th>
     <td>
       <% time_difference = @user_time_check.check_out_time - @user_time_check.check_in_time %>
       <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%>

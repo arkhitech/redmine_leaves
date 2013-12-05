@@ -13,6 +13,8 @@ Redmine::Plugin.register :redmine_leaves do
   
   menu :top_menu, :user_leave_reports, { controller: 'user_leave_reports', action: 'index' }, caption: 'Leave Report'
   
+  menu :top_menu, :user_time_checks, { controller: 'user_time_checks', action: 'index' }, caption: 'User Time Check'
+  
   settings default: {'leave_types' => 'Annual, Sick, Unannounced',
                      'default_type' => 'Unannounced',
                     }, 
