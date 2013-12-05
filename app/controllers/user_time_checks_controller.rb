@@ -29,7 +29,7 @@ class UserTimeChecksController < ApplicationController
       @user_time_check = checkout_timechecks.first
       @user_time_check.update_attributes(check_out_time: DateTime.now)
       
-      @user_time_check.inspect
+     
       
       @time_entries= TimeEntry.where(user_id: User.current.id , 
         created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
@@ -56,7 +56,7 @@ class UserTimeChecksController < ApplicationController
   end
   
   def create_time_entries
-    puts "#{'*'*80}\nReceived parameters: #{params.inspect}\n#{'*'*80}"
+    logger.debug "#{'*'*80}\nReceived parameters: #{params.inspect}\n#{'*'*80}"
     #"time_entries"=>{"issue_id"=>["1", "2"], "hours"=>["1", "2"], "activity_id"=>["8", "8"], "comments"=>["asim", "hello"]}
     @new_time_entries = []
 #    issue_ids = params[:issue_id]
@@ -92,6 +92,5 @@ class UserTimeChecksController < ApplicationController
     
   end
   
- 
   
 end

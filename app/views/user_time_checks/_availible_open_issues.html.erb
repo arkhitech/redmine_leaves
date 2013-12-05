@@ -1,0 +1,52 @@
+<table> <!--  Table to Show Availible Logging Options--> 
+  <tr align="center" class="<%= cycle("even")%>" >
+    <th>Issue # </th>
+    <th>Tracker </th>
+    <th>Status  </th>
+    <th>Subject </th>
+    <th>Hours To Log</th>
+    <th>Activity</th>
+    <th>Comments</th>
+  </tr>
+   
+<%= form_tag({:controller => :user_time_checks, :action => :create_time_entries}) do %>
+   
+<% @new_time_entries.each do |new_time_entry| %>
+  <% if new_time_entry.errors.any? %>
+  <tr align="center" class="<%= cycle("even")%>">
+
+     <div>
+       <h3><%= pluralize(new_time_entry.errors.count, "Error") %> Prohibited this post from being saved:</h3>
+    <ul>
+    <% new_time_entry.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div
+   </tr>
+  <%end%>
+   
+  <tr align="center" class="<%= cycle("odd")%>" >
+    <% assigned_issue = new_time_entry.issue %>
+    <%#if assigned_issue.status.is_closed==false%>
+    
+    <td><%= link_to assigned_issue.id, issue_path(assigned_issue.id) %></td>
+    <td><%= Tracker.find(assigned_issue.tracker_id).name %></td>
+    <td><%= assigned_issue.status.name %></td>
+    <td><%= link_to assigned_issue.subject, issue_path(assigned_issue.id) %></td>
+    
+     <!-- Form elements start here -->
+     <%= hidden_field_tag "time_entries[][issue_id]", new_time_entry.issue_id %>
+     <%= hidden_field_tag "time_entries[][user_id]", User.current.id %>
+     <%= hidden_field_tag "time_entries[][spent_on]", Date.today %>
+     <td> <%= text_field_tag "time_entries[][hours]", new_time_entry.hours, :size => 10%></td>
+     <td><%= select_tag "time_entries[][activity_id]", options_for_select(activity_collection_for_select_options(new_time_entry))%> </td>
+     <td> <%= text_field_tag "time_entries[][comments]", new_time_entry.comments, :size => 100, :maxlength => 255 %></td>
+   
+     <%# end %>
+    <% end %>
+    </tr>
+    <td> <%= submit_tag( 'Add' ) %></td>
+  
+    <% end %><!--  End of Form-->
+</table>
