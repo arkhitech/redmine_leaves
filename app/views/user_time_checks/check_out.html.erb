@@ -1,7 +1,7 @@
 <% unless @user_time_check.check_out_time.nil? %>
-  <h2>Check-Out</h2
+
   <%= render 'check_out_info' %>
-  <!-- Enhancement : Ticket : 60 ----------------------------------------------------------------->
+  <!-- Enhancement : Ticket : 60 ------- time_differece in Seconds, logged time :in hours---------------------------------------------------------->
   <br><br><br>
 
   <%if (@assigned_issues!= nil) then%>
@@ -11,23 +11,24 @@
     <p><b>Your Total Checked Time is | <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%> </b> | Hours For Today  </p>
 
     <% logged_hours=@time_entries.sum(:hours)%>
-    <p><b> Your Total Logged Time is | <%= logged_hours%>  </b> | Hours For Today </p>
-
+    <p><b> Your Total Logged Time is | <%= Time.at(logged_hours*3600).utc.strftime("%H:%M:%S")%>  </b> | Hours For Today </p>
+    
     <% logger.debug "#{'*'*100}\nLogged hours are <Test> #{Time.at(logged_hours).utc.strftime("%H:%M:%S")}\n#{'*'*100}"%> 
 
-
+    
     <% unless logged_hours == 0%>
-      <%= render 'show_logged_time_entries' %>
+      <%= render 'show_logged_time_entries' %> 
     <% end %> <!--  If condition to check if time is not 0, then display this-->
-
-    <br/><br/>
-
-    <% remaining_time=time_difference-logged_hours%>
+    
+    <br/><br/> 
+    
+    <% remaining_time=time_difference-(logged_hours*3600)%>
     <p><b> Please Log Remaining  | <%= Time.at(remaining_time).utc.strftime("%H:%M:%S")%> </b> | Hours For Today </p> 
     <br/>
 
 
     <%= render 'availible_open_issues' %>
+
 
   <% end %><!--  If Ends-->
 <%end%><!--  Unless condition End  -->   
