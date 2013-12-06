@@ -1,3 +1,60 @@
 <h2> Add Leave </h2>
 
-<%= render 'form' %>
+<%= form_for @user_leave do %>
+  <%= error_messages_for @user_leave %>
+
+  <div>
+    <strong>User/Group</strong>
+    <%= select_tag("create_user_leave[selected_users][]",
+      add_user_options(params[:create_user_leave] && params[:create_user_leave][:selected_users]),
+      multiple: true) %>
+    <%= select_tag('create_user_leave[selected_groups][]', 
+              options_from_collection_for_select(Group.all, :id, :name, 
+                params[:create_user_leave] && params[:create_user_leave][:selected_groups]), 
+              multiple: true) %>
+  </div><br/>
+
+  <div>
+    <strong>Leave Type</strong>
+    <%= select_tag('create_user_leave[selected_leave]',
+              add_leave_options(params[:create_user_leave] && params[:create_user_leave][:selected_leave])) %>
+  </div><br/>
+
+  <table>
+    <tr>
+      <th><strong>Leave Date</strong></th>
+      <th><small>From</small></th>
+    </tr>
+    <tr>
+      <th></th>
+      <td>
+        <%= date_select("create_user_leave[selected_date_from]",
+            params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) %>
+      </td>
+    </tr>
+    <tr>
+      <th></th>
+      <th><small>To</small></th>
+    </tr>
+    <tr>
+      <th></th>
+      <td>
+        <%= date_select("create_user_leave[selected_date_to]",
+            params[:create_user_leave] && params[:create_user_leave][:selected_date_to]) %>
+      </td>
+    </tr>
+  </table><br/>
+
+  <div>
+    <strong>Comments</strong>
+
+    <%= text_field_tag "create_user_leave[comments]",
+      params[:create_user_leave] && params[:create_user_leave][:comments], size: 28 %>
+
+    <small>(Optional)</small>
+  </div><br/>
+
+  <%= submit_tag 'Add' %>
+
+<% end %>
+

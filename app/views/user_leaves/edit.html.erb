@@ -1,3 +1,29 @@
 <h2> Update Leave </h2>
 
-<%= render 'form' %>
+<%= form_for @user_leave do |leave_form| %>
+  <%= error_messages_for @user_leave %>
+  <table>
+    <tr>
+      <th align="left">User</th>
+      <td><strong><%= User.find(@user_leave.user_id).name %></strong></td>
+    </tr>
+    <tr>
+      <th align="left">Leave Type</th>
+      <td><%= leave_form.select(:leave_type,
+              add_leave_options(@user_leave.leave_type)) %></td>
+    </tr>
+    <tr>
+      <th align="left">Leave Date</th>
+      <td><%= leave_form.date_select :leave_date %></td>
+    </tr>
+    <tr>
+      <th align="top">Comments</th>
+      <td>
+        <%= leave_form.text_field :comments %>
+        <small>(Optional)</small>
+      </td>
+    </tr>
+  </table>
+  <%= leave_form.submit 'Update' %>
+<% end %>
+

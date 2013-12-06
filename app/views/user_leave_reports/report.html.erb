@@ -5,28 +5,31 @@
   <% flash.now[:error] = 'No Results Found!' %>
 <% else %>
   <table border="1">
-    <tbody>
+    <thead>
       <tr align="left">
-        <th>User ID</th>
         <th>Name</th>
         <th>Leave Type</th>
         <th>Leave Date</th>
+        <th>Comments</th>
         <% if User.current.admin? %>
           <th></th>
         <% end %>
       </tr>
+    </thead>
+    <tbody>
       <% @user_leaves.each do |user_leave|%>
         <tr align="left" class="<%= cycle("odd", "even")%>">
-          <td><%= user_leave.user_id %></td>
-
-          <td><%= User.find(user_leave.user_id).name %></td>
-          <td><%= user_leave.leave_type %></td>
-          <td><%= user_leave.leave_date %></td>
+          <td><%= link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id)) %></td>
+          <td><%= link_to user_leave.leave_type, :controller => 'user_leave_reports',
+          :action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type} %></td>
+          <td><%= link_to user_leave.leave_date, :controller => 'user_leave_reports',
+          :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date} %></td>
+          <td><%= user_leave.comments %></td>
           <% if User.current.admin? %>
             <td>
               <%= link_to 'Edit', edit_user_leafe_path(user_leave) %> | 
               <%= link_to 'Delete', user_leafe_path(user_leave),
-                  method: :delete, data: { confirm: 'Are you sure?' }%>
+                  method: :delete, data: { confirm: 'Are you sure?' }%>            
             </td>
           <% end %>
         </tr>

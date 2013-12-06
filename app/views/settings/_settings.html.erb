@@ -1,37 +1,87 @@
+<table>  
+  <tr align="left">
+    <th>Leave Type(s)</th>
+    <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
+    <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
+  </tr>
+  <tr align="left" >
+    <th>Default Type</th>
+    <td><%= text_field_tag('settings[default_type]', settings['default_type']) %>
+  </tr>
+  <tr align="left">
+    <th>Eligible for Leave Group(s)</th>
+  </tr>
+  <tr align="left">
+    <td><%= select_tag('settings[eligible_for_leave_groups]', 
+        options_from_collection_for_select(Group.all, :id, :name, 
+          settings['eligible_for_leave_groups']), 
+        multiple: true) %>
+    </td>
+  </tr>
+</table><br/>
 <table>
-  <tbody>
-    <tr align="left">
-      <th>Leave Type(s)</th>
-      <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
-        <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
-    </tr>
-    <tr align="left" >
-      <th>Default Type</th>
-      <td><%= text_field_tag('settings[default_type]', settings['default_type']) %> 
-    </tr>
-    <tr align="left">
-      <th>Eligible for Leave Group(s)</th>
-      <td><%= select_tag('settings[eligible_for_leave_groups]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
-                settings['eligible_for_leave_groups']), 
-              multiple: true) %>
-      </td>
-    </tr>
-    <tr align="left">
+  <thead>
+    <tr>
       <th>Mark Leaves</th>
+      <th>Mark Own Leave</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
       <td><%= select_tag('settings[mark_leaves]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
-                settings['mark_leaves']), 
-              multiple: true) %>
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['mark_leaves']), 
+          multiple: true) %>
+      </td>
+      <td><%= select_tag('settings[mark_own_leave]', 
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['mark_own_leave']), 
+          multiple: true) %>
+      </td>    
+    </tr>
+  </tbody>
+</table><br/>
+<table>
+  <thead>
+    <tr>
+      <th>Daily Mail Reminder</th>
+      <th>Weekly Mail Reminder</th>
+      <th>Monthly Mail Reminder</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= select_tag('settings[daily_reminder]', 
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['daily_reminder']), 
+          multiple: true) %>
+      </td>
+      <td><%= select_tag('settings[weekly_reminder]', 
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['weekly_reminder']), 
+          multiple: true) %>
+      </td>
+      <td><%= select_tag('settings[monthly_reminder]', 
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['monthly_reminder']), 
+          multiple: true) %>
       </td>
     </tr>
     <tr align="left">
-      <th>Mark Own Leave</th>
-      <td><%= select_tag('settings[mark_own_leave]', 
+      <th>Edit Attendance</th>
+      <td><%= select_tag('settings[edit_attendance]', 
               options_from_collection_for_select(Group.all, :id, :name, 
-                settings['mark_own_leave']), 
+                settings['edit_attendance']), 
               multiple: true) %>
-      </td>
+      </td>      
+    </tr>
+    <tr align="left">
+      <th>Edit Own Attendance</th>
+      <td><%= select_tag('settings[edit_own_attendance]', 
+              options_from_collection_for_select(Group.all, :id, :name, 
+                settings['edit_own_attendance']), 
+              multiple: true) %>
+      </td>      
     </tr>
   </tbody>
 </table>

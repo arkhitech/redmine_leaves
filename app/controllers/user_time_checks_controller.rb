@@ -3,6 +3,23 @@ class UserTimeChecksController < ApplicationController
   
   before_filter :require_login
   
+  def index
+    @time_checks = UserTimeCheck.all
+  end
+  
+  def edit
+    @time_checks = UserTimeCheck.find(params[:id])
+  end
+  
+  def update    
+    @time_checks = UserTimeCheck.find(params[:id])
+    if @time_checks.update_attributes(params[:user_time_check])
+      redirect_to user_time_checks_path
+    else
+      render 'edit'
+    end    
+  end
+  
   def check_in
     checkin_timechecks = UserTimeCheck.where(['user_id = ? AND check_out_time IS NULL', User.current.id])
 
