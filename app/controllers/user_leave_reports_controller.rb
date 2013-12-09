@@ -17,12 +17,9 @@ class UserLeaveReportsController < ApplicationController
     where_clause = ['']
     selected_groups=params[:user_leave_report][:selected_groups]
     unless (params[:user_leave_report][:selected_users].nil? && selected_groups.nil?)
-      puts "I have entered"
       where_statements << 'user_id IN (?)'
-      #unless params[:user_leave_report][:selected_users].nil?
       all_users=[]
       all_users << params[:user_leave_report][:selected_users]
-      #end
       unless selected_groups.nil?
         selected_groups.each do |selected_group|
           group=Group.where(lastname: selected_group)
