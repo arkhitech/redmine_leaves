@@ -16,10 +16,17 @@
       <td><%= leave_form.date_select :leave_date %></td>
     </tr>
     <tr>
-      <th align="top">Comments</th>
+      <th align="left">Comments</th>
       <td>
         <%= leave_form.text_field :comments %>
         <small>(Optional)</small>
+      </td>
+    </tr>
+    <tr>
+      <th align="top">Fractional Leave</th>
+      <td>
+        <%= leave_form.text_field :fractional_leave %>
+        <small>(Optional:only required for half leaves)</small>
       </td>
     </tr>
   </table>
