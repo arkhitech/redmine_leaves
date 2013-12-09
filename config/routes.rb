@@ -1,5 +1,6 @@
 resources :user_leaves
 resources :user_leave_reports
+resources :user_time_checks
 
 match '/create_time_entries' => 'user_time_checks#create_time_entries'
 
