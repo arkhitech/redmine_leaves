@@ -49,7 +49,7 @@ module UserLeaveReportsHelper
     options_for_select(all_group_types, selected_groups)
   end
   def group_by_options(selected_group_by)
-    group_by = ['User', 'Group', 'Leave']
+    group_by = ['Leave type', 'User', 'Date']
     options_for_select(group_by, selected_group_by)
   end
   

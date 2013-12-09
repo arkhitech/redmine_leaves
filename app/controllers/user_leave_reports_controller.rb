@@ -12,22 +12,24 @@ class UserLeaveReportsController < ApplicationController
   end
   
   def report    
-    @user_leaves = nil
+    user_leaves = nil
     where_statements = []
     where_clause = ['']
     selected_groups=params[:user_leave_report][:selected_groups]
-    unless params[:user_leave_report][:selected_users].nil? && selected_groups.nil?
-      selected_groups=params[:user_leave_report][:selected_groups]
-      where_statements << 'user_id IN (?)' 
+    unless (params[:user_leave_report][:selected_users].nil? && selected_groups.nil?)
+      puts "I have entered"
+      where_statements << 'user_id IN (?)'
+      #unless params[:user_leave_report][:selected_users].nil?
       all_users=[]
       all_users << params[:user_leave_report][:selected_users]
+      #end
       unless selected_groups.nil?
         selected_groups.each do |selected_group|
           group=Group.where(lastname: selected_group)
-          all_users << group.first.users
+          all_users << group.first.users unless group.first.users.nil?
         end
-        where_clause << all_users.flatten.uniq
       end
+      where_clause << all_users.flatten.uniq
     end
 
     selected_leave_types = params[:user_leave_report][:selected_leave_types]
@@ -47,8 +49,36 @@ class UserLeaveReportsController < ApplicationController
     end
  
     where_clause[0] = where_statements.join(' AND ') 
-    @user_leaves = UserLeave.where(where_clause).order('leave_date desc')
-  
+    user_leaves = UserLeave.where(where_clause).order('leave_date desc')
+    @divided_leaves={}
+    case params[:user_leave_report][:selected_group_by]
+    when 'User'
+      user_leaves.each do |user_leave|
+        if @divided_leaves[user_leave.user.name.to_sym]
+          @divided_leaves[user_leave.user.name.to_sym]<<user_leave
+        else
+          @divided_leaves[user_leave.user.name.to_sym]=[]
+          @divided_leaves[user_leave.user.name.to_sym]<<user_leave
+        end
+      end
+    when 'Leave type'
+      user_leaves.each do |user_leave|
+        if @divided_leaves[user_leave.leave_type.to_sym]
+          @divided_leaves[user_leave.leave_type.to_sym]<<user_leave
+        else
+          @divided_leaves[user_leave.leave_type.to_sym]=[]
+          @divided_leaves[user_leave.leave_type.to_sym]<<user_leave
+        end
+      end
+    when 'Date'
+      user_leaves.each do |user_leave|
+        if @divided_leaves[user_leave.leave_date.to_s.to_sym]
+          @divided_leaves[user_leave.leave_date.to_s.to_sym]<<user_leave
+        else
+          @divided_leaves[user_leave.leave_date.to_s.to_sym]=[]
+          @divided_leaves[user_leave.leave_date.to_s.to_sym]<<user_leave
+        end
+      end
+    end
   end
-
 end
