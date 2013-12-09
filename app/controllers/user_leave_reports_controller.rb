@@ -20,6 +20,7 @@ class UserLeaveReportsController < ApplicationController
       where_statements << 'user_id IN (?)'
       all_users=[]
       all_users << params[:user_leave_report][:selected_users]
+      #end
       unless selected_groups.nil?
         selected_groups.each do |selected_group|
           group=Group.where(lastname: selected_group)
