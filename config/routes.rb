@@ -1,6 +1,6 @@
 resources :user_leaves
 resources :user_leave_reports
-resources :user_time_checks
+resources :user_time_checks, :only => [:index, :update, :edit]
 
 match '/create_time_entries' => 'user_time_checks#create_time_entries'
 
