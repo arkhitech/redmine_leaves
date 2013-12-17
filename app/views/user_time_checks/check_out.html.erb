@@ -26,9 +26,9 @@
     <p><b> Please Log Remaining  | <%= Time.at(remaining_time).utc.strftime("%H:%M:%S")%> </b> | Hours For Today </p> 
     <br/>
 
-
+    <% unless @assigned_issues.blank?%>
     <%= render 'availible_open_issues' %>
-
+    <% end %>
 
   <% end %><!--  If Ends-->
 <%end%><!--  Unless condition End  -->   
