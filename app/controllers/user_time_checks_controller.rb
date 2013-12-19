@@ -4,7 +4,7 @@ class UserTimeChecksController < ApplicationController
   before_filter :require_login
   
   def index
-    @time_checks = UserTimeCheck.all
+    @time_checks = UserTimeCheck.order('check_in_time asc').all
   end
   
   def edit
@@ -18,6 +18,11 @@ class UserTimeChecksController < ApplicationController
     else
       render 'edit'
     end    
+  end
+  
+  def import
+    UserTimeCheck.import(params[:file])
+    redirect_to user_time_checks_path, notice: "User Time Checks Imported" if params[:file]
   end
   
   def check_in
