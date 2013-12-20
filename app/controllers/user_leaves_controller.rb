@@ -16,6 +16,8 @@ class UserLeavesController < ApplicationController
       selected_users << User.find(group_user).id.to_s
     end
     unless selected_users.empty?
+      puts "**************#{params['create_user_leave']['selected_users']}**************"
+      puts "**************#{selected_users}**************"
       selected_users = selected_users.uniq
       selected_users.each do |user|
         leave_date = selected_date_from        
