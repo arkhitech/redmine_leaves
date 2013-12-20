@@ -21,7 +21,7 @@ module UserLeaveReportsHelper
   end
     
   def plugin_setting(setting_name)
-    (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
+    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }
   end
 
   def eligible_for_leave_users
