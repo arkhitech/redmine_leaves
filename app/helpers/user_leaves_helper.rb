@@ -1,7 +1,7 @@
 module UserLeavesHelper
   
   def plugin_setting(setting_name)
-    (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
+    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }
   end
   
   def add_user_options(selected_user)    
