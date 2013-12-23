@@ -2,17 +2,9 @@ class UserLeave < ActiveRecord::Base
   unloadable
   before_save :default_fractional_leave_value
   belongs_to :user
-  after_save :notify_the_absentee
+  
   validates :leave_date, :user_id, :leave_type, presence: true
   validates :leave_date, uniqueness: {scope: :user_id, message: 'has already been marked for the user'}
-<<<<<<< HEAD
-  
-    def notify_the_absentee
-      LeaveMailer.notify_absentee(self).deliver
-    end
-  private :notify_the_absentee
-end
-=======
   validate :fractional_leave_correctness 
   
   def default_fractional_leave_value
@@ -31,5 +23,8 @@ end
     end
   end
   private :fractional_leave_correctness
+  def notify_the_absentee
+    LeaveMailer.notify_absentee(self).deliver
+  end
+  private :notify_the_absentee
 end
->>>>>>> Fractional leaves can now be added
