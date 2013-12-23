@@ -25,7 +25,7 @@
     <tr>
       <th align="top">Fractional Leave</th>
       <td>
-        <%= leave_form.text_field :fractional_leave %>
+        <%= leave_form.number_field :fractional_leave,:step =>'.25', :min=> 0,:max=> 1 %>
         <small>(Optional:only required for half leaves)</small>
       </td>
     </tr>
