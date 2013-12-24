@@ -6,7 +6,7 @@ class UserLeavesController < ApplicationController
   end
   
   def create  
-    selected_users = params['create_user_leave']['selected_users'] || ''
+    selected_users = params['create_user_leave']['selected_users'] || []
     selected_group_users = User.active.joins(:groups).
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => params['create_user_leave']['selected_groups'])
     selected_date_from = params['create_user_leave']['selected_date_from'].map{|k,v| v}.join("-").to_date
