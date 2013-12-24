@@ -8,7 +8,6 @@
     <table border="1">
       <thead>
         <tr align="left">
-          <th>User ID</th>
           <th>Name</th>
           <th>Leave Type</th>
           <th>Leave Date</th>
@@ -21,11 +20,12 @@
       <tbody>
         <% value.each do |user_leave|%>
           <tr align="left" class="<%= cycle("odd", "even")%>">
-            <td><%= user_leave.user_id %></td>
 
-            <td><%= User.find(user_leave.user_id).name %></td>
-            <td><%= user_leave.leave_type %></td>
-            <td><%= user_leave.leave_date %></td>
+            <td><%= link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id)) %></td>
+            <td><%= link_to user_leave.leave_type, :controller => 'user_leave_reports',
+                :action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type, :selected_group_by =>'User'} %></td>
+            <td><%= link_to user_leave.leave_date, :controller => 'user_leave_reports',
+                :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date, :selected_group_by =>'User'} %></td>
             <td><%= user_leave.comments %></td>
             <% if User.current.admin? %>
               <td>

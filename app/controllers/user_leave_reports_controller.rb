@@ -47,6 +47,7 @@ class UserLeaveReportsController < ApplicationController
  
     where_clause[0] = where_statements.join(' AND ') 
     user_leaves = UserLeave.where(where_clause).order('leave_date desc')
+
     @divided_leaves={}
     case params[:user_leave_report][:selected_group_by]
     when 'User'
