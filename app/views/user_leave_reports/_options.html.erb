@@ -1,7 +1,7 @@
 <% if !(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current)) %>
   <strong><%= link_to 'Add Leave', new_user_leafe_path %></strong><br/>
 <% end %>  
-  
+
 <%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
   <table>
     <tr align="left">
@@ -9,7 +9,7 @@
     </tr>  
     <tr align="left">
       <td><%= text_field_tag "user_leave_report[date_from]", params[:user_leave_report] && params[:user_leave_report][:date_from] %>
-      <%= calendar_for 'user_leave_report_date_from' %>
+        <%= calendar_for 'user_leave_report_date_from' %>
       </td>    
     </tr>
     <tr align="left">
@@ -17,14 +17,27 @@
     </tr>
     <tr align="left">
       <td> <%= text_field_tag "user_leave_report[date_to]", params[:user_leave_report] && params[:user_leave_report][:date_to] %> 
-      <%= calendar_for 'user_leave_report_date_to' %>
+        <%= calendar_for 'user_leave_report_date_to' %>
       </td>    
+    </tr>
+
+
+    <tr align="left">
+      <th>Sort By</th>
+    </tr>
+    <tr align="left">
+      <td>
+        <%= select_tag("user_leave_report[selected_group_by]",
+          group_by_options(params[:user_leave_report] && params[:user_leave_report][:selected_group_by]),
+          multiple: false) %> 
+      </td>   
     </tr>
   </table>
   <table>
     <tr align="left">
       <th>User</th>
       <th>Leave Types</th>
+      <th>Group</th>
     </tr>
     <tr align="left">
       <td>
@@ -35,6 +48,12 @@
       <td>
         <%= select_tag("user_leave_report[selected_leave_types][]",
           leave_options(params[:user_leave_report] && params[:user_leave_report][:selected_leave_types]),
+          multiple: true) %> 
+      </td>
+
+      <td>
+        <%= select_tag("user_leave_report[selected_groups][]",
+          group_options(params[:user_leave_report] && params[:user_leave_report][:selected_groups]),
           multiple: true) %> 
       </td>
     </tr>

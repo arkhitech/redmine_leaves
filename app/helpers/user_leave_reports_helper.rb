@@ -16,7 +16,7 @@ module UserLeaveReportsHelper
     @mark_own_leave_users ||= begin
       mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
       User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
     end
   end
     
@@ -30,8 +30,8 @@ module UserLeaveReportsHelper
       User.active.all
     else
       User.active.joins(:groups).
-      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
-        group_ids).group("#{User.table_name}.id")
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
+          group_ids).group("#{User.table_name}.id")
     end
   end
 
@@ -42,6 +42,15 @@ module UserLeaveReportsHelper
   def leave_options(selected_leave_types)
     all_leave_types = plugin_setting('leave_types')
     options_for_select(all_leave_types, selected_leave_types)
+  end
+  
+  def group_options(selected_groups)
+    all_group_types = Group.all
+    options_for_select(all_group_types, selected_groups)
+  end
+  def group_by_options(selected_group_by)
+    group_by = ['Leave type', 'User', 'Date']
+    options_for_select(group_by, selected_group_by)
   end
   
 end
