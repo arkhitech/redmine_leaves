@@ -1,5 +1,13 @@
 <h2> Add Leave </h2>
-
+<%unless @errors.blank?%>
+  <%@errors.each do |key,value|%>
+    leaves for following <%='user'.pluralize if @errors.count>1%> <%='has'.pluralize if @errors.count>1%> not been added
+    <%=key.to_s%>
+    <%value.each do |error|%>
+      <%flash[:error]=error%>
+    <%end%>
+  <%end%>
+<%end%>
 <%= form_for @user_leave do %>
   <%= error_messages_for @user_leave %>
 
@@ -40,6 +48,14 @@
       params[:create_user_leave] && params[:create_user_leave][:comments], size: 28 %>
 
     <small>(Optional)</small>
+  </div><br/>
+
+  <div>
+    <strong>Fractional Leave</strong>
+
+    <%= number_field_tag "create_user_leave[fractional_leave]",nil,
+      :step =>'.25', :min=> 0,:max=> 1 %>
+    <small>(Optional:only required for half leaves)</small>
   </div><br/>
 
   <%= submit_tag 'Add' %>

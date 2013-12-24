@@ -5,8 +5,11 @@ class UserLeave < ActiveRecord::Base
   
   validates :leave_date, :user_id, :leave_type, presence: true
   validates :leave_date, uniqueness: {scope: :user_id, message: 'has already been marked for the user'}
-  validate :fractional_leave_correctness 
-  
+  validate :fractional_leave_correctness
+  def notify_the_absentee
+    LeaveMailer.notify_absentee(self).deliver
+  end
+  private :notify_the_absentee
   def default_fractional_leave_value
     self.fractional_leave ||= 1
   end
@@ -23,8 +26,4 @@ class UserLeave < ActiveRecord::Base
     end
   end
   private :fractional_leave_correctness
-  def notify_the_absentee
-    LeaveMailer.notify_absentee(self).deliver
-  end
-  private :notify_the_absentee
 end
