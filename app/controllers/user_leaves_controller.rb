@@ -28,7 +28,6 @@ class UserLeavesController < ApplicationController
             fractional_leave: params['create_user_leave']['fractional_leave'])
           leave_date += 1
           unless @user_leave.save
-            puts "These are all the errors #{@user_leave.errors.messages}"
             errors << @user_leave.user.name.to_s
           end 
         end       

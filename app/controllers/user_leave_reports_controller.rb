@@ -11,7 +11,8 @@ class UserLeaveReportsController < ApplicationController
     @all_leaves = plugin_setting('leave_types')
   end
   
-  def report    
+  def report  
+    
     user_leaves = nil
     where_statements = []
     where_clause = ['']
@@ -77,6 +78,17 @@ class UserLeaveReportsController < ApplicationController
           @divided_leaves[user_leave.leave_date.to_s.to_sym]=[]
           @divided_leaves[user_leave.leave_date.to_s.to_sym]<<user_leave
         end
+      end
+    end
+    if @divided_leaves.nil? || @divided_leaves.empty?
+      flash.now[:error] = 'No Results Found!'
+      if params[:user_leave_report][:date_from].present? && params[:user_leave_report][:date_to].present?
+        if params[:user_leave_report][:date_from] > params[:user_leave_report][:date_to]
+          flash.now[:error]="From date can not be greater than to Date"
+        else
+          flash.now[:error] = 'No Results Found!'
+        end
+        
       end
     end
   end
