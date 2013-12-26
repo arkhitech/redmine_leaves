@@ -6,6 +6,7 @@ class UserLeavesController < ApplicationController
   end
   
   def create  
+    @errors = {}
     selected_users = []
     if params['create_user_leave']['selected_users']
       selected_users = params['create_user_leave']['selected_users']
