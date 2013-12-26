@@ -6,7 +6,7 @@ class UserLeavesController < ApplicationController
   end
   
   def create  
-    @errors = {}
+    errors = []
     selected_users = []
     if params['create_user_leave']['selected_users']
       selected_users = params['create_user_leave']['selected_users']
@@ -29,31 +29,23 @@ class UserLeavesController < ApplicationController
           leave_date += 1
           unless @user_leave.save
             puts "These are all the errors #{@user_leave.errors.messages}"
-            @errors[@user_leave.user.name.to_sym]||=[]
-            @errors[@user_leave.user.name.to_sym]<<@user_leave.errors.messages.to_s
+            errors << @user_leave.user.name.to_s
           end 
         end       
       end
-      unless @errors.blank?
-        flash[:error]="Leaves for following #{"user".pluralize(@errors.count)} #{"has".pluralize(@errors.count)} not been added!<br/>"
-        @errors.each do |key,value|
-          flash[:error]+="<strong> #{key.to_s}</strong><br/>"
-          value.each do |message|
-            flash[:error]+="#{message}<br/>"
-          end
-        end
+      errors=errors.flatten.uniq
+      unless errors.blank?
+        flash[:error]="Leave for #{errors.join(', ')} has not been added!"
+        redirect_to new_user_leafe_path
       else
         flash[:notice] = 'Leave(s) Added!'
+        redirect_to user_leave_reports_path
       end
-      
-      
-      redirect_to user_leave_reports_path
     else
       flash[:error] = "No User/Group Selected!"
       redirect_to new_user_leafe_path
     end
   end
-
   
   def edit
     @user_leave = UserLeave.find(params[:id])

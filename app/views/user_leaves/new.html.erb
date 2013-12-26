@@ -1,15 +1,5 @@
 <h2> Add Leave </h2>
-<%unless @errors.blank?%>
-  <%@errors.each do |key,value|%>
-    leaves for following <%='user'.pluralize if @errors.count>1%> <%='has'.pluralize if @errors.count>1%> not been added
-    <%=key.to_s%>
-    <%value.each do |error|%>
-      <%flash[:error]=error%>
-    <%end%>
-  <%end%>
-<%end%>
 <%= form_for @user_leave do %>
-  <%= error_messages_for @user_leave %>
 
   <div>
     <strong>User/Group</strong>
