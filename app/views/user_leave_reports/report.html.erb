@@ -1,8 +1,6 @@
 <h2> Leave Summary </h2>
 <%= render 'options' %><br/><br/>
-<% if @divided_leaves.nil? ||  @divided_leaves.empty? %>
-  <% flash.now[:error] = 'No Results Found!' %>
-<% else %>
+<% unless @divided_leaves.nil? ||  @divided_leaves.empty? %>
   <%@divided_leaves.each do |key,value|%>
     <%=key.to_s%>
     <table border="1">
