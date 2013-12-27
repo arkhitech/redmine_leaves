@@ -28,13 +28,14 @@ class UserLeavesController < ApplicationController
             fractional_leave: params['create_user_leave']['fractional_leave'])
           leave_date += 1
           unless @user_leave.save
-            errors << @user_leave.user.name.to_s
+            errors << "Leave for #{@user_leave.user.name} already exists as #{
+            (@user_leave.errors[:leave_type]).first} for #{@user_leave.leave_date}"
           end 
         end       
       end
       errors=errors.flatten.uniq
       unless errors.blank?
-        flash[:error]="Leave for #{errors.join(', ')} has not been added!"
+        flash[:error]="#{errors.join('<br/>')}"
         redirect_to new_user_leafe_path
       else
         flash[:notice] = 'Leave(s) Added!'
