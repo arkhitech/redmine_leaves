@@ -54,9 +54,9 @@ class UserLeavesController < ApplicationController
   def update    
     @user_leave = UserLeave.find(params[:id])
     if @user_leave.update_attributes(params[:user_leave])
-      redirect_to user_leave_reports_path
+      redirect_to edit_user_leafe_path(@user_leave), notice: 'User Leave Updated!'
     else
-      render 'edit'
+      redirect_to edit_user_leafe_path(@user_leave), error: 'User Leave not Updated!'
     end    
   end
     
