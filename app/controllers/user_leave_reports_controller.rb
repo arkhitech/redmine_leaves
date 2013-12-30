@@ -6,22 +6,26 @@ class UserLeaveReportsController < ApplicationController
   include UserLeaveReportsHelper
     
   def index
-    #    init_group_users
     @all_users = User.all
     @all_leaves = plugin_setting('leave_types')
   end
   
   def report  
+    if params[:user_leave_report].nil?
+      flash.now[:error] = 'No parameters selected'
+      return
+    end
     
     user_leaves = nil
     where_statements = []
     where_clause = ['']
     selected_groups=params[:user_leave_report][:selected_groups]
+
     unless (params[:user_leave_report][:selected_users].nil? && selected_groups.nil?)
       where_statements << 'user_id IN (?)'
       all_users=[]
       all_users << params[:user_leave_report][:selected_users]
-      #end
+
       unless selected_groups.nil?
         selected_groups.each do |selected_group|
           group=Group.where(lastname: selected_group)
@@ -80,6 +84,7 @@ class UserLeaveReportsController < ApplicationController
         end
       end
     end
+    
     if @divided_leaves.nil? || @divided_leaves.empty?
       flash.now[:error] = 'No Results Found!'
       if params[:user_leave_report][:date_from].present? && params[:user_leave_report][:date_to].present?
@@ -87,8 +92,7 @@ class UserLeaveReportsController < ApplicationController
           flash.now[:error]="From date can not be greater than to Date"
         else
           flash.now[:error] = 'No Results Found!'
-        end
-        
+        end        
       end
     end
   end
