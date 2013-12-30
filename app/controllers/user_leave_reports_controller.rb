@@ -42,15 +42,25 @@ class UserLeaveReportsController < ApplicationController
     end
 
     unless params[:user_leave_report][:date_from].blank? 
-      where_statements << 'leave_date >= ?'
-      where_clause << params[:user_leave_report][:date_from]
+      begin
+        where_statements << 'leave_date >= ?'
+        where_clause << params[:user_leave_report][:date_from].to_date
+      rescue StandardError
+        flash.now[:error] = "Invalid date format"
+        return
+      end
     end
 
     unless params[:user_leave_report][:date_to].blank?
-      where_statements << 'leave_date <= ?'
-      where_clause << params[:user_leave_report][:date_to]
+      begin
+        where_statements << 'leave_date <= ?'
+        where_clause << params[:user_leave_report][:date_to].to_date
+      rescue StandardError
+        flash.now[:error] = "Invalid date format"
+        return
+      end
     end
- 
+    
     where_clause[0] = where_statements.join(' AND ') 
     user_leaves = UserLeave.where(where_clause).order('leave_date desc')
 
