@@ -63,6 +63,8 @@ class UserLeavesController < ApplicationController
   def destroy
     @user_leave = UserLeave.find(params[:id])
     @user_leave.destroy
-    redirect_to user_leave_reports_path
+    respond_to do |format|
+      format.js {}
+    end    
   end
 end
