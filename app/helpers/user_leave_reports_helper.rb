@@ -27,30 +27,34 @@ module UserLeaveReportsHelper
   def eligible_for_leave_users
     group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
     if group_ids.blank?
-      User.active.all
+      @eligible_users=User.active.all
+#     @eligible_users.order('users.name ASC').all.map{ |c| [c.name, c.id] }
+      @eligible_users.sort_by{|e| e[:firstname]}
     else
-      User.active.joins(:groups).
+      @eligible_users= User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => 
           group_ids).group("#{User.table_name}.id")
+      @eligible_users.sort_by{|e| e[:firstname]}
+      
+      end
     end
-  end
 
-  def user_options(selected_users)
-    options_from_collection_for_select(eligible_for_leave_users, :id, :name, selected_users)
-  end
+    def user_options(selected_users)
+      options_from_collection_for_select(eligible_for_leave_users, :id, :name, selected_users)
+    end
   
-  def leave_options(selected_leave_types)
-    all_leave_types = plugin_setting('leave_types')
-    options_for_select(all_leave_types, selected_leave_types)
-  end
+    def leave_options(selected_leave_types)
+      all_leave_types = plugin_setting('leave_types')
+      options_for_select(all_leave_types, selected_leave_types)
+    end
   
-  def group_options(selected_groups)
-    all_group_types = Group.all
-    options_for_select(all_group_types, selected_groups)
-  end
-  def group_by_options(selected_group_by)
-    group_by = ['Leave type', 'User', 'Date']
-    options_for_select(group_by, selected_group_by)
-  end
+    def group_options(selected_groups)
+      all_group_types = Group.all
+      options_for_select(all_group_types, selected_groups)
+    end
+    def group_by_options(selected_group_by)
+      group_by = ['Leave type', 'User', 'Date']
+      options_for_select(group_by, selected_group_by)
+    end
   
-end
+  end
