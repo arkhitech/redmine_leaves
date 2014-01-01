@@ -26,7 +26,7 @@ module UserLeavesHelper
       all_users = User.active
     end
     
-    options_from_collection_for_select(all_users, :id, :name, selected_user)
+    options_from_collection_for_select(all_users.sort_by{|e| e[:firstname]}, :id, :name, selected_user)
     
   end
   
