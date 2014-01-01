@@ -14,7 +14,7 @@ class UserTimeChecksController < ApplicationController
   def update    
     @time_checks = UserTimeCheck.find(params[:id])
     if @time_checks.update_attributes(params[:user_time_check])
-      redirect_to user_time_checks_path
+      redirect_to user_time_checks_path, notice: 'User Time Check Updated'
     else
       render 'edit'
     end    
