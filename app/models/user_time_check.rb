@@ -5,35 +5,44 @@ class UserTimeCheck < ActiveRecord::Base
       exists?(['user_id = ? and check_out_time IS NULL', user_id])
     end
   end
-  def self.import(file)
+  
+  INDEX_ZK_NAME = 4
+  INDEX_ZK_DATETIME = 1
+  
+  def self.import(file, options = {:headers => false, :col_sep => "\t"} )
     unless file.nil?
-      CSV.foreach(file.path, headers: true) do |row|      
-        name = row["Name"]
-        date = row["Date"].to_datetime
+      CSV.foreach(file.path, options) do |row|      
+        name = row[INDEX_ZK_NAME]
+        date = row[INDEX_ZK_DATETIME]
         user = User.find_by_firstname(name.split(" ").first)
-       
-        if user
-          checkin_timechecks = UserTimeCheck.
-            where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
-              user.id, date.end_of_day, date.beginning_of_day])
+        
+        unless name && date && user
+          # missing name or date or no records found in database
+          next
+        end
+        
+        date = date.to_datetime
+        
+        checkin_timechecks = UserTimeCheck.
+          where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
+            user.id, date.end_of_day, date.beginning_of_day])
 
-          if checkin_timechecks.empty?
+        if checkin_timechecks.empty?
+          UserTimeCheck.create(user_id: user.id, check_in_time: date)
+        else
+          user_time_check = checkin_timechecks.first
+          checked_time = date.to_time - user_time_check.check_in_time.to_time
+          difference = Time.at(checked_time).utc.strftime("%H").to_i
+          if difference > 1 && difference < 16
+            user_time_check.update_attributes(check_out_time: date)
+          elsif difference > 16
+            user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 4.hours, 
+              comments: 'Auto-Generated Check-Out')
             UserTimeCheck.create(user_id: user.id, check_in_time: date)
           else
-            user_time_check = checkin_timechecks.first
-            checked_time = date.to_time - user_time_check.check_in_time.to_time
-            difference = Time.at(checked_time).utc.strftime("%H").to_i
-            if difference > 1 && difference < 16
-              user_time_check.update_attributes(check_out_time: date)
-            elsif difference > 16
-              user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 4.hours, 
-                comments: 'Auto-Generated Check-Out')
-              UserTimeCheck.create(user_id: user.id, check_in_time: date)
-            else
-              #ignore the check-in
-            end
+            #ignore the check-in
           end
-        end
+        end        
       end
     end
   end
