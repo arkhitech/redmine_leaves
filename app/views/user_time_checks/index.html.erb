@@ -4,6 +4,9 @@
   <%= form_tag import_user_time_checks_path, multipart: true do %>
     <%= file_field_tag :file %>
     <%= submit_tag 'Import' %>
+    <small>
+      <%= label_tag "NOTE: File should be headerless, tab separated and column sequence should be [S.No.  DATE  Check-In  Check-Out  NAME  ...]" %>
+    </small>
   <% end %>
 </p><br>
 <% if @time_checks.empty? %>
