@@ -23,10 +23,10 @@ class UserTimeChecksController < ApplicationController
   def import
     begin
       UserTimeCheck.import(params[:file])
+      redirect_to user_time_checks_path, notice: "User Time Checks Imported" if params[:file]
     rescue StandardError => e
-      redirect_to user_time_checks_path, :flash => { :error => 'Invalid File!' }
-    end  
-    redirect_to user_time_checks_path, notice: "User Time Checks Imported" if params[:file]
+      redirect_to user_time_checks_path, :flash => { :error => 'Invalid File Format!' }
+    end    
   end
   
   def check_in
