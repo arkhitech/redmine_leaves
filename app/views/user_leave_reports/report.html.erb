@@ -1,9 +1,10 @@
+<div class="flash notice" id="flash_delete_option" style="display:none;"></div>
 <h2> Leave Summary </h2>
 <%= render 'options' %><br/><br/>
 <% unless @divided_leaves.nil? ||  @divided_leaves.empty? %>
   <%@divided_leaves.each do |key,value|%>
     <%=key.to_s%>
-    <table border="1">
+    <table border="1" id='user-leave-report'>
       <thead>
         <tr align="left">
           <th>Name</th>
@@ -17,7 +18,8 @@
       </thead>
       <tbody>
         <% value.each do |user_leave|%>
-          <tr align="left" class="<%= cycle("odd", "even")%>">
+        
+          <tr id="table-row-<%=user_leave.id%>" align="left" class="<%= cycle("odd", "even")%>">
 
             <td><%= link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id)) %></td>
             <td><%= link_to user_leave.leave_type, :controller => 'user_leave_reports',
@@ -28,7 +30,7 @@
             <% if User.current.admin? %>
               <td>
                 <%= link_to 'Edit', edit_user_leafe_path(user_leave) %> | 
-                <%= link_to 'Delete', user_leafe_path(user_leave),
+                <%= link_to 'Delete', user_leafe_path(user_leave), :remote => true,
                   method: :delete, data: { confirm: 'Are you sure?' }%>
               </td>
             <% end %>
