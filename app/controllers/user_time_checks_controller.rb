@@ -14,7 +14,7 @@ class UserTimeChecksController < ApplicationController
   def update    
     @time_checks = UserTimeCheck.find(params[:id])
     if @time_checks.update_attributes(params[:user_time_check])
-      redirect_to user_time_checks_path, notice: 'User Time Check Updated'
+      redirect_to user_time_checks_path, notice: l(:notice_time_check_updated)
     else
       render 'edit'
     end    
@@ -23,9 +23,9 @@ class UserTimeChecksController < ApplicationController
   def import
     begin
       UserTimeCheck.import(params[:file])
-      redirect_to user_time_checks_path, notice: "User Time Checks Imported" if params[:file]
+      redirect_to user_time_checks_path, notice: l(:notice_time_check_file_imported) if params[:file]
     rescue StandardError => e
-      redirect_to user_time_checks_path, :flash => { :error => 'Invalid File Format!' }
+      redirect_to user_time_checks_path, :flash => { :error => l(:error_invalid_file_format) }
     end    
   end
   
@@ -35,7 +35,7 @@ class UserTimeChecksController < ApplicationController
     if checkin_timechecks.empty?
       @user_time_check = UserTimeCheck.create(user_id: User.current.id, check_in_time: DateTime.now)
     else
-      flash.now[:error] = 'You did not check-out last time, please check-out first'
+      flash.now[:error] = l(:error_checkout_first)
       @user_time_check = checkin_timechecks.first
     end
   end
@@ -44,7 +44,7 @@ class UserTimeChecksController < ApplicationController
     checkout_timechecks = UserTimeCheck.where(['user_id = ? AND check_out_time IS NULL', User.current.id])
     
     if checkout_timechecks.empty?
-      flash.now[:error] = 'You did not check-in last time, please check-in first'
+      flash.now[:error] = l(:error_checkin_first)
       @user_time_check = UserTimeCheck.new(:user_id => User.current.id)
 
     else
@@ -59,7 +59,7 @@ class UserTimeChecksController < ApplicationController
          checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time
          
       if logged_in_time<0.9*(checked_time/3600)
-         flash.now[:error] = 'Your logged in  time is less than required Percentage. Log your remaining time'
+         flash.now[:error] = l(:error_less_time_logged)
           #@assigned_issues= Issue.where(assigned_to_id: User.current.id)
           @assigned_issues= Issue.where(assigned_to_id: User.current.id).joins(:status).
                              where("#{IssueStatus.table_name}.is_closed" => false)

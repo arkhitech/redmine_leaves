@@ -4,12 +4,12 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1>Time Log Reminder for Issue#<%= @issue.id %></h1>
-    <h3>Assignee: <%= @user.name %></h3>
+    <h1><%= l(:text_email_remainder_time) %><%= @issue.id %></h1>
+    <h3><%= l(:text_email_assignee) %> <%= @user.name %></h3>
     <p>
-      This is to inform you that you have not logged time for Issue#<%= @issue.id %>
+      <%= l(:text_email_issue_inform) %> <%= @issue.id %>
       <br/>
-      Kindly log time for this issue.
+      <%= l(:text_email_log_request) %>
     </p>
   </body>
 </html>
