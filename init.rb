@@ -1,7 +1,10 @@
 require 'redmine'
 Rails.configuration.to_prepare do
   require_dependency 'user'
+  require_dependency 'redmine/helpers/calendar'
+  
   User.send(:include, RedmineLeaves::Patches::UserPatch)
+  Redmine::Helpers::Calendar.send(:include, RedmineLeaves::Patches::LeavesInCalendarPatch)
 end
 
 Redmine::Plugin.register :redmine_leaves do
