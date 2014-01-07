@@ -1,4 +1,14 @@
 <h2> Attendance Summary </h2>
+<p>
+  <strong>Import CSV</strong>
+  <%= form_tag import_user_time_checks_path, multipart: true do %>
+    <%= file_field_tag :file %>
+    <%= submit_tag 'Import' %>
+    <small>
+      <%= label_tag "NOTE: File should be headerless, tab separated and column sequence should be [S.No.  DATE  Check-In  Check-Out  NAME  ...]" %>
+    </small>
+  <% end %>
+</p><br>
 <% if @time_checks.empty? %>
   <% flash.now[:error] = 'No Records Found!' %>
 <% else %>
@@ -8,7 +18,8 @@
         <th>User</th>
         <th>Check-in Time</th>
         <th>Check-out Time</th>
-        <th>Spent Time</th>
+        <th>Comments</th>
+        <th>Spent Time</th>        
       </tr>
     </thead>
     <tbody>
@@ -17,6 +28,7 @@
           <td><%= User.find(time_check.user_id).name %></td>
           <td><%= time_check.check_in_time %></td>
           <td><%= time_check.check_out_time %></td>          
+          <td><%= time_check.comments %></td>
           <td>
             <% unless time_check.check_out_time.nil? %>
               <% time_difference = time_check.check_out_time - time_check.check_in_time %>
@@ -29,7 +41,7 @@
             <% else %>
               <small>Not Allowed</small>
             <% end %>
-          </td>
+          </td>          
         </tr>
       <% end %>
     </tbody>

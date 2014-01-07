@@ -4,7 +4,7 @@ class UserTimeChecksController < ApplicationController
   before_filter :require_login
   
   def index
-    @time_checks = UserTimeCheck.all
+    @time_checks = UserTimeCheck.order('check_in_time asc').all
   end
   
   def edit
@@ -14,9 +14,18 @@ class UserTimeChecksController < ApplicationController
   def update    
     @time_checks = UserTimeCheck.find(params[:id])
     if @time_checks.update_attributes(params[:user_time_check])
-      redirect_to user_time_checks_path
+      redirect_to user_time_checks_path, notice: 'User Time Check Updated'
     else
       render 'edit'
+    end    
+  end
+  
+  def import
+    begin
+      UserTimeCheck.import(params[:file])
+      redirect_to user_time_checks_path, notice: "User Time Checks Imported" if params[:file]
+    rescue StandardError => e
+      redirect_to user_time_checks_path, :flash => { :error => 'Invalid File Format!' }
     end    
   end
   

@@ -1,4 +1,4 @@
-resources :user_leaves
+esources :user_leaves
 resources :user_leave_reports
 resources :user_time_checks, :only => [:index, :update, :edit] do
   collection { post :import }

@@ -1,7 +1,7 @@
 module UserLeavesHelper
   
   def plugin_setting(setting_name)
-    (Setting.plugin_redmine_leaves[setting_name] || '').split(',')
+    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }
   end
   
   def add_user_options(selected_user)    
@@ -26,7 +26,7 @@ module UserLeavesHelper
       all_users = User.active
     end
     
-    options_from_collection_for_select(all_users, :id, :name, selected_user)
+    options_from_collection_for_select(all_users.sort_by{|e| e[:firstname]}, :id, :name, selected_user)
     
   end
   

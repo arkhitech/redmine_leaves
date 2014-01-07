@@ -1,7 +1,5 @@
 <h2> Add Leave </h2>
-
 <%= form_for @user_leave do %>
-  <%= error_messages_for @user_leave %>
 
   <div>
     <strong>User/Group</strong>
@@ -9,41 +7,29 @@
       add_user_options(params[:create_user_leave] && params[:create_user_leave][:selected_users]),
       multiple: true) %>
     <%= select_tag('create_user_leave[selected_groups][]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
-                params[:create_user_leave] && params[:create_user_leave][:selected_groups]), 
-              multiple: true) %>
+      options_from_collection_for_select(Group.all, :id, :name, 
+        params[:create_user_leave] && params[:create_user_leave][:selected_groups]), 
+      multiple: true) %>
   </div><br/>
 
   <div>
     <strong>Leave Type</strong>
     <%= select_tag('create_user_leave[selected_leave]',
-              add_leave_options(params[:create_user_leave] && params[:create_user_leave][:selected_leave])) %>
+      add_leave_options(params[:create_user_leave] && params[:create_user_leave][:selected_leave])) %>
   </div><br/>
 
-  <table>
-    <tr>
-      <th><strong>Leave Date</strong></th>
-      <th><small>From</small></th>
-    </tr>
-    <tr>
-      <th></th>
-      <td>
-        <%= date_select("create_user_leave[selected_date_from]",
-            params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) %>
-      </td>
-    </tr>
-    <tr>
-      <th></th>
-      <th><small>To</small></th>
-    </tr>
-    <tr>
-      <th></th>
-      <td>
-        <%= date_select("create_user_leave[selected_date_to]",
-            params[:create_user_leave] && params[:create_user_leave][:selected_date_to]) %>
-      </td>
-    </tr>
-  </table><br/>
+  <div>    
+    <strong>Leave Date</strong><br>
+    <div style="padding-left: 70px">
+      <strong>From</strong><br/>
+      <%= date_select("create_user_leave[selected_date_from]",
+        params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) %><br/>
+      <strong>To</strong><br/> 
+      <%= date_select("create_user_leave[selected_date_to]",
+        params[:create_user_leave] && params[:create_user_leave][:selected_date_to]) %><br>
+    </div><br>
+  </div>
+  <br/>
 
   <div>
     <strong>Comments</strong>
@@ -52,6 +38,14 @@
       params[:create_user_leave] && params[:create_user_leave][:comments], size: 28 %>
 
     <small>(Optional)</small>
+  </div><br/>
+
+  <div>
+    <strong>Fractional Leave</strong>
+
+    <%= number_field_tag "create_user_leave[fractional_leave]",nil,
+      :step =>'.25', :min=> 0,:max=> 1 %>
+    <small>(Optional:only required for half leaves)</small>
   </div><br/>
 
   <%= submit_tag 'Add' %>

@@ -1,40 +1,42 @@
+<div class="flash notice" id="flash_delete_option" style="display:none;"></div>
 <h2> Leave Summary </h2>
-
 <%= render 'options' %><br/><br/>
-<% if @user_leaves.nil? ||  @user_leaves.empty? %>
-  <% flash.now[:error] = 'No Results Found!' %>
-<% else %>
-  <table border="1">
-    <thead>
-      <tr align="left">
-        <th>Name</th>
-        <th>Leave Type</th>
-        <th>Leave Date</th>
-        <th>Comments</th>
-        <% if User.current.admin? %>
-          <th></th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% @user_leaves.each do |user_leave|%>
-        <tr align="left" class="<%= cycle("odd", "even")%>">
-          <td><%= link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id)) %></td>
-          <td><%= link_to user_leave.leave_type, :controller => 'user_leave_reports',
-          :action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type} %></td>
-          <td><%= link_to user_leave.leave_date, :controller => 'user_leave_reports',
-          :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date} %></td>
-          <td><%= user_leave.comments %></td>
+<% unless @divided_leaves.nil? ||  @divided_leaves.empty? %>
+  <%@divided_leaves.each do |key,value|%>
+    <%=key.to_s%>
+    <table border="1" id='user-leave-report'>
+      <thead>
+        <tr align="left">
+          <th>Name</th>
+          <th>Leave Type</th>
+          <th>Leave Date</th>
+          <th>Comments</th>
           <% if User.current.admin? %>
-            <td>
-              <%= link_to 'Edit', edit_user_leafe_path(user_leave) %> | 
-              <%= link_to 'Delete', user_leafe_path(user_leave),
-                  method: :delete, data: { confirm: 'Are you sure?' }%>            
-            </td>
+            <th></th>
           <% end %>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>   
+      </thead>
+      <tbody>
+        <% value.each do |user_leave|%>
         
+          <tr id="table-row-<%=user_leave.id%>" align="left" class="<%= cycle("odd", "even")%>">
+
+            <td><%= link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id)) %></td>
+            <td><%= link_to user_leave.leave_type, :controller => 'user_leave_reports',
+                :action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type, :selected_group_by =>'User'} %></td>
+            <td><%= link_to user_leave.leave_date, :controller => 'user_leave_reports',
+                :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date, :selected_group_by =>'User'} %></td>
+            <td><%= user_leave.comments %></td>
+            <% if User.current.admin? %>
+              <td>
+                <%= link_to 'Edit', edit_user_leafe_path(user_leave) %> | 
+                <%= link_to 'Delete', user_leafe_path(user_leave), :remote => true,
+                  method: :delete, data: { confirm: 'Are you sure?' }%>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+<%end%>
