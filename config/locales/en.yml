@@ -13,7 +13,7 @@ en:
    link_add_leave: "Add Leave"
    label_date_from: "From"
    label_date_to: "To"
-   label_sort_by: "Sort By"
+   label_sortby: "Sort By"
    label_user: "User"
    label_leave_types: "Leave Types"
    label_group: "Group"
