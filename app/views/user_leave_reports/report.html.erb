@@ -6,26 +6,28 @@
     <%=key.to_s%>
     <table border="1" id='user-leave-report'>
       <thead>
-        <tr align="left">
+        <tr align="center">
           <th>Name</th>
           <th>Leave Type</th>
-          <th>Leave Date</th>
+          <th>Leave Date</th>          
+          <th>Weight</th>          
           <th>Comments</th>
           <% if User.current.admin? %>
-            <th></th>
+            <th>Action</th>
           <% end %>
         </tr>
       </thead>
       <tbody>
         <% value.each do |user_leave|%>
         
-          <tr id="table-row-<%=user_leave.id%>" align="left" class="<%= cycle("odd", "even")%>">
+          <tr id="table-row-<%=user_leave.id%>" align="center" class="<%= cycle("odd", "even")%>">
 
             <td><%= link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id)) %></td>
             <td><%= link_to user_leave.leave_type, :controller => 'user_leave_reports',
                 :action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type, :selected_group_by =>'User'} %></td>
             <td><%= link_to user_leave.leave_date, :controller => 'user_leave_reports',
                 :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date, :selected_group_by =>'User'} %></td>
+            <td><%= user_leave.fractional_leave %></td>
             <td><%= user_leave.comments %></td>
             <% if User.current.admin? %>
               <td>
