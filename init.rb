@@ -16,13 +16,13 @@ Redmine::Plugin.register :redmine_leaves do
   version '0.0.1'
   
   menu :top_menu, :time_check_in, { controller: 'user_time_checks', action: 'check_in' }, 
-    caption: 'CHECK-IN', if: Proc.new {!UserTimeCheck.checked_in?(User.current.id)}, last: true
+    caption: :caption_top_menu_check_in, if: Proc.new {!UserTimeCheck.checked_in?(User.current.id)}, last: true
     menu :top_menu, :time_check_out, { controller: 'user_time_checks', action: 'check_out' }, 
-      caption: 'CHECK-OUT', if: Proc.new {UserTimeCheck.checked_in?(User.current.id)}, last: true
+      caption: :caption_top_menu_check_out, if: Proc.new {UserTimeCheck.checked_in?(User.current.id)}, last: true
   
-      menu :top_menu, :user_leave_reports, { controller: 'user_leave_reports', action: 'index' }, caption: 'Leave Report'
+      menu :top_menu, :user_leave_reports, { controller: 'user_leave_reports', action: 'index' }, caption: :caption_leave_report
   
-      menu :top_menu, :user_time_checks, { controller: 'user_time_checks', action: 'index' }, caption: 'User Time Check'
+      menu :top_menu, :user_time_checks, { controller: 'user_time_checks', action: 'index' }, caption: :caption_user_time_check
   
       settings default: {'leave_types' => 'Annual, Sick, Unannounced',
         'default_type' => 'Unannounced',

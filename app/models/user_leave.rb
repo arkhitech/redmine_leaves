@@ -20,10 +20,10 @@ class UserLeave < ActiveRecord::Base
   def fractional_leave_correctness
     if fractional_leave
       unless (fractional_leave <= 1)
-        errors.add(:fractional_value,": Fractional Leave value can't be grater than 1")
+        errors.add(:fractional_value,l(:error_fractional_value_greater_than_one))
       end
       unless (fractional_leave > 0)
-        errors.add(:fractional_value,": Fractional Leave value can't be less than 0")
+        errors.add(:fractional_value,l(:error_fractional_value_less_than_zero))
       end
     end
   end

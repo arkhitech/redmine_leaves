@@ -1,5 +1,5 @@
 <div class="flash notice" id="flash_delete_option" style="display:none;"></div>
-<h2> Leave Summary </h2>
+<h2><%= l(:title_leave_summary) %> </h2>
 <%= render 'options' %><br/><br/>
 <% unless @divided_leaves.nil? ||  @divided_leaves.empty? %>
   <%@divided_leaves.each do |key,value|%>
@@ -7,10 +7,11 @@
     <table border="1" id='user-leave-report'>
       <thead>
         <tr align="left">
-          <th>Name</th>
-          <th>Leave Type</th>
-          <th>Leave Date</th>
-          <th>Comments</th>
+          <th><%= l(:label_name) %></th>
+          <th><%= l(:label_leave_type) %></th>
+          <th><%= l(:label_leave_date) %></th>
+          <th><%= l(:label_comments) %></th>
+          <th><%= l(:label_action) %></th>
           <% if User.current.admin? %>
             <th></th>
           <% end %>
@@ -29,8 +30,8 @@
             <td><%= user_leave.comments %></td>
             <% if User.current.admin? %>
               <td>
-                <%= link_to 'Edit', edit_user_leafe_path(user_leave) %> | 
-                <%= link_to 'Delete', user_leafe_path(user_leave), :remote => true,
+                <%= link_to l(:link_edit), edit_user_leafe_path(user_leave) %> | 
+                <%= link_to l(:link_delete), user_leafe_path(user_leave), :remote => true,
                   method: :delete, data: { confirm: 'Are you sure?' }%>
               </td>
             <% end %>

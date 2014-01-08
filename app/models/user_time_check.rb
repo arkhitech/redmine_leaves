@@ -37,7 +37,7 @@ class UserTimeCheck < ActiveRecord::Base
             user_time_check.update_attributes(check_out_time: date)
           elsif difference > 16
             user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 4.hours, 
-              comments: 'Auto-Generated Check-Out')
+              comments: l(:auto_generated_comment))
             UserTimeCheck.create(user_id: user.id, check_in_time: date)
           else
             #ignore the check-in
