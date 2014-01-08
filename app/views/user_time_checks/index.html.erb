@@ -14,17 +14,18 @@
 <% else %>
   <table border="1">
     <thead>
-      <tr align="left">
+      <tr align="center">
         <th>User</th>
         <th>Check-in Time</th>
         <th>Check-out Time</th>
         <th>Comments</th>
-        <th>Spent Time</th>        
+        <th>Spent Time</th>
+        <th>Action</th>        
       </tr>
     </thead>
     <tbody>
       <% @time_checks.each do |time_check|%>
-        <tr align="left" class="<%= cycle("odd", "even")%>">
+        <tr align="center" class="<%= cycle("odd", "even")%>">
           <td><%= User.find(time_check.user_id).name %></td>
           <td><%= time_check.check_in_time %></td>
           <td><%= time_check.check_out_time %></td>          
