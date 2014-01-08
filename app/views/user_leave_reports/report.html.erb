@@ -9,10 +9,11 @@
         <tr align="left">
           <th>Name</th>
           <th>Leave Type</th>
-          <th>Leave Date</th>
+          <th>Leave Date</th>          
+          <th>Weight</th>          
           <th>Comments</th>
           <% if User.current.admin? %>
-            <th></th>
+            <th>Action</th>
           <% end %>
         </tr>
       </thead>
@@ -26,6 +27,7 @@
                 :action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type, :selected_group_by =>'User'} %></td>
             <td><%= link_to user_leave.leave_date, :controller => 'user_leave_reports',
                 :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date, :selected_group_by =>'User'} %></td>
+            <td><%= user_leave.fractional_leave %></td>
             <td><%= user_leave.comments %></td>
             <% if User.current.admin? %>
               <td>
