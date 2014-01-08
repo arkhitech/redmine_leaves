@@ -1,21 +1,21 @@
-<h2>Edit Attendance</h2>
+<h2><%= l(:label_edit_attendance)%></h2>
 
 <%= form_for @time_checks do |attendance_form| %>
   <table>
     <tr>
-      <th align="left">User</th>
+      <th align="left"><%= l(:label_user)%></th>
       <td><strong><%= User.find(@time_checks.user_id).name %></strong></td>
     </tr>
     <tr>
-      <th align="left">Check-in Time</th>
+      <th align="left"><%= l(:label_check_in_time)%></th>
       <td><%= attendance_form.text_field :check_in_time,
           :value => attendance_form.object.check_in_time.to_s(:date_format) %></td>
     </tr>
     <tr>
-      <th align="left">Check-out Time</th>
+      <th align="left"><%= l(:label_check_out_time)%></th>
       <td><%= attendance_form.text_field :check_out_time,
           :value => attendance_form.object.check_out_time.to_s(:date_format) %></td>
     </tr>
   </table>
-  <%= attendance_form.submit 'Update' %>
+  <%= attendance_form.submit l(:label_button_update) %>
 <% end %>

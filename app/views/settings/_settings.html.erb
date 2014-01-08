@@ -1,15 +1,15 @@
 <table>  
   <tr align="left">
-    <th>Leave Type(s)</th>
+    <th><%= l(:label_leave_types)%></th>
     <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
-    <th><small> For multiple Leave Types, enter values separated by comma (,) </small></th>
+    <th><small> <%= l(:label_multiple_leaves_instructions )%> </small></th>
   </tr>
   <tr align="left" >
-    <th>Default Type</th>
+    <th><%= l(:label_default_type ) %></th>
     <td><%= text_field_tag('settings[default_type]', settings['default_type']) %>
   </tr>
   <tr align="left">
-    <th>Eligible for Leave Group(s)</th>
+    <th><%= l(:label_eligible_for_leave_groups ) %></th>
   </tr>
   <tr align="left">
     <td><%= select_tag('settings[eligible_for_leave_groups]', 
@@ -22,8 +22,8 @@
 <table>
   <thead>
     <tr>
-      <th>Mark Leaves</th>
-      <th>Mark Own Leave</th>
+      <th><%= l(:label_mark_leaves ) %></th>
+      <th><%= l(:label_mark_own_leave ) %></th>
     </tr>
   </thead>
   <tbody>
@@ -44,9 +44,9 @@
 <table>
   <thead>
     <tr>
-      <th>Daily Mail Reminder</th>
-      <th>Weekly Mail Reminder</th>
-      <th>Monthly Mail Reminder</th>
+      <th><%= l(:label_daily_mail_reminder) %></th>
+      <th><%= l(:label_weekly_mail_reminder) %></th>
+      <th><%= l(:label_monthly_mail_reminder) %></th>
     </tr>
   </thead>
   <tbody>
@@ -68,7 +68,7 @@
       </td>
     </tr>
     <tr align="left">
-      <th>Edit Attendance</th>
+      <th><%= l(:label_edit_attendance ) %></th>
       <td><%= select_tag('settings[edit_attendance]', 
               options_from_collection_for_select(Group.all, :id, :name, 
                 settings['edit_attendance']), 
@@ -76,7 +76,7 @@
       </td>      
     </tr>
     <tr align="left">
-      <th>Edit Own Attendance</th>
+      <th><%= l(:label_edit_own_attendance ) %></th>
       <td><%= select_tag('settings[edit_own_attendance]', 
               options_from_collection_for_select(Group.all, :id, :name, 
                 settings['edit_own_attendance']), 

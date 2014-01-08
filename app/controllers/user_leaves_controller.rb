@@ -38,11 +38,11 @@ class UserLeavesController < ApplicationController
         flash[:error]="#{errors.join('<br/>')}"
         redirect_to new_user_leafe_path
       else
-        flash[:notice] = 'Leave(s) Added!'
+        flash[:notice] = l(:notice_leaves_added)
         redirect_to user_leave_reports_path
       end
     else
-      flash[:error] = "No User/Group Selected!"
+      flash[:error] = l(:error_no_user_group_selected)
       redirect_to new_user_leafe_path
     end
   end
@@ -54,9 +54,9 @@ class UserLeavesController < ApplicationController
   def update    
     @user_leave = UserLeave.find(params[:id])
     if @user_leave.update_attributes(params[:user_leave])
-      redirect_to edit_user_leafe_path(@user_leave), notice: 'User Leave Updated!'
+      redirect_to edit_user_leafe_path(@user_leave), notice: l(:notice_leaves_updated)
     else
-      redirect_to edit_user_leafe_path(@user_leave), error: 'User Leave not Updated!'
+      redirect_to edit_user_leafe_path(@user_leave), error: l(:error_leaves_not_updated)
     end    
   end
     

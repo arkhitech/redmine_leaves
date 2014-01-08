@@ -1,3 +1,158 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+    #Main Menu
+   caption_top_menu_check_in: "CHECK-IN"
+   caption_top_menu_check_out: "CHECK-OUT"
+   caption_leave_report: "Leave Report"
+   caption_user_time_check: "User Time Check"
+    
+   #user_leave_report/index
+   title_leave_summary: " Leave Summary"
+   
+   #user_leave_report/_options
+   link_add_leave: "Add Leave"
+   label_date_from: "From"
+   label_date_to: "To"
+   label_sort_by: "Sort By"
+   label_user: "User"
+   label_leave_types: "Leave Types"
+   label_group: "Group"
+   label_button_apply: "Apply"
+   options_group_by_title: "Leave Type"
+   option_group_by_user: "User"
+   option_group_by_date: "Date"
+   
+   #user_leave_report/report
+   label_name: "User Name"
+   label_leave_type: "Leave Type"
+   label_leave_date: "Leave Date"
+   label_weight: "Weight"
+   label_comments: "Comments"
+   label_action: "Action"
+   label_confirm: "Are you sure?"
+   link_edit: "Edit"
+   link_delete: "Delete"
+   
+   #user_leaves/new
+   label_add_leave: "Add Leave"
+   label_user_group: "User/Group"
+   label_optional: "(Optional)"
+   label_fractional_leave: "Fractional Leave"
+   label_fractional_leave_optional: "(Optional:only required for half leaves)"
+   label_button_add: "Add"
+   
+   #user_leaves/destroy
+   label_deleted: "Deleted!"
+   
+   #user_leaves/edit
+   label_update_leave: "Update Leave"
+   label_button_update: "Update"
+   
+   #leave_mailer/notify_absentee.html/.txt
+   text_notify_your_leave_for: "Your leave for "
+   text_notify_has_been_marked_as: " has been marked as "
+   text_notify_has_been_added_as: " has been added as "
+   
+   
+   #log_time_reminder_mailer/reminder_email.html/.txt
+   text_email_remainder_time: "Time Log Reminder for Issue# "
+   text_email_assignee: "Assignee:"
+   text_email_issue_inform: "This is to inform you that you have not logged time for Issue# "
+   text_email_log_request: "Kindly log time for this issue."
+   
+   #settings/
+   label_leave_types: "Leave Type(s)"
+   label_multiple_leaves_instructions: " For multiple Leave Types, enter values separated by comma (,)"
+   label_default_type: "Default Type"
+   label_eligible_for_leave_groups: "Eligible For Leave Group(s)"
+   label_mark_leaves: "Mark Leaves"
+   label_mark_own_leave: "Mark Own Leave"
+   label_daily_mail_reminder: "Daily Mail Reminder"
+   label_weekly_mail_reminder: "Weekly Mail Reminder"
+   label_monthly_mail_reminder: "Monthly Mail Reminder"
+   label_edit_attendance: "Edit Attendance"
+   label_edit_own_attendance: "Edit Own Attendance"
+   
+    #user_timecheks/index.html
+   label_attendance_summary: "Attendance Summary"
+   label_import_csv: "Import CSV"
+   label_button_import: "Import"
+   label_file_note: "NOTE: File should be headerless, tab separated and column sequence should be [S.No.  DATE  Check-In  Check-Out  NAME  ...]"
+   error_no_records_found: "No Records Found!"
+   label_check_in_time: "Check-in Time"
+   label_check_out_time: "Check-out Time"
+   label_spent_time: "Spent Time"
+   label_not_allowed: "Not Allowed"
+  
+   #user_timecheks/_availible_open_issues
+   label_issue_no: "Issue # "
+   label_tracker: "Tracker"
+   label_status: "Status"
+   label_subject: "Subject"
+   label_hours_to_log: "Hours To Log"
+   label_activity: "Activity"
+   label_comments: "Comments"
+   error_post_save: "Prohibited this post from being saved:"
+   
+   #user_timechecks/_check_out_info
+   label_time_spent: "Time Spent: "
+   
+   #user_timechecks/_show_logged_time_entries
+   label_time_logged: "Time Logged"
+   label_activity_to_log: "Activity to log"
+ 
+   
+   #user_timechecks/check_in
+   label_check_in: "Check-In"
+   label_current_user_id: "Current User ID:"
+   label_current_user_name: "Current User Name:"
+   
+   #user_timechecks/check_out
+   label_total_checked_time_is: "Your Total Checked Time is"
+   label_total_logged_time_is: "Your Total Logged Time is"
+   label_hours_for_today: "Hours For Today"
+   label_please_log_remaining: "Please Log Remaining"
+   
+   
+   #user_timechecks/checkout_timelog_success
+   label_time_logged_success: "Time Logged Successfully"
+   label_check_out: "Check-Out"
+  
+   #user_timecheks/ edit <existing locales used>
+   
+   
+   #CONTROLLERS
+   #user_leave_reports_controller
+   error_no_params: "No parameters selected"
+   error_invalid_date: "Invalid Date Format"
+   error_no_results: "No Results Found!"
+   error_from_greater_than_to: "From date can not be greater than to Date"
+   
+   #user_leaves_controller
+   notice_leaves_added: "Leave (s) Added!"
+   error_no_user_group_selected: "No User/Group Selected!"
+   notice_leaves_updated: "User Leave Updated!"
+   error_leaves_not_updated: "User Leave not Updated!"
+   
+   #user_time_checks_controller
+   notice_time_check_updated: "User Time Check Updated"
+   notice_time_check_file_imported: "User Time Checks Imported"
+
+   error_invalid_file_format: "Invalid File Format!"
+   error_checkout_first: "You did not check-out last time, please check-out first"
+   error_checkin_first: "You did not check-in last time, please check-in first"
+   error_less_time_logged: "Your logged in  time is less than required Percentage. Log your remaining time"
+  
+   #MODELS
+   #leave_mailer
+   label_leave_marked_for: "Leave Marked for"
+   
+   #log_time_remainder_mailer
+   label_reminder_for_time_log: "Time Log Reminder for Issue#"
+   
+   #user_leave
+   error_fractional_value_greater_than_one: ": Fractional Leave value can't be grater than 1"
+   error_fractional_value_less_than_zero: ": Fractional Leave value can't be less than 0"
+   
+   #user_time_check
+   auto_generated_comment: "Auto-Generated Check-Out"
