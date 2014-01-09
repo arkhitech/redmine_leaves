@@ -27,11 +27,11 @@
                   <%= link_to "#{User.find(i.user_id).name}", user_url(User.find(i.user_id).id) %>
                   <%= "- #{i.fractional_leave}" %><br>
                   <span class="tip">
-                    <strong>Name: </strong><%=link_to "#{User.find(i.user_id).name}", user_url(User.find(i.user_id).id) %><br>
-                    <strong>Weight: </strong><%= i.fractional_leave %><br>
-                    <strong>Leave Type: </strong><%= i.leave_type %><br>
-                    <strong>Leave Date: </strong><%= i.leave_date %><br>                    
-                    <strong>Comments: </strong><%= i.comments %><br>
+                    <strong><%=l(:label_name)%>: </strong><%=link_to "#{User.find(i.user_id).name}", user_url(User.find(i.user_id).id) %><br>                    
+                    <strong><%=l(:label_leave_type)%>: </strong><%= i.leave_type %><br>
+                    <strong><%=l(:label_leave_date)%>: </strong><%= i.leave_date %><br>                    
+                    <strong><%=l(:label_comments)%>: </strong><%= i.comments %><br>
+                    <strong><%=l(:label_weight)%>: </strong><%= i.fractional_leave %><br>
                   </span>
                 </span>
               <% end %>
