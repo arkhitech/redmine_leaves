@@ -22,10 +22,20 @@
                 <%= link_to_version i%>
               </span>
             <% elsif i.is_a? UserLeave %>
-              <span class="icon icon-package">
-                <%= "#{User.find(i.user_id).name} - #{i.leave_type}" %><br>
-              </span>
-            <% end %>          
+              <div class="tooltip">
+                <span class="icon icon-package">
+                  <%= link_to "#{User.find(i.user_id).name}", user_url(User.find(i.user_id).id) %>
+                  <%= "- #{i.fractional_leave}" %><br>
+                  <span class="tip">
+                    <strong>Name: </strong><%=link_to "#{User.find(i.user_id).name}", user_url(User.find(i.user_id).id) %><br>
+                    <strong>Weight: </strong><%= i.fractional_leave %><br>
+                    <strong>Leave Type: </strong><%= i.leave_type %><br>
+                    <strong>Leave Date: </strong><%= i.leave_date %><br>                    
+                    <strong>Comments: </strong><%= i.comments %><br>
+                  </span>
+                </span>
+              <% end %>
+            </div>
           <% end %>
         </td>
         <%= '</tr><tr>'.html_safe if day.cwday==calendar.last_wday and day!=calendar.enddt %>
