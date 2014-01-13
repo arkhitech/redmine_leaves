@@ -5,12 +5,12 @@ A simple plugin for user leaves management. It allows user to check-in and check
 Leave is marked for any user that does not check-in by the specified time. 
 Administrator can define leave types via the administrative interface for the plugin.
 
--Users with permission 'eligible_for_leave' are shown in the list. 
--A report summary page similar to the Timesheet Plugin shows the leaves summary. 
--Leaves are also integrated into the Calendar Module. 
--User who does not check-in, is automatically marked as off after some cut-off period Leave Types are defined through Redmine settings. 
--User can also view the check-ins/check-outs and allowed users can edit attendance too.
--Also, attendance can be imported in the form of csv files.
+Users with permission 'eligible_for_leave' are shown in the list. 
+A report summary page similar to the Timesheet Plugin shows the leaves summary. 
+Leaves are also integrated into the Calendar Module. 
+User who does not check-in, is automatically marked as off after some cut-off period Leave Types are defined through Redmine settings. 
+User can also view the check-ins/check-outs and allowed users can edit attendance too.
+Also, attendance can be imported in the form of csv files.
   
 Installation:
 -------------
