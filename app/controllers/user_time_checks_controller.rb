@@ -4,7 +4,11 @@ class UserTimeChecksController < ApplicationController
   before_filter :require_login
   
   def index
-    @time_checks = UserTimeCheck.order('check_in_time asc').all
+    unless Redmine::Plugin.installed?(:redmine_wice_grid)
+      flash.now[:warning] = "Please install Redmine 'WiceGrid' for better pagination"
+    end
+    time_checks = UserTimeCheck.includes(:user)
+    @time_checks = initialize_grid(time_checks)
   end
   
   def edit
