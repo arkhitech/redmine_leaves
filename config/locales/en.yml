@@ -1,6 +1,11 @@
 # English strings go here for Rails i18n
 en:
-    #Main Menu
+  #pagination in redmine time checks
+   wice_grid:
+     previous_label: «
+     next_label: »
+
+   #Main Menu
    caption_top_menu_check_in: "CHECK-IN"
    caption_top_menu_check_out: "CHECK-OUT"
    caption_leave_report: "Leave Report"
