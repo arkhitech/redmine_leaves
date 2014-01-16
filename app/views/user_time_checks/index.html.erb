@@ -1,49 +1,47 @@
-<h2> Attendance Summary </h2>
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_leaves' %>
+    <%= javascript_include_tag "application", :plugin => 'redmine_leaves'  %>
+<% end %>
+<h2> <%= l(:label_attendance_summary ) %> </h2>
 <p>
-  <strong>Import CSV</strong>
+  <strong><%= l(:label_import_csv) %></strong>
   <%= form_tag import_user_time_checks_path, multipart: true do %>
     <%= file_field_tag :file %>
-    <%= submit_tag 'Import' %>
+    <%= submit_tag l(:label_button_import) %>
     <small>
-      <%= label_tag "NOTE: File should be headerless, tab separated and column sequence should be [S.No.  DATE  Check-In  Check-Out  NAME  ...]" %>
+      <%= label_tag l(:label_file_note)%>
     </small>
   <% end %>
 </p><br>
 <% if @time_checks.empty? %>
-  <% flash.now[:error] = 'No Records Found!' %>
+  <% flash.now[:error] = l(:error_no_records_found) %>
 <% else %>
-  <table border="1">
-    <thead>
-      <tr align="left">
-        <th>User</th>
-        <th>Check-in Time</th>
-        <th>Check-out Time</th>
-        <th>Comments</th>
-        <th>Spent Time</th>        
-      </tr>
-    </thead>
-    <tbody>
-      <% @time_checks.each do |time_check|%>
-        <tr align="left" class="<%= cycle("odd", "even")%>">
-          <td><%= User.find(time_check.user_id).name %></td>
-          <td><%= time_check.check_in_time %></td>
-          <td><%= time_check.check_out_time %></td>          
-          <td><%= time_check.comments %></td>
-          <td>
-            <% unless time_check.check_out_time.nil? %>
-              <% time_difference = time_check.check_out_time - time_check.check_in_time %>
-              <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%>
-            <% end %>
-          </td>          
-          <td>
-            <% if edit_leave_options(time_check.user_id) %>
-              <%= link_to 'Edit', edit_user_time_check_path(time_check) %>
-            <% else %>
-              <small>Not Allowed</small>
-            <% end %>
-          </td>          
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+
+  <%= grid @time_checks, :show_filters => :no, :allow_showing_all_records => false do |g|
+    g.column :name => l(:label_user), :attribute => 'user_id' do |time_check|
+        time_check.user.name
+      end
+    g.column :name => l(:label_check_in_time), :attribute => 'check_in_time' do |time_check|
+        time_check.check_in_time
+      end
+    g.column :name => l(:label_check_out_time), :attribute => 'check_out_time' do |time_check|
+        time_check.check_out_time
+      end
+    g.column :name => l(:label_comments) do |time_check|
+        time_check.comments
+      end
+    g.column :name => l(:label_spent_time) do |time_check|
+        unless time_check.check_out_time.nil?
+          Time.at(time_check.check_out_time - time_check.check_in_time).utc.strftime("%H:%M:%S")
+        end
+      end
+    g.column  :name => l(:label_action) do |time_check|
+      if edit_leave_options(time_check.user_id)
+        link_to l(:link_edit), edit_user_time_check_path(time_check)
+      else
+        l(:label_not_allowed)
+      end
+    end
+  end -%>
+
 <% end %>

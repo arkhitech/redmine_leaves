@@ -1,35 +1,35 @@
-<h2> Update Leave </h2>
+<h2> <%= l(:label_update_leave ) %></h2>
 
 <%= form_for @user_leave do |leave_form| %>
   <%= error_messages_for @user_leave %>
   <table>
     <tr>
-      <th align="left">User</th>
+      <th align="left"><%= l(:label_user) %></th>
       <td><strong><%= User.find(@user_leave.user_id).name %></strong></td>
     </tr>
     <tr>
-      <th align="left">Leave Type</th>
+      <th align="left"><%= l(:label_leave_type) %></th>
       <td><%= leave_form.select(:leave_type,
           add_leave_options(@user_leave.leave_type)) %></td>
     </tr>
     <tr>
-      <th align="left">Leave Date</th>
+      <th align="left"><%= l(:label_leave_date) %></th>
       <td><%= leave_form.date_select :leave_date %></td>
     </tr>
     <tr>
-      <th align="top">Comments</th>
+      <th align="left"><%= l(:label_comments) %></th>
       <td>
         <%= leave_form.text_field :comments %>
-        <small>(Optional)</small>
+        <small><%= l(:label_optional ) %></small>
       </td>
     </tr>
     <tr>
-      <th align="top">Fractional Leave</th>
+      <th align="left"><%= l(:label_fractional_leave ) %></th>
       <td>
         <%= leave_form.number_field :fractional_leave,:step =>'.25', :min=> 0,:max=> 1 %>
-        <small>(Optional:only required for half leaves)</small>
+        <small><%= l(:label_fractional_leave_optional ) %></small>
       </td>
   </table>
-  <%= leave_form.submit 'Update' %>
+  <%= leave_form.submit l(:label_button_update) %>
 <% end %>
 

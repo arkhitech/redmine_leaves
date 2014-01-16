@@ -1,10 +1,6 @@
 source 'https://rubygems.org'
 
-gem "whenever", ">=0.8.4"
-
-
 group :test, :development do
-  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'guard-rspec'
   gem 'spork-rails'
@@ -12,5 +8,6 @@ group :test, :development do
   gem 'childprocess'
 end
 
+gem "whenever", ">=0.8.4"
 gem 'business_time'
-
+gem "wice_grid", '3.2.1'

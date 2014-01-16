@@ -1,18 +1,18 @@
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
-    <th><strong><%= "Check-out time: " %></strong></th>
+    <th><strong><%= l(:label_check_out_time)%>: </strong></th>
     <td><%= @user_time_check.check_out_time %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
-    <th><strong><%= "Current user ID: " %></strong></th>
+    <th><strong><%= l(:label_current_user_id) %> </strong></th>
     <td><%= @user_time_check.user_id %></td>
   </tr>
   <tr align="left" class="<%= cycle("odd")%>">
-    <th><strong><%= "Current user Name: " %></strong> </th>
+    <th><strong><%= l(:label_current_user_name)%> </strong> </th>
     <td><%= User.current.name %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
-    <th><strong><%= "Time spent: " %></strong> </th>
+    <th><strong><%= l(:label_time_spent)%> </strong> </th>
     <td>
       <% checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time %>
       <%= Time.at(checked_time).utc.strftime("%H:%M:%S")%>

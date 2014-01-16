@@ -12,7 +12,7 @@ class UserLeaveReportsController < ApplicationController
   
   def report  
     if params[:user_leave_report].nil?
-      flash.now[:error] = 'No parameters selected'
+      flash.now[:error] = l(:error_no_params )
       return
     end
     
@@ -46,7 +46,7 @@ class UserLeaveReportsController < ApplicationController
         where_statements << 'leave_date >= ?'
         where_clause << params[:user_leave_report][:date_from].to_date
       rescue StandardError
-        flash.now[:error] = "Invalid date format"
+        flash.now[:error] = l(:error_invalid_date)
         return
       end
     end
@@ -56,7 +56,7 @@ class UserLeaveReportsController < ApplicationController
         where_statements << 'leave_date <= ?'
         where_clause << params[:user_leave_report][:date_to].to_date
       rescue StandardError
-        flash.now[:error] = "Invalid date format"
+        flash.now[:error] = l(:error_invalid_date)
         return
       end
     end
@@ -96,12 +96,12 @@ class UserLeaveReportsController < ApplicationController
     end
     
     if @divided_leaves.nil? || @divided_leaves.empty?
-      flash.now[:error] = 'No Results Found!'
+      flash.now[:error] = l(:error_no_results)
       if params[:user_leave_report][:date_from].present? && params[:user_leave_report][:date_to].present?
         if params[:user_leave_report][:date_from] > params[:user_leave_report][:date_to]
-          flash.now[:error]="From date can not be greater than to Date"
+          flash.now[:error]=l(:error_from_greater_than_to)
         else
-          flash.now[:error] = 'No Results Found!'
+          flash.now[:error] = l(:error_no_results)
         end        
       end
     end

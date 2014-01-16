@@ -1,3 +1,5 @@
 <%=  "#{@leave.user}"%>
 
-<%=  "Your leave for #{@leave.leave_date} has been added as #{@leave.leave_type}." %>
+<%#=  "Your leave for #{@leave.leave_date} has been added as #{@leave.leave_type}." %>
+
+<%= "#{l(:text_notify_your_leave_for)} #{@leave.leave_date} #{l(:text_notify_has_been_added_as)} #{@leave.leave_type}."%>

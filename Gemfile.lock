@@ -145,10 +145,10 @@ PLATFORMS
 
 DEPENDENCIES
   business_time
-  childprocess (= 0.3.6)
+  childprocess
   factory_girl_rails
-  guard-rspec (= 2.5.0)
-  guard-spork (= 1.5.0)
-  rspec-rails (>= 2.13.1)
-  spork-rails (= 4.0.0)
+  guard-rspec
+  guard-spork
+  rspec-rails
+  spork-rails
   whenever (>= 0.8.4)

@@ -1,11 +1,11 @@
 <% if !(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current)) %>
-  <strong><%= link_to 'Add Leave', new_user_leafe_path %></strong><br/>
+  <strong><%= link_to l(:link_add_leave), new_user_leafe_path %></strong><br/>
 <% end %>  
 
 <%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
   <table>
     <tr align="left">
-      <th>From</th>
+      <th><%= l(:label_date_from) %></th>
     </tr>  
     <tr align="left">
       <td><%= text_field_tag "user_leave_report[date_from]", params[:user_leave_report] && params[:user_leave_report][:date_from] %>
@@ -13,7 +13,7 @@
       </td>    
     </tr>
     <tr align="left">
-      <th>To</th>
+      <th><%= l(:label_date_to) %></th>
     </tr>
     <tr align="left">
       <td> <%= text_field_tag "user_leave_report[date_to]", params[:user_leave_report] && params[:user_leave_report][:date_to] %> 
@@ -23,7 +23,7 @@
 
 
     <tr align="left">
-      <th>Sort By</th>
+      <th><%= l(:label_sortby) %></th>
     </tr>
     <tr align="left">
       <td>
@@ -35,9 +35,9 @@
   </table>
   <table>
     <tr align="left">
-      <th>User</th>
-      <th>Leave Types</th>
-      <th>Group</th>
+      <th><%= l(:label_user) %></th>
+      <th><%= l(:label_leave_types) %></th>
+      <th><%= l(:label_group) %></th>
     </tr>
     <tr align="left">
       <td>
