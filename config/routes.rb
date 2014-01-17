@@ -1,5 +1,6 @@
 resources :user_leaves
 resources :user_leave_reports
+#resources :user_leave_analytics
 resources :user_time_checks, :only => [:index, :update, :edit] do
   collection { post :import }
 end
@@ -16,4 +17,5 @@ match '/check_in' => 'user_time_checks#check_in'
 match '/check_out' => 'user_time_checks#check_out'
 match '/checkout_timelog_success' => 'user_time_checks#checkout_timelog_success'
 match '/user_leave_report' => 'user_leave_reports#report'
+match '/user_leave_analytics' => 'user_leave_analytics#report'
 

@@ -8,11 +8,12 @@ en:
    #Main Menu
    caption_top_menu_check_in: "CHECK-IN"
    caption_top_menu_check_out: "CHECK-OUT"
-   caption_leave_report: "Leave Report"
+   caption_leave_report: "Leaves"
    caption_user_time_check: "User Time Check"
     
    #user_leave_report/index
    title_leave_summary: " Leave Summary"
+   title_leave_analytics: "Leave Analytics"
    
    #user_leave_report/_options
    link_add_leave: "Add Leave"

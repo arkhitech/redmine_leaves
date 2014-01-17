@@ -1,0 +1,22 @@
+#leave-menu {
+  padding: 0px 0px 30px 0px;
+    /*position: absolute;  bottom: 0px;  left:6px; margin-right: -500px;*/}
+#leave-menu ul {margin: 0; padding: 0;}
+#leave-menu li {
+  float:left;
+  list-style-type:none;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  white-space:nowrap;
+}
+#leave-menu li a {
+  display: block;
+  color: #fff;
+  background: #628DB6;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0;
+  padding: 4px 10px 4px 10px;
+}
+#leave-menu li a:hover {background:#628DB6; color:#169;}
+#leave-menu li a.selected, #leave-menu li a.selected:hover {background:#3E5B76; color:#fff;}
