@@ -5,7 +5,7 @@ class UserTimeChecksController < ApplicationController
   
   def index
     unless Redmine::Plugin.installed?(:redmine_wice_grid)
-      flash.now[:warning] = "Please install Redmine 'WiceGrid' for better pagination"
+      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
       @time_checks = UserTimeCheck.includes(:user)
     else
       time_checks = UserTimeCheck.includes(:user)
