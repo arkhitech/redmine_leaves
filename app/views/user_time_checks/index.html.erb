@@ -46,17 +46,18 @@
   <% else %>
     <table border="1">
     <thead>
-      <tr align="left">
-        <th>User</th>
-        <th>Check-in Time</th>
-        <th>Check-out Time</th>
-        <th>Comments</th>
-        <th>Spent Time</th>        
+      <tr align="center">
+        <th><%= l(:label_user)%></th>
+        <th><%= l(:label_check_in_time)%></th>
+        <th><%= l(:label_check_out_time)%></th>
+        <th><%= l(:label_comments)%></th>
+        <th><%= l(:label_spent_time)%></th>        
+        <th><%= l(:label_action)%></th>        
       </tr>
     </thead>
     <tbody>
       <% @time_checks.each do |time_check|%>
-        <tr align="left" class="<%= cycle("odd", "even")%>">
+        <tr align="center" class="<%= cycle("odd", "even")%>">
           <td><%= User.find(time_check.user_id).name %></td>
           <td><%= time_check.check_in_time %></td>
           <td><%= time_check.check_out_time %></td>          
@@ -69,9 +70,9 @@
           </td>          
           <td>
             <% if edit_leave_options(time_check.user_id) %>
-              <%= link_to 'Edit', edit_user_time_check_path(time_check) %>
+              <%= link_to l(:link_edit), edit_user_time_check_path(time_check) %>
             <% else %>
-              <small>Not Allowed</small>
+              <small><%= l(:label_not_allowed)%></small>
             <% end %>
           </td>          
         </tr>
