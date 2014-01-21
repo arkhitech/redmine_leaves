@@ -11,3 +11,4 @@ end
 gem "whenever", ">=0.8.4"
 gem 'business_time'
 gem "wice_grid", '3.2.1'
+gem 'lazy_high_charts'

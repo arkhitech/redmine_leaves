@@ -4,7 +4,7 @@ class UserLeaveReportsController < ApplicationController
   before_filter :require_login
 
   include UserLeaveReportsHelper
-    
+  
   def index
     @all_users = User.all
     @all_leaves = plugin_setting('leave_types')

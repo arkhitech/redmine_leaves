@@ -1,0 +1,64 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "highcharts", :plugin=> 'redmine_leaves' %>
+<% end %>
+
+<%=  form_tag controller: 'user_leave_analytics', action: 'report' do %>
+
+  <%= render template: "layouts/redmine_leaves" %>
+  <h2><%= l(:title_leave_analytics) %> </h2>
+
+  <div class="box tabular" style="float: left; padding-right: 50px; width: 83.5%">
+    <div style="display: inline-block; padding-right: 50px">
+    <strong><%= l(:label_date_from) %></strong>
+    <%= text_field_tag "user_leave_analytic[date_from]", 
+      (params[:user_leave_analytic] && params[:user_leave_analytic][:date_from]) || (Date.today - 1.year) %>
+    <%= calendar_for 'user_leave_analytic_date_from' %><br/></div>
+    <div style="display: inline-block; padding-right: 50px">
+    <strong><%= l(:label_date_to) %></strong> 
+    <%= text_field_tag "user_leave_analytic[date_to]", 
+      (params[:user_leave_analytic] && params[:user_leave_analytic][:date_to]) || Date.today %> 
+    <%= calendar_for 'user_leave_analytic_date_to' %><br/></div>
+    <div style="display: inline-block; padding-right: 100px">
+    <%= submit_tag 'Apply' %><br/></div>
+    <div style="float: right">
+    <strong><%= l(:label_user) %></strong>
+    <%= select_tag "user_leave_analytic[selected_user]",
+      options_from_collection_for_select(User.active.sort_by{|e| e[:firstname]}, :id, :name, 
+      ((params[:user_leave_analytic] && params[:user_leave_analytic][:selected_user]) || User.current.id)), 
+      {:onchange => "this.form.submit();"} %></div>
+  </div>
+
+
+  <div class="box tabular" style="display: inline-block;">
+    <%= high_chart("my_b1", @bar1) %>
+  </div>
+
+  <div class="box tabular" style="display: inline-block;">
+    <%= high_chart("my_p1", @pie1) do |c| %>
+      <%= raw "options.tooltip.formatter = function() {return this.point.name +'</b>: '+ this.y +' %';}"  %>
+      <%= raw "options.plotOptions.pie.dataLabels.formatter = function() { if (this.y > 5) return this.point.name; }"  %>
+    <% end %>
+  </div>
+
+  <div class="box tabular" style="display: inline-block;">
+    <%= high_chart("my_b2", @bar2) %>
+  </div>
+
+  <div class="box tabular" style="display: inline-block;">
+    <%= high_chart("my_p2", @pie2) do |c| %>
+      <%= raw "options.tooltip.formatter = function() {return this.point.name +'</b>: '+ this.y +' %';}"  %>
+      <%= raw "options.plotOptions.pie.dataLabels.formatter = function() { if (this.y > 5) return this.point.name; }"  %>
+    <% end %>
+  </div>
+
+  <div class="box tabular" style="display: inline-block;">
+    <%= high_chart("my_b3", @bar3) %>
+  </div>
+<% end %>
+
+<div class="box tabular" style="display: inline-block;">
+  <%= high_chart("my_p3", @pie3) do |c| %>
+    <%= raw "options.tooltip.formatter = function() {return this.point.name +'</b>: '+ this.y +' %';}"  %>
+    <%= raw "options.plotOptions.pie.dataLabels.formatter = function() { if (this.y > 5) return this.point.name; }"  %>
+  <% end %>
+</div>
