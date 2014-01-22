@@ -12,7 +12,7 @@ module UserLeaveAnalyticsHelper
     data=[]
     all_leave_types.each do |leave|
       data << [leave.strip.to_s,
-        ((leaves_count_for(user, leave,start_date,end_date)*100)/UserLeave.where(user_id: user).sum(:fractional_leave)).round(2)]
+        ((leaves_count_for(user, leave,start_date,end_date)*100)/UserLeave.where(user_id: user, leave_date: start_date..end_date).sum(:fractional_leave)).round(2)]
     end
     data
   end
