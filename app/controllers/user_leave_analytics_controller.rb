@@ -18,7 +18,7 @@ class UserLeaveAnalyticsController < ApplicationController
     
     @bar1 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title({ :text=>"Overall Leaves Taken/Given - Bar Chart"})
-      f.options[:xAxis][:categories] = ['Leave Types']
+      f.options[:xAxis][:categories] = ['Leave Type']
       all_leave_types.each do |leave|
         f.series(:type=> 'column',:name=> leave,:data=> [leaves_count_for(User.active, leave, start_date, end_date)])
       end
@@ -90,7 +90,7 @@ class UserLeaveAnalyticsController < ApplicationController
     
     @bar3 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title({ :text=>"Type of Leaves taken by #{User.find(user).name} - Bar Chart"})
-      f.options[:xAxis][:categories] = ['Leave Types']
+      f.options[:xAxis][:categories] = ['Leave Type']
       
       all_leave_types.each do |leave|
         f.series(:type=> 'column',:name=> leave,:data=> [leaves_count_for(user, leave, start_date, end_date)])
