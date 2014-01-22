@@ -8,12 +8,15 @@ class UserLeaveAnalyticsController < ApplicationController
       start_date = params[:user_leave_analytic][:date_from]
       end_date   = params[:user_leave_analytic][:date_to]
       user       = params[:user_leave_analytic][:selected_user]
+      if params[:user_leave_analytic][:date_from] > params[:user_leave_analytic][:date_to]
+        flash.now[:error] = "'Date From' cannot be greater than 'Date To'"
+      end
     else
       start_date = Date.today - 1.year
       end_date   = Date.today
       user       = User.current.id
     end
-    
+        
     flash_message = ""
     
     @bar1 = LazyHighCharts::HighChart.new('graph') do |f|
