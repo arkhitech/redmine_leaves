@@ -1,8 +1,14 @@
 class UserLeavesController < ApplicationController
   unloadable
+  
+  include UserLeaveReportsHelper
 
   def new
-    @user_leave = UserLeave.new    
+    if !(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))
+      @user_leave = UserLeave.new
+    else
+      return deny_access
+    end        
   end
   
   def create  

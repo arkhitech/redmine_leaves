@@ -8,13 +8,21 @@
     </tr>
     <tr>
       <th align="left"><%= l(:label_check_in_time)%></th>
-      <td><%= attendance_form.text_field :check_in_time,
-          :value => attendance_form.object.check_in_time.to_s(:date_format) %></td>
+      <% unless attendance_form.object.check_in_time.blank? %>
+        <td><%= attendance_form.text_field :check_in_time,
+            :value => attendance_form.object.check_in_time.to_s(:date_format) %></td>
+      <% else %>
+        <td><%= attendance_form.text_field :check_in_time %></td>
+      <% end %>
     </tr>
     <tr>
       <th align="left"><%= l(:label_check_out_time)%></th>
-      <td><%= attendance_form.text_field :check_out_time,
-          :value => attendance_form.object.check_out_time.to_s(:date_format) %></td>
+      <% unless attendance_form.object.check_out_time.blank? %>
+        <td><%= attendance_form.text_field :check_out_time,
+            :value => attendance_form.object.check_out_time.to_s(:date_format) %></td>
+      <% else %>
+        <td><%= attendance_form.text_field :check_out_time %></td>
+      <% end %>
     </tr>
   </table>
   <%= attendance_form.submit l(:label_button_update) %>
