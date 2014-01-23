@@ -2,6 +2,8 @@ class UserTimeCheck < ActiveRecord::Base
   unloadable
   belongs_to :user
   
+  validates_presence_of :check_in_time, :check_out_time, :only => :update
+  
   class << self
     def checked_in?(user_id)
       exists?(['user_id = ? and check_out_time IS NULL', user_id])
