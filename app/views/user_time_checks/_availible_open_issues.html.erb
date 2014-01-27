@@ -16,10 +16,10 @@
   <tr align="center" class="<%= cycle("even")%>">
 
      <div>
-       <h3><%= pluralize(new_time_entry.errors.count, "Error") %> <%= l(:error_post_save)%></h3>
+       <h3 style="color:red;"><%= pluralize(new_time_entry.errors.count, "Error") %> <%= l(:error_post_save)%></h3>
     <ul>
     <% new_time_entry.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
+      <li style="color:red;"><%= msg %></li>
     <% end %>
     </ul>
   </div
