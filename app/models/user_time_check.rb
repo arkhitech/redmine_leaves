@@ -2,7 +2,7 @@ class UserTimeCheck < ActiveRecord::Base
   unloadable
   belongs_to :user
   
-  validates_presence_of :check_in_time, :check_out_time, :only => :update
+  validates :check_in_time, :check_out_time, :presence=> true,:on => :update
   
   class << self
     def checked_in?(user_id)
