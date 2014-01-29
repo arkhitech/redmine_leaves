@@ -1,5 +1,5 @@
 <% unless @user_time_check.check_out_time.nil? %>
-
+  <h2> Check-Out </h2>
   <%= render 'check_out_info' %>
   <!-- Enhancement : Ticket : 60 ------- time_differece in Seconds, logged time :in hours---------------------------------------------------------->
   <br><br><br>
@@ -8,10 +8,10 @@
 
     <% logger.debug "#{'*'*100}\nIssue populated at controller <Test> #{@assigned_issues}\n#{'*'*100}"%> 
     <% time_difference = @user_time_check.check_out_time - @user_time_check.check_in_time %>
-    <p><b><%= l(:label_total_checked_time)%> | <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%> </b> | <%= l(:label_hours_for_today)%>  </p>
+    <p><b><%= l(:label_total_checked_time_is)%> | <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%> </b> | <%= l(:label_hours_for_today)%>  </p>
 
     <% logged_hours=@time_entries.sum(:hours)%>
-    <p><b> <%= l(:label_total_logged_time)%> | <%= Time.at(logged_hours*3600).utc.strftime("%H:%M:%S")%>  </b> | <%= l(:label_hours_for_today)%> </p>
+    <p><b> <%= l(:label_total_logged_time_is)%> | <%= Time.at(logged_hours*3600).utc.strftime("%H:%M:%S")%>  </b> | <%= l(:label_hours_for_today)%> </p>
     
     <% logger.debug "#{'*'*100}\nLogged hours are <Test> #{Time.at(logged_hours).utc.strftime("%H:%M:%S")}\n#{'*'*100}"%> 
 

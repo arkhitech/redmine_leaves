@@ -1,87 +1,137 @@
-<table>  
-  <tr align="left">
-    <th><%= l(:label_leave_types)%></th>
-    <td><%= text_field_tag('settings[leave_types]', settings['leave_types']) %>
-    <th><small> <%= l(:label_multiple_leaves_instructions )%> </small></th>
-  </tr>
-  <tr align="left" >
-    <th><%= l(:label_default_type ) %></th>
-    <td><%= text_field_tag('settings[default_type]', settings['default_type']) %>
-  </tr>
-  <tr align="left">
-    <th><%= l(:label_eligible_for_leave_groups ) %></th>
-  </tr>
-  <tr align="left">
-    <td><%= select_tag('settings[eligible_for_leave_groups]', 
-        options_from_collection_for_select(Group.all, :id, :name, 
-          settings['eligible_for_leave_groups']), 
-        multiple: true) %>
-    </td>
-  </tr>
-</table><br/>
-<table>
-  <thead>
+<fieldset class="box">
+  <legend><strong>Leave Type Settings</strong></legend>
+  <table>  
     <tr>
-      <th><%= l(:label_mark_leaves ) %></th>
-      <th><%= l(:label_mark_own_leave ) %></th>
+      <td>
+        <table>
+          <tr><legend><%= l(:label_leave_types)%></legend></tr>
+    <tr><td align="middle"><%= text_field_tag('settings[leave_types]', settings['leave_types']) %></td></tr>
+    <tr><td><small> <%= l(:label_multiple_leaves_instructions )%> </small></td></tr>
+  </table>
+</td>
+
+<td>
+  <table>
+    <tr>
+    <legend><%= l(:label_default_type ) %></legend></tr>
+    <tr>
+      <td><%= text_field_tag('settings[default_type]', settings['default_type']) %></td></tr></table>
+</td>
+
+<td>
+  <table>
+    <tr>
+    <legend><%= l(:label_eligible_for_leave_groups ) %></legend></tr>
+
+    <tr>
+      <td><%= select_tag('settings[eligible_for_leave_groups]', 
+          options_from_collection_for_select(Group.all, :id, :name, 
+            settings['eligible_for_leave_groups']), 
+          multiple: true) %>
+      </td>
     </tr>
-  </thead>
-  <tbody>
+  </table>
+</td>
+</tr>
+</table>
+
+</fieldset>
+
+<fieldset class="box">
+  <legend><strong>Permission Settings</strong></legend>
+  <table>
     <tr>
-      <td><%= select_tag('settings[mark_leaves]', 
+      <td>
+    <table class='box'>
+      <legend>Mark</legend>
+      <tr>
+        <td>
+          <table><tr><legend><%= l(:label_mark_leaves ) %></legend></tr>
+      <tr>
+        <%= select_tag('settings[mark_leaves]', 
           options_from_collection_for_select(Group.all, :id, :name, 
             settings['mark_leaves']), 
           multiple: true) %>
+      </tr></table>
+    </td>
+
+    <td>
+      <table><tr><legend><%= l(:label_mark_own_leave ) %></legend>
+        </tr>
+        <tr>
+          <%= select_tag('settings[mark_own_leave]', 
+            options_from_collection_for_select(Group.all, :id, :name, 
+              settings['mark_own_leave']), 
+            multiple: true) %>
+        </tr></table>
+    </td>
+
+    </tr>  
+  </table>
       </td>
-      <td><%= select_tag('settings[mark_own_leave]', 
-          options_from_collection_for_select(Group.all, :id, :name, 
-            settings['mark_own_leave']), 
-          multiple: true) %>
-      </td>    
-    </tr>
-  </tbody>
-</table><br/>
-<table>
-  <thead>
+      <td>
+  <table class='box'>
+    <legend>Edit</legend>
     <tr>
-      <th><%= l(:label_daily_mail_reminder) %></th>
-      <th><%= l(:label_weekly_mail_reminder) %></th>
-      <th><%= l(:label_monthly_mail_reminder) %></th>
+      <td>
+        <table><tr><legend><%= l(:label_edit_attendance) %></legend></tr>
+    <tr>
+      <%= select_tag('settings[edit_attendance]', 
+        options_from_collection_for_select(Group.all, :id, :name, 
+          settings['edit_attendance']), 
+        multiple: true) %>
+    </tr></table>
+</td>
+
+<td>
+  <table><tr><legend><%= l(:label_edit_own_attendance) %></legend>
     </tr>
-  </thead>
-  <tbody>
+    <tr>
+      <%= select_tag('settings[edit_own_attendance]', 
+        options_from_collection_for_select(Group.all, :id, :name, 
+          settings['edit_own_attendance']), 
+        multiple: true) %>
+    </tr></table>
+</td>
+
+</tr>  
+</table>
+      </td>
+</tr>
+</table>
+</fieldset>
+
+<fieldset class="box">
+  <legend><strong>Reminder Settings</strong></legend>
+  <table>
+    <tr>
+      <td>
+    <table><tr><legend><%= l(:label_daily_mail_reminder) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[daily_reminder]', 
-          options_from_collection_for_select(Group.all, :id, :name, 
-            settings['daily_reminder']), 
-          multiple: true) %>
+            options_from_collection_for_select(Group.all, :id, :name, 
+              settings['daily_reminder']), 
+            multiple: true) %>
+    </tr></table>
       </td>
+      <td>
+    <table><tr><legend><%= l(:label_weekly_mail_reminder) %></legend></tr>
+    <tr>
       <td><%= select_tag('settings[weekly_reminder]', 
-          options_from_collection_for_select(Group.all, :id, :name, 
-            settings['weekly_reminder']), 
-          multiple: true) %>
+            options_from_collection_for_select(Group.all, :id, :name, 
+              settings['weekly_reminder']), 
+            multiple: true) %>
+    </tr></table>
       </td>
+      <td>
+    <table><tr><legend><%= l(:label_monthly_mail_reminder) %></legend></tr>
+    <tr>
       <td><%= select_tag('settings[monthly_reminder]', 
-          options_from_collection_for_select(Group.all, :id, :name, 
-            settings['monthly_reminder']), 
-          multiple: true) %>
+            options_from_collection_for_select(Group.all, :id, :name, 
+              settings['monthly_reminder']), 
+            multiple: true) %>
+    </tr></table>
       </td>
-    </tr>
-    <tr align="left">
-      <th><%= l(:label_edit_attendance ) %></th>
-      <td><%= select_tag('settings[edit_attendance]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
-                settings['edit_attendance']), 
-              multiple: true) %>
-      </td>      
-    </tr>
-    <tr align="left">
-      <th><%= l(:label_edit_own_attendance ) %></th>
-      <td><%= select_tag('settings[edit_own_attendance]', 
-              options_from_collection_for_select(Group.all, :id, :name, 
-                settings['edit_own_attendance']), 
-              multiple: true) %>
-      </td>      
-    </tr>
-  </tbody>
-</table>
+  </tr>
+  </table>
+</fieldset>
