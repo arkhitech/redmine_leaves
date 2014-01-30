@@ -42,7 +42,7 @@ class UserLeavesController < ApplicationController
       errors=errors.flatten.uniq
       unless errors.blank?
         flash[:error]="#{errors.join('<br/>')}"
-        redirect_to new_user_leafe_path
+        render 'new'
       else
         flash[:notice] = l(:notice_leaves_added)
         redirect_to user_leave_reports_path
