@@ -3,6 +3,7 @@ class UserTimeCheck < ActiveRecord::Base
   belongs_to :user
   
   validates :check_in_time, :check_out_time, :presence=> true,:on => :update
+  validate :correctness_of_user_time_checks
   
   class << self
     def checked_in?(user_id)
@@ -49,5 +50,10 @@ class UserTimeCheck < ActiveRecord::Base
         end        
       end
     end
+  end
+  def correctness_of_user_time_checks
+    if check_in_time > check_out_time
+      errors.add(:check_in_time, ": cannot be greater than Check-Out Time")
+    end    
   end
 end
