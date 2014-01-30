@@ -11,6 +11,9 @@ class UserLeaveAnalyticsController < ApplicationController
       if params[:user_leave_analytic][:date_from] > params[:user_leave_analytic][:date_to]
         flash.now[:error] = "'Date From' cannot be greater than 'Date To'"
       end
+      if params[:user_leave_analytic][:date_from].blank? || params[:user_leave_analytic][:date_to].blank?
+        flash.now[:error] = "Date Field(s) cannot be empty"
+      end
     else
       start_date = Date.today - 1.year
       end_date   = Date.today
