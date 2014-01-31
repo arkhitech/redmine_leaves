@@ -21,7 +21,9 @@ class UserTimeChecksController < ApplicationController
     @time_checks = UserTimeCheck.find(params[:id])    
     if @time_checks.update_attributes(params[:user_time_check])
       redirect_to user_time_checks_path, 
-        notice: "User Time Check Updated for #{@time_checks.user.name}. #{view_context.link_to l(:link_edit), edit_user_time_check_path(@time_checks)}"
+        notice: "User Time Check for <strong>#{@time_checks.user.name}</strong> 
+                 on <strong>#{@time_checks.check_in_time.to_date}</strong> Updated. 
+                #{view_context.link_to l(:link_edit), edit_user_time_check_path(@time_checks)}".html_safe
     else
       redirect_to edit_user_time_check_path(@time_checks), :flash => { :error => "Invalid Input!" }
     end    
