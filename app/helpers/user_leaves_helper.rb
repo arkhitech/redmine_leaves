@@ -30,6 +30,25 @@ module UserLeavesHelper
     
   end
   
+  def add_group_options(selected_group)
+    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+    mark_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave_groups)
+    
+    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+    mark_own_leave_users = User.active.joins(:groups).
+      where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)    
+    
+    unless(!mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))      
+      # if current user have permission to mark own leaves      
+      @disable_group_leave = false
+      options_from_collection_for_select(Group.all, :id, :name, selected_group)      
+    else
+      @disable_group_leave = true
+      options_from_collection_for_select(Group.all, :id, :name, selected_group)      
+    end 
+  end
+  
   def add_leave_options(selected_leave_type)
     all_leave_types = plugin_setting('leave_types')
     options_for_select(all_leave_types, selected_leave_type)

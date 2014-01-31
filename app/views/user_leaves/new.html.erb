@@ -7,10 +7,9 @@
     <%= select_tag("create_user_leave[selected_users][]",
       add_user_options(params[:create_user_leave] && params[:create_user_leave][:selected_users]),
       multiple: true) %>
-    <%= select_tag('create_user_leave[selected_groups][]', 
-      options_from_collection_for_select(Group.all, :id, :name, 
-        params[:create_user_leave] && params[:create_user_leave][:selected_groups]), 
-      multiple: true) %>
+    <%= select_tag('create_user_leave[selected_groups][]',
+      add_group_options(params[:create_user_leave] && params[:create_user_leave][:selected_groups]),
+      multiple: true, disabled: @disable_group_leave) %>    
   </div><br/>
 
   <div>
