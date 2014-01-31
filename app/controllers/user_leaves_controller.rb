@@ -2,6 +2,7 @@ class UserLeavesController < ApplicationController
   unloadable
   
   include UserLeaveReportsHelper
+  include UserLeavesHelper
 
   def new
     if !(!mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))
@@ -24,6 +25,7 @@ class UserLeavesController < ApplicationController
     selected_group_users.each do |group_user|
       selected_users << User.find(group_user).id.to_s
     end
+    selected_users = check_selected_users(selected_users)
     unless selected_users.empty?
       selected_users = selected_users.uniq
       selected_users.each do |user|
@@ -49,7 +51,7 @@ class UserLeavesController < ApplicationController
       end
     else
       flash[:error] = l(:error_no_user_group_selected)
-      redirect_to new_user_leafe_path
+      render 'new'
     end
   end
   
