@@ -52,8 +52,10 @@ class UserTimeCheck < ActiveRecord::Base
     end
   end
   def correctness_of_user_time_checks
-    if check_in_time > check_out_time
-      errors.add(:check_in_time, ": cannot be greater than Check-Out Time")
-    end    
+    unless check_in_time.nil? || check_out_time.nil?
+      if check_in_time > check_out_time
+        errors.add(:check_in_time, ": cannot be greater than Check-Out Time")
+      end   
+    end
   end
 end
