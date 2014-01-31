@@ -1,7 +1,8 @@
 module UserLeavesHelper
   
   def plugin_setting(setting_name)
-    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }
+    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').
+      delete_if { |index| index.blank? }.each {|a| a.strip! if a.respond_to? :strip! }
   end
   
   def add_user_options(selected_user)    
@@ -51,7 +52,7 @@ module UserLeavesHelper
   
   def add_leave_options(selected_leave_type)
     all_leave_types = plugin_setting('leave_types')
-    options_for_select(all_leave_types, selected_leave_type)
+    options_for_select(all_leave_types, selected_leave_type || Setting.plugin_redmine_leaves['default_type'])
   end
   
 end
