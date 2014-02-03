@@ -51,3 +51,8 @@ Instructions:
 - Admin will be required to always update the "Auto-Mark" process whenever the server restarts. To do so, go to congif/schedule.rb and run the following command
 
         whenever --update-crontab store
+
+Snapshots:
+-------------
+
+![alt tag](http://arkhitech.com/sites/default/files/1-redmine_login.png)
