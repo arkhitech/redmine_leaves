@@ -1,8 +1,7 @@
 module UserLeavesHelper
   
   def plugin_setting(setting_name)
-    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').
-      delete_if { |index| index.blank? }
+    (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }
   end
   
   def mark_leave_options(mark_leave)
