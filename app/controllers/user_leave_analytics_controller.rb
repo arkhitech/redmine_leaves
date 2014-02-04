@@ -3,30 +3,32 @@ class UserLeaveAnalyticsController < ApplicationController
   
   include UserLeaveAnalyticsHelper
   
-  def report
+  def report    
+    
     if params[:user_leave_analytic]
+      if params[:user_leave_analytic][:date_from].blank? || params[:user_leave_analytic][:date_to].blank?
+        flash[:error] = "Date Field(s) cannot be empty"
+      elsif params[:user_leave_analytic][:date_from] > params[:user_leave_analytic][:date_to]
+        flash[:error] = "'Date From' cannot be greater than 'Date To'"
+      end
       start_date = params[:user_leave_analytic][:date_from]
       end_date   = params[:user_leave_analytic][:date_to]
       user       = params[:user_leave_analytic][:selected_user]
-      if params[:user_leave_analytic][:date_from] > params[:user_leave_analytic][:date_to]
-        flash[:error] = "'Date From' cannot be greater than 'Date To'"
-        redirect_to user_leave_analytics_path
-      end
-      if params[:user_leave_analytic][:date_from].blank? || params[:user_leave_analytic][:date_to].blank?
-        flash[:error] = "Date Field(s) cannot be empty"
-        redirect_to user_leave_analytics_path
-      end
     else
       start_date = Date.today - 1.year
       end_date   = Date.today
       user       = User.current.id
     end
-        
+
     flash_message = ""
-    
+
     @bar1 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title({ :text=>"Overall Leaves Taken/Given - Bar Chart"})
       f.options[:xAxis][:categories] = ['Leave Type']
+      if start_date.blank? || end_date.blank?
+        start_date=Date.today-1.year
+        end_date=Date.today
+      end
       all_leave_types.each do |leave|
         f.series(:type=> 'column',:name=> leave,:data=> [leaves_count_for(User.active, leave, start_date, end_date)])
       end
