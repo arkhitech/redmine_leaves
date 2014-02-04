@@ -15,6 +15,7 @@ class UserLeavesController < ApplicationController
   def create  
     errors = []
     selected_users = []
+    invalid_group = false
     if params['create_user_leave']['selected_users']
       selected_users = params['create_user_leave']['selected_users']
     end
@@ -25,7 +26,11 @@ class UserLeavesController < ApplicationController
     selected_group_users.each do |group_user|
       selected_users << User.find(group_user).id.to_s
     end
+    if selected_users.count == 1
+      invalid_group = true
+    end
     selected_users = check_selected_users(selected_users)
+    puts selected_users.count
     unless selected_users.empty?
       selected_users = selected_users.uniq
       selected_users.each do |user|
@@ -50,8 +55,13 @@ class UserLeavesController < ApplicationController
         redirect_to user_leave_reports_path
       end
     else
-      flash[:error] = l(:error_no_user_group_selected)
-      render 'new'
+      if invalid_group
+        flash[:error] = l(:error_invalid_user_group_selected)
+        redirect_to new_user_leafe_path
+      else
+        flash[:error] = l(:error_no_user_group_selected)
+        redirect_to new_user_leafe_path
+      end
     end
   end
   

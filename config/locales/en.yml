@@ -137,6 +137,7 @@ en:
    #user_leaves_controller
    notice_leaves_added: "Leave (s) Added!"
    error_no_user_group_selected: "No User/Group Selected!"
+   error_invalid_user_group_selected: "Invalid User/Group Selected!"
    notice_leaves_updated: "User Leave Updated!"
    error_leaves_not_updated: "User Leave not Updated!"
    
