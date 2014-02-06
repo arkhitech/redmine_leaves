@@ -57,10 +57,10 @@ class UserLeavesController < ApplicationController
     else
       if invalid_group
         flash[:error] = l(:error_invalid_user_group_selected)
-        redirect_to new_user_leafe_path
+        render 'new'
       else
         flash[:error] = l(:error_no_user_group_selected)
-        redirect_to new_user_leafe_path
+        render 'new'
       end
     end
   end
