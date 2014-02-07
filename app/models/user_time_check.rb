@@ -20,8 +20,9 @@ class UserTimeCheck < ActiveRecord::Base
         name = row[INDEX_ZK_NAME]
         date = row[INDEX_ZK_DATETIME]
         user = User.find_by_firstname(name.split(" ").first)
-        
+        puts name
         unless name && date && user
+          puts "SKIP"
           # missing name or date or no records found in database
           next
         end
@@ -30,21 +31,31 @@ class UserTimeCheck < ActiveRecord::Base
         
         checkin_timechecks = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
-            user.id, date.end_of_day, date.beginning_of_day])
+            user.id, date.end_of_day, date.beginning_of_day]) 
+        checkout_timechecks=[]
 
         if checkin_timechecks.empty?
+          puts "IF"
+          checkout_timechecks = UserTimeCheck.
+            where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NOT NULL', 
+              user.id, date.end_of_day, date.beginning_of_day])
+          next unless checkout_timechecks.empty?
           UserTimeCheck.create(user_id: user.id, check_in_time: date)
         else
+          puts "ELSE"
           user_time_check = checkin_timechecks.first
           checked_time = date.to_time - user_time_check.check_in_time.to_time
           difference = Time.at(checked_time).utc.strftime("%H").to_i
           if difference > 1 && difference < 16
+            puts ">1 <16"
             user_time_check.update_attributes(check_out_time: date)
           elsif difference > 16
+            puts ">16"
             user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 4.hours, 
               comments: l(:auto_generated_comment))
             UserTimeCheck.create(user_id: user.id, check_in_time: date)
           else
+            puts "ignore"
             #ignore the check-in
           end
         end        

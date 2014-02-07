@@ -32,9 +32,10 @@ class UserTimeChecksController < ApplicationController
   def import
     begin
       UserTimeCheck.import(params[:file])
+      puts user_time_checks_path
       redirect_to user_time_checks_path, notice: l(:notice_time_check_file_imported) if params[:file]
     rescue StandardError => e
-      redirect_to user_time_checks_path, :flash => { :error => l(:error_invalid_file_format) }
+      redirect_to user_time_checks_path, :flash => { :error => e.message }
     end    
   end
   
