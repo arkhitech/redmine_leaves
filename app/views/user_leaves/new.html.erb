@@ -22,8 +22,8 @@
     <strong><%= l(:label_leave_date ) %></strong><br>
     <div style="padding-left: 70px">
       <strong><%= l(:label_date_from) %></strong><br/>
-      <%= date_select("create_user_leave[selected_date_from]",
-        params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) %><br/>
+      <%= date_select("create_user_leave[selected_date_from]",nil,
+        selected: params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) %><br/>
       <strong><%= l(:label_date_to) %></strong><br/> 
       <%= date_select("create_user_leave[selected_date_to]",
         params[:create_user_leave] && params[:create_user_leave][:selected_date_to]) %><br>

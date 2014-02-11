@@ -20,7 +20,6 @@ class UserTimeCheck < ActiveRecord::Base
         name = row[INDEX_ZK_NAME]
         date = row[INDEX_ZK_DATETIME]
         user = User.find_by_firstname(name.split(" ").first)
-        
         unless name && date && user
           # missing name or date or no records found in database
           next
@@ -30,9 +29,14 @@ class UserTimeCheck < ActiveRecord::Base
         
         checkin_timechecks = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
-            user.id, date.end_of_day, date.beginning_of_day])
+            user.id, date.end_of_day, date.beginning_of_day]) 
+        checkout_timechecks=[]
 
         if checkin_timechecks.empty?
+          checkout_timechecks = UserTimeCheck.
+            where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NOT NULL', 
+              user.id, date.end_of_day, date.beginning_of_day])
+          next unless checkout_timechecks.empty?
           UserTimeCheck.create(user_id: user.id, check_in_time: date)
         else
           user_time_check = checkin_timechecks.first
