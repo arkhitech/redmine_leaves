@@ -51,3 +51,23 @@ Instructions:
 - Admin will be required to always update the "Auto-Mark" process whenever the server restarts. To do so, go to congif/schedule.rb and run the following command
 
         whenever --update-crontab store
+
+Snapshots:
+-------------
+
+![alt tag](http://arkhitech.com/sites/default/files/1-redmine_login.png)
+![alt tag](http://arkhitech.com/sites/default/files/2-redmine_check-in.png)
+![alt tag](http://arkhitech.com/sites/default/files/3-user_time_check_topmenu.png)
+![alt tag](http://arkhitech.com/sites/default/files/4-browse_import_csv_file.png)
+![alt tag](http://arkhitech.com/sites/default/files/5-edit-attendance.png)
+![alt tag](http://arkhitech.com/sites/default/files/6-invalid_values_for_attendance_edit.png)
+![alt tag](http://arkhitech.com/sites/default/files/7-attendance_time_value_%20updated.png)
+![alt tag](http://arkhitech.com/sites/default/files/8-redmine_leaves_overview_sub_menu.png)
+![alt tag](http://arkhitech.com/sites/default/files/9-redmine_leaves_summary_report.png)
+![alt tag](http://arkhitech.com/sites/default/files/10.1-redmine_leaves_add_leave_submenu.png)
+![alt tag](http://arkhitech.com/sites/default/files/10.2-redmine_leaves_leave_added_success.png)
+![alt tag](http://arkhitech.com/sites/default/files/11-redmine_leaves_analytics_submenu.png)
+![alt tag](http://arkhitech.com/sites/default/files/13-redmine_leaves_log_remaining_time.png)
+![alt tag](http://arkhitech.com/sites/default/files/14-redmine_leaves_check_out_success.png)
+![alt tag](http://arkhitech.com/sites/default/files/15-redmine_leaves_administration_plugins_redmine_leaves_configure.png)
+![alt tag](http://arkhitech.com/sites/default/files/16-redmine_leaves_settings.png)
