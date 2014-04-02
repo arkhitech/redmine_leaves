@@ -23,7 +23,7 @@ class UserLeave < ActiveRecord::Base
       unless (fractional_leave <= 1)
         errors.add(:fractional_value,l(:error_fractional_value_greater_than_one))
       end
-      unless (fractional_leave > 0)
+      unless (fractional_leave >= -1)
         errors.add(:fractional_value,l(:error_fractional_value_less_than_zero))
       end
     end

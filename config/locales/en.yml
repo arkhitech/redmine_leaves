@@ -44,7 +44,7 @@ en:
    label_user_group: "User/Group"
    label_optional: "(Optional)"
    label_fractional_leave: "Fractional Leave"
-   label_fractional_leave_optional: "(Optional:only required for half leaves)"
+   label_fractional_leave_optional: "(Optional:only required for half leaves or earned leaves [use negative value for earned])"
    label_button_add: "Add"
    
    #user_leaves/destroy
