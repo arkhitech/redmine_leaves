@@ -21,8 +21,17 @@ class UserLeavesController < ApplicationController
     end
     selected_group_users = User.active.joins(:groups).
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => params['create_user_leave']['selected_groups'])
-    selected_date_from = params['create_user_leave']['selected_date_from'].map{|k,v| v}.join("-").to_date
-    selected_date_to   = params['create_user_leave']['selected_date_to'].map{|k,v| v}.join("-").to_date    
+    if params['create_user_leave']['selected_date_from'].blank? || 
+        params['create_user_leave']['selected_date_to'].blank?
+      errors << "Date Field(s) cannot be empty!"
+    else
+      begin
+        selected_date_from = params['create_user_leave']['selected_date_from'].to_date#.map{|k,v| v}.join("-").to_date
+        selected_date_to   = params['create_user_leave']['selected_date_to'].to_date#.map{|k,v| v}.join("-").to_date    
+      rescue
+        errors << "Invalid Date Format!"
+      end
+    end
     selected_group_users.each do |group_user|
       selected_users << User.find(group_user).id.to_s
     end
@@ -34,7 +43,8 @@ class UserLeavesController < ApplicationController
     unless selected_users.empty?
       selected_users = selected_users.uniq
       selected_users.each do |user|
-        leave_date = selected_date_from        
+        break unless errors.empty?
+        leave_date = selected_date_from
         while leave_date <= selected_date_to
           @user_leave = UserLeave.new(user_id: user.to_i, leave_type: params['create_user_leave']['selected_leave'],
             leave_date: leave_date, comments: params['create_user_leave']['comments'], 
