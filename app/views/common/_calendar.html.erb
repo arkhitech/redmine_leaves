@@ -9,7 +9,7 @@
         <%= ("<td class='week-number' title='#{ l(:label_week) }'>#{(day+(11-day.cwday)%7).cweek}</td>".html_safe) if day.cwday == calendar.first_wday %>
         <td class="<%= day.month==calendar.month ? 'even' : 'odd' %><%= ' today' if Date.today == day %>">
           <p class="day-num"><%= day.day %></p>
-          <% calendar.events_with_leaves_on(day).each do |i| %>
+          <% calendar.events_with_leaves_on(day,@project).each do |i| %>
             <% if i.is_a? Issue %>
               <div class="<%= i.css_classes %> <%= 'starting' if day == i.start_date %> <%= 'ending' if day == i.due_date %> tooltip">
                 <%= h("#{i.project} -") unless @project && @project == i.project %>
