@@ -19,8 +19,9 @@
   </div><br/>
 
   <div>    
-    <strong><%= l(:label_leave_date ) %></strong><br>
+
     <div style="padding-left: 70px">
+     <strong><%= l(:label_leave_date ) %></strong>
       <strong><%= l(:label_date_from) %></strong><br/>
       <%= text_field_tag("create_user_leave[selected_date_from]",
         (params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) || Date.today) %>
@@ -47,7 +48,7 @@
 
     <%= number_field_tag "create_user_leave[fractional_leave]",
       params[:create_user_leave] && params[:create_user_leave][:fractional_leave],
-      :step =>'.25', :min=> 0,:max=> 1 %>
+      :step =>'.25', :min=> -1,:max=> 1 %>
     <small><%= l(:label_fractional_leave_optional ) %></small>
   </div><br/>
 
