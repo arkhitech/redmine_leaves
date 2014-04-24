@@ -6,7 +6,6 @@ class LeaveMailer < ActionMailer::Base
   end  
   def notify_absentee(user_leave)
     @leave=user_leave
-#    puts "on successful save it returns #{@leave.leave_type},for #{@leave.user}"
-    mail(to: @leave.user.mail, subject: "#{l(:label_leave_marked_for)} #{@leave.leave_date}")
+    mail(to: @leave.user.mail, subject: "#{I18n.t("label_leave_marked_for")} #{@leave.leave_date}")
   end
 end

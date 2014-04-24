@@ -2,6 +2,7 @@ class UserLeave < ActiveRecord::Base
   unloadable
   before_save :default_fractional_leave_value
   belongs_to :user
+  after_save :notify_the_absentee
   
   validates :leave_date, :user_id, :leave_type, presence: true
   validates :leave_date, uniqueness: {scope: :user_id, message: 'has already been marked for the user'}
