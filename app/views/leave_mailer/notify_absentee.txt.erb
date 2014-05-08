@@ -1,6 +1,3 @@
-<%= @leave.user %><br/><br/>
+<%= @leave.user %>
 
-<%= "#{I18n.t("text_notify_your_leave_for")} 
-      <strong>#{@leave.leave_date}</strong> 
-      #{I18n.t("text_notify_has_been_marked_as")} 
-      <strong>#{@leave.leave_type}</strong>." %>
+<%= "#{I18n.t("text_notify_your_leave_for")} #{@leave.leave_date} #{I18n.t("text_notify_has_been_marked_as")} #{@leave.leave_type}." %>
