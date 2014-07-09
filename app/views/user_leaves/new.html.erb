@@ -1,6 +1,6 @@
 <%= render template: "layouts/redmine_leaves" %>
 <h2><%= l(:label_add_leave ) %> </h2>
-<%= form_for UserLeave.new do %>
+<%= form_for UserLeave.new, :html => {:data => {:working_days => Setting.plugin_redmine_leaves['working_days'].join(',')}} do %>
 
   <div>
     <strong><%= l(:label_user_group) %></strong>
@@ -51,7 +51,6 @@
       :step =>'.25', :min=> -1,:max=> 1 %>
     <small><%= l(:label_fractional_leave_optional ) %></small>
   </div><br/>
-
   <%= submit_tag l(:label_button_add) %>
 
 <% end %>

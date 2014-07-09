@@ -78,6 +78,7 @@ en:
    label_monthly_mail_reminder: "Monthly Mail Reminder"
    label_edit_attendance: "Edit Attendance"
    label_edit_own_attendance: "Edit Own Attendance"
+   label_working_days: "Working Days"
    
     #user_timecheks/index.html
    label_attendance_summary: "Attendance Summary"
@@ -140,6 +141,7 @@ en:
    error_invalid_user_group_selected: "Invalid User/Group Selected!"
    notice_leaves_updated: "User Leave Updated!"
    error_leaves_not_updated: "User Leave not Updated!"
+   notice_weekend_leave_added: "There are some non-working days in your leave dates."
    
    #user_time_checks_controller
    notice_time_check_updated: "User Time Check Updated"

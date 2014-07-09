@@ -1,7 +1,3 @@
-<% content_for :header_tags do %>
-  <%= javascript_include_tag "highcharts", :plugin=> 'redmine_leaves' %>
-<% end %>
-
 <%=  form_tag controller: 'user_leave_analytics', action: 'report' do %>
 
   <%= render template: "layouts/redmine_leaves" %>
