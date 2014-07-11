@@ -135,3 +135,21 @@
   </tr>
   </table>
 </fieldset>
+
+<fieldset class="box">
+  <legend><strong>Day Settings</strong></legend>
+  <table>
+    <tr>
+      <td>
+    <table><tr><legend><%= l(:label_working_days) %></legend></tr>
+    <tr>
+      <td><%= select_tag('settings[working_days]', 
+            options_for_select(Date::DAYNAMES , #:id, :name, 
+              settings['working_days']), 
+            multiple: true) %>
+    </tr></table>
+      </td>
+        </tr>
+  </table>
+</fieldset>
+

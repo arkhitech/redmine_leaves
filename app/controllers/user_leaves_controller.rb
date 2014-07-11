@@ -73,6 +73,23 @@ class UserLeavesController < ApplicationController
         render 'new'
       end
     end
+    
+    
+#    flag_weekend = 0
+#    
+#    iterating_day = selected_date_from
+#    
+#    begin
+#      if Setting.plugin_redmine_leaves['working_days'].find_index(iterating_day.strftime("%A")).nil?
+#        flag_weekend += 1
+#      end
+#      iterating_day +=1
+#    end while iterating_day <= selected_date_to
+#    
+#    if flag_weekend > 0
+#      flash[:notice] = l("There are" + flag_weekend + "non-working days in your leave dates.")
+#    end
+      
   end
   
   def edit

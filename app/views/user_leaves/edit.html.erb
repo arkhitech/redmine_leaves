@@ -1,6 +1,9 @@
+<%= render template: "layouts/redmine_leaves" %>
 <h2> <%= l(:label_update_leave ) %></h2>
+<%#= form_for UserLeave.edit, :html => {:data => {:working_days => Setting.plugin_redmine_leaves['working_days'].join(',')}} do %>
 
-<%= form_for @user_leave do |leave_form| %>
+
+<%= form_for @user_leave, :html => {:data => {:working_days => Setting.plugin_redmine_leaves['working_days'].join(',')}} do |leave_form| %>
   <%= error_messages_for @user_leave %>
   <table>
     <tr>

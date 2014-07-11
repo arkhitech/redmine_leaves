@@ -1,5 +1,7 @@
 <% content_for :header_tags do %>
     <%= stylesheet_link_tag 'redmine_leaves', :plugin => 'redmine_leaves' %>
+    <%= javascript_include_tag "redmine_leaves", :plugin=> 'redmine_leaves' %>
+    <%= javascript_include_tag "highcharts", :plugin=> 'redmine_leaves' %>
 <% end %>
 <div id="leave-menu">
   <%= render_menu(:leave_report_menu) %>

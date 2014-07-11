@@ -29,5 +29,6 @@ Redmine::Plugin.register :redmine_leaves do
   menu :leave_report_menu, :user_leave_analytics, { :controller => 'user_leave_analytics', :action => 'report'}, :caption => 'Analytics'
   
   settings default: {'leave_types' => 'Annual, Sick, Unannounced',
-    'default_type' => 'Unannounced'}, partial: 'settings'
+    'working_days' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    'default_type' => 'Unannounced', }, partial: 'settings'
 end
