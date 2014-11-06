@@ -22,3 +22,60 @@
 }
 #leave-menu li a:hover {background:#759FCF; color:#fff;}
 #leave-menu li a.selected, #leave-menu li a.selected:hover {background:#fff; color:#179;}
+
+
+
+#user-time-report-menu {
+  padding: 0px 0px 30px 0px;
+  
+    /*position: absolute;  bottom: 0px;  left:6px; margin-right: -500px;*/}
+#user-time-report-menu ul {margin: 0; padding: 0;}
+#user-time-report-menu li {
+  float:left;
+  list-style-type:none;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  white-space:nowrap;
+}
+#user-time-report-menu li a {
+  display: block;
+  color: #555;
+  
+  background: #FFFFFF;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0;
+  padding: 4px 10px 4px 10px;
+}
+#user-time-report-menu li a:hover {background:#759FCF; color:#fff;}
+#user-time-report-menu li a.selected, #user-time-report-menu li a.selected:hover {background:#fff; color:#179;}
+
+
+
+
+
+
+#user-time-analytics-menu {
+  padding: 0px 0px 30px 0px;
+  
+    /*position: absolute;  bottom: 0px;  left:6px; margin-right: -500px;*/}
+#user-time-analytics-menu ul {margin: 0; padding: 0;}
+#user-time-analytics-menu li {
+  float:left;
+  list-style-type:none;
+  margin: 0px 0px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  white-space:nowrap;
+}
+#user-time-analytics-menu li a {
+  display: block;
+  color: #555;
+  
+  background: #FFFFFF;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0;
+  padding: 4px 10px 4px 10px;
+}
+#user-time-analytics-menu li a:hover {background:#759FCF; color:#fff;}
+#user-time-analytics-menu li a.selected, #user-time-analytics-menu li a.selected:hover {background:#fff; color:#179;}

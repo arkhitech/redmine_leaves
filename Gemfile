@@ -6,9 +6,10 @@ group :test, :development do
   gem 'spork-rails'
   gem 'guard-spork'
   gem 'childprocess'
+   
 end
 
 gem "whenever", ">=0.8.4"
 gem 'business_time'
-gem "wice_grid", '3.2.1'
+gem "wice_grid", '3.4.5'
 gem 'lazy_high_charts'

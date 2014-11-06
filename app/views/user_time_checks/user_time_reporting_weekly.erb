@@ -1,0 +1,39 @@
+ <%= render template: "layouts/user_time_reports" %>
+<br>
+<h2>Weekly User Time Report</h2>
+  <br>
+ 
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "jquery-ui", plugin: 'redmine_leaves'  %>
+  <%= javascript_include_tag "wice_grid", plugin: 'redmine_wice_grid'  %>
+
+  <%= stylesheet_link_tag 'wice_grid', plugin: 'redmine_wice_grid' %>
+<% end %>
+
+
+
+
+<% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>
+
+
+
+<div class="autoscroll " style=" width:20000">
+  <%= render partial: 'time_report_grid_weekly', locals: {time_report_grid_weekly: @time_report_grid_weekly}%>
+  <%=render partial: 'time_report_grid_filter_weekly'%>
+
+  <br>
+  <div id="main_grid" class="autoscroll" >
+  
+      <%= render_grid(@time_report_grid_weekly)%>
+    </div>
+
+
+</div>
+
+
+
+<%else%>
+
+  <p>You do not have permission to view reports</p>
+  <a href="/user_time_checks">Back</a>
+<%end%>

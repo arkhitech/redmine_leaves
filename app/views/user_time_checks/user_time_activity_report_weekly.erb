@@ -1,0 +1,154 @@
+<%= render template: "layouts/user_time_analytics" %>
+<br>
+<h2> User Time Activity Report</h2>
+
+<%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
+
+<table>
+    <tr align="left">
+      <th><%= "Date From"%></th>
+    </tr>  
+    <tr align="left">
+      <td><%= text_field_tag "date_from",
+           (params[:date_from]) || Date.today - 1.month %>
+        <%= calendar_for 'date_from' %>
+      </td>    
+    </tr>
+    <tr align="left">
+      <th><%=" Date To" %></th>
+    </tr>
+    <tr align="left">
+      <td> <%= text_field_tag "date_to",
+          (params[:date_to]) ||Date.today %> 
+        <%= calendar_for 'date_to' %>
+      </td>    
+    </tr>
+  </table>
+
+<br><br>
+
+  <table border="1" id='user-time-activity-report'>
+    <thead>
+      <tr align="center">
+        <th><%= "User Name " %></th>
+        <th><%= "Missed due dates " %></th>
+        <% unless @trackers.nil? ||  @trackers.empty? %>
+          <% @trackers.each do |tracker| %>
+            <th>
+              <%= " Num of "+tracker.name+" Handled"%>
+            </th> 
+            <th>
+              <%= "time Spent on "+tracker.name %>
+            </th>
+          <%end%>
+        <%end%>
+      </tr>
+    </thead>
+    <tbody>
+
+
+  <% unless @users_with_logged_activities.nil? ||  @users_with_logged_activities.empty? %> 
+      <%# User.active.each do |user| %>
+       <% @users_with_logged_activities.each do |user| %>
+        <tr  align="center" >
+
+
+          <td>
+            <%= user.firstname%>
+          </td> 
+          <td>
+            <% t = @missed_due_dates.where(id: user.id).first %>
+            <% if t %>
+              <%="Missed dates "+t.missed_dates.to_s   %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td> 
+          <!-- RND -->
+          <td>
+            <% t = @time_checks_rnd.where(id: user.id).first %>
+            <% if t %>
+              <%="Trackers handled "+t.num_of_trackers.to_s   %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td> 
+          <td>
+            <% if t %>
+              <%= "time Spent "+t.time_spent.to_s if t %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td>
+          <!-- BUG -->
+          <td>
+            <% t = @time_checks_bug.where(id: user.id).first %>
+            <% if t %>
+              <%="Trackers handled "+t.num_of_trackers.to_s   %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td> 
+          <td>
+            <% if t %>
+              <%= "time Spent "+t.time_spent.to_s if t %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td>
+          <!-- ENHANCEMENT -->
+          <td>
+            <% t = @time_checks_enhancement.where(id: user.id).first %>
+            <% if t %>
+              <%="Trackers handled "+t.num_of_trackers.to_s   %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td> 
+          <td>
+            <% if t %>
+              <%= "time Spent "+t.time_spent.to_s if t %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td>
+
+        </tr> 
+      <%end%>
+  <% end %>
+
+
+
+
+    </tbody>
+  </table>
+
+<%= submit_tag 'Apply' %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,50 @@
+<fieldset id="filters" class="collapsible collapsed">
+  <legend onclick="toggleFieldset(this);"><%=l(:label_filters)%></legend>
+  <div style="display: none;">
+
+    <table id="filters-table" style="width:60%;">
+      
+      <tr class="filter">
+        <td class="field">
+          <label><%=l(:field_user_id)%>:</label> 
+        </td>
+        <td class="values">
+          <%= grid_filter @time_report_grid, :user_filter%>
+        </td>
+      </tr>
+      
+      <tr class="filter">
+        <td class="field">
+          <label><%=l(:field_check_in_time)%>:</label>
+        </td>
+        <td class="values">
+          <%= grid_filter @time_report_grid, :check_in_time_filter%>
+        </td>
+      </tr >
+      
+      <tr class="filter">
+        <td class="field">
+          <label><%=l(:field_check_out_time)%>:</label>
+        </td>
+        <td class="values">
+          <%= grid_filter @time_report_grid, :check_out_time_filter%>
+        </td>
+        
+      </tr>
+      
+    
+            <td>
+          <%= link_to l(:button_apply), '#', 
+            class: 'wg-external-submit-button icon icon-report', data: {'grid-name' => 'time_checks_grid'} %>
+          <%= link_to l(:button_clear), '#', 
+            class: 'wg-external-reset-button icon icon-reload', data: {'grid-name' => 'time_checks_grid'} %>      
+          </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      
+    </table>
+
+  </div>
+</fieldset>
