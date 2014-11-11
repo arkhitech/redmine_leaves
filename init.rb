@@ -37,9 +37,8 @@ Redmine::Plugin.register :redmine_leaves do
       menu :user_time_report_menu, :user_time_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_reporting_monthly'}, :caption => 'Monthly'
       
       menu :top_menu, :user_time_activity_report, { controller: 'user_time_checks', action: 'user_time_activity_report' }, :caption => 'User Time-Activity Report'
-          menu :user_time_analytics_menu, :user_time_activity_report_custom, { :controller => 'user_time_checks', :action => 'user_time_activity_report'}, :caption => 'Custom'
-      menu :user_time_analytics_menu, :user_time_activity_report_weekly, { :controller => 'user_time_checks', :action => 'user_time_activity_report_weekly'}, :caption => 'Weekly'
-     menu :user_time_analytics_menu, :user_time_activity_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_activity_report_monthly'}, :caption => 'Monthly'
+          menu :user_time_analytics_menu, :user_time_activity_report_custom, { :controller => 'user_time_checks', :action => 'user_time_activity_report'}, :caption => 'All Time'
+      menu :user_time_analytics_menu, :user_time_activity_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_activity_report_monthly'}, :caption => 'Monthly'
 #  
        
       

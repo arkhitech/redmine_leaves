@@ -35,90 +35,49 @@
         <% unless @trackers.nil? ||  @trackers.empty? %>
           <% @trackers.each do |tracker| %>
             <th>
-              <%= " Num of "+tracker.name+" Handled"%>
+              #<%= " #{tracker.name} Handled"%>
             </th> 
             <th>
-              <%= "time Spent on "+tracker.name %>
+              <%= "Time Spent on #{tracker.name}" %>
             </th>
           <%end%>
         <%end%>
       </tr>
     </thead>
     <tbody>
-
-  <% unless @users_with_logged_activities.nil? ||  @users_with_logged_activities.empty? %> 
-      <%# User.active.each do |user| %>
-       <% @users_with_logged_activities.each do |user| %>
+      <% @user_stats.each_pair do |user_id, user_stats| %>
         <tr  align="center" >
-
-
+          <%user = user_stats[:user]%>
           <td>
-            <%= user.firstname+" "+user.lastname%>
-          </td> 
+            <%= "#{user.firstname} #{user.lastname}"%>
+          </td>
           <td>
-            <% t = @missed_due_dates.where(id: user.user_id).first %>
+            <% t = user_stats[:missed_due_dates] %>
             <% if t %>
-              <%="Missed dates "+t.missed_dates.to_s   %>
+              <%=  t.missed_dates   %>
             <% else %>
-              <%="0"  %>
-            <% end %>
-          </td> 
-          <!-- RND -->
-          <td>
-            <% t = @time_checks_rnd.where(id: user.user_id).first %>
-            <% if t %>
-              <%="Trackers handled "+t.num_of_trackers.to_s   %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td> 
-          <td>
-            <% if t %>
-              <%= "time Spent "+t.time_spent.to_s if t %>
-            <% else %>
-              <%="0"  %>
+              0
             <% end %>
           </td>
-          <!-- BUG -->
-          <td>
-            <% t = @time_checks_bug.where(id: user.user_id).first %>
-            <% if t %>
-              <%="Trackers handled "+t.num_of_trackers.to_s   %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td> 
-          <td>
-            <% if t %>
-              <%= "time Spent "+t.time_spent.to_s if t %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td>
-          <!-- ENHANCEMENT -->
-          <td>
-            <% t = @time_checks_enhancement.where(id: user.id).first %>
-            <% if t %>
-              <%="Trackers handled "+t.num_of_trackers.to_s   %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td> 
-          <td>
-            <% if t %>
-              <%= "time Spent "+t.time_spent.to_s if t %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td>
-
-        </tr> 
+          <%@trackers.each do |tracker|%>
+            <td>
+              <% t = user_stats[:trackers][tracker.name] %>
+              <% if t %>
+                <%=t.num_of_trackers %>
+              <% else %>
+                0
+              <% end %>
+            </td> 
+            <td>
+              <% if t %>
+                <%= t.time_spent.to_s %>
+              <% else %>
+                0
+              <% end %>
+            </td>
+          <%end%>
+        </tr>
       <%end%>
-  <% end %>
-
-
-
-
     </tbody>
   </table>
 

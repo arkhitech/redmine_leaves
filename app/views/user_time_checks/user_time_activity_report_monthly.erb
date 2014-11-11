@@ -39,7 +39,7 @@
 
 
             <th><%= " Num of "+tracker.name+" Handled"%></th> 
-            <th><%= "time Spent on "+tracker.name %></th>
+            <th><%= "Time Spent on "+tracker.name %></th>
           <%end%>
         <%end%>
       </tr>
@@ -57,8 +57,8 @@
               <%= user.user_id%>
             </td> 
             <td>
-              <% a = @time_missed_dates[i] %>
-              <% if  a.nil? ||    a.empty? ||a.blank? %>
+              <% a = @missed_dates[user.user_id.to_s+user.month.to_s+user.year.to_s].first %>
+              <% if  a %>
                 <%="Missed dates "+a.missed_dates.to_s   %>
               <% else %>
                 <%="0"  %>
@@ -72,57 +72,79 @@
             <td>
               <%= user.year%>
             </td> 
-            <td>
-              <% t = @time_rnd[i] %>
-              <% unless  t.nil? ||    t.empty? ||t.blank? %>
-                <%=t[0].num_of_trackers.to_s   %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td> 
-            <td>
-              <% unless  t.nil? ||    t.empty? ||t.blank? %>
-                <%= t[0].time_spent.to_s if t %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td>
 
-            <!-- BUG -->
+            <% @trackers.each do |tracker| %>
+           <td>
+           
+            <% t = @time_spent_on_tracker[tracker.name+user.user_id.to_s+user.month.to_s+user.year.to_s].first %>
+            <% if t %>
+              <%="Trackers handled "+t.num_of_trackers.to_s   %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td> 
+          <td>
+            <% if t  %>
+              <%= "Time Spent "+t.time_spent.to_s if t %>
+            <% else %>
+              <%="0"  %>
+            <% end %>
+          </td>
+          
+          <%end%>
+          
 
-            <td>
-              <% t = @time_bug[i] %>
-              <% unless  t.nil? ||    t.empty? ||t.blank? %>
-                <%=t[0].num_of_trackers.to_s   %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td> 
-            <td>
-              <% unless  t.nil? ||    t.empty? ||t.blank? %>
-                <%= t[0].time_spent.to_s if t %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td>
-            <!-- ENHANCEMENT -->
+      <%#*<td>%>
+      <%# t = @time_rnd[i] %>
+      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
+      <%#=t[0].num_of_trackers.to_s   %>
+      <%# else %>
+      <%#="0"  %>
+      <%# end %>
+      <%#*</td>%> 
+      <%#*<td>%>
+      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
+      <%#= t[0].time_spent.to_s if t %>
+      <%# else %>
+      <%#="0"  %>
+      <%# end %>
+      <%#*</td>%>
+
+      <%#*<!-- BUG -->%>
+
+      <%#*<td>%>
+      <%# t = @time_bug[i] %>
+      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
+      <%#=t[0].num_of_trackers.to_s   %>
+      <%# else %>
+      <%#="0"  %>
+      <%# end %>
+      <%#*</td>%> 
+      <%#*<td>%>
+      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
+      <%#= t[0].time_spent.to_s if t %>
+      <%# else %>
+      <%#="0"  %>
+      <%# end %>
+      <%#*</td>%>
+      <%#*<!-- ENHANCEMENT -->%>
 
 
-            <td>
-              <% t = @time_enhancement[i] %>
-              <% unless  t.nil? ||    t.empty? ||t.blank? %>
-                <%t[0].num_of_trackers.to_s   %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td> 
-            <td>
-              <% unless  t.nil? ||    t.empty? ||t.blank? %>
-                <%= t[0].time_spent.to_s if t %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td>
+      <%#*<td>%>
+      <%# t = @time_enhancement[i] %>
+      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
+      <%#t[0].num_of_trackers.to_s   %>
+      <%# else %>
+      <%#="0"  %>
+      <%# end %>
+      <%#*</td>%> 
+      <%#*<td>%>
+      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
+      <%#= t[0].time_spent.to_s if t %>
+      <%# else %>
+      <%#="0"  %>
+      <%# end %>
+      <%#*</td>%>
 
           </tr> 
           <%i=i+1%>

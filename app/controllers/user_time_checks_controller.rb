@@ -62,120 +62,98 @@ class UserTimeChecksController < ApplicationController
     
     @trackers=Tracker.all
     
+    @time_checks_for_trackers = {}
     @users_with_logged_activities=User.
       select("Distinct #{User.table_name}.id as user_id,#{User.table_name}.firstname,#{User.table_name}.lastname")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
     .where(" #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
      
-    @time_checks_rnd= User.
-      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    .order("#{Tracker.table_name}.id")
-    .where("#{Tracker.table_name}.name='rnd_tracker'
-and #{TimeEntry.table_name}.spent_on>=? 
-and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
+    @user_stats = {}
     
-    @time_checks_bug= User.
-      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    .order("#{Tracker.table_name}.id")
-    .where("#{Tracker.table_name}.name='bug'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+    @time_spent_on_tracker = {}
+    @trackers.each do |tracker|
+          
+      @time_spent_on_tracker[tracker.name] = User.
+        select("#{User.table_name}.lastname, #{User.table_name}.firstname, #{User.
+        table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+      .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
+      .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
+      .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
+      .group("#{Tracker.table_name}.id, #{User.table_name}.id")
+      .order("#{Tracker.table_name}.id")
+      .where("#{Tracker.table_name}.name=? AND #{TimeEntry.
+        table_name}.spent_on>=? AND  #{TimeEntry.table_name}.spent_on<=?",
+        tracker.name, params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+    end
+    
+    
+    @trackers.each do |tracker|
+      user_tracker_stats = User.
+        select("#{User.table_name}.lastname, #{User.table_name}.firstname, #{User.
+        table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+      .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
+      .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
+      .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
+      .group("#{Tracker.table_name}.id, #{User.table_name}.id")
+      .order("#{Tracker.table_name}.id")
+      .where("#{Tracker.table_name}.name=? AND #{TimeEntry.
+        table_name}.spent_on>=? AND  #{TimeEntry.table_name}.spent_on<=?",
+        tracker.name, params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
       
-    @time_checks_enhancement= User.
-      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    .order("#{Tracker.table_name}.id")
-    .where("#{Tracker.table_name}.name='enhancement'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+      user_tracker_stats.each do |user_tracker_stat|
+        @user_stats[user_tracker_stat.user_id] ||= {user: user_tracker_stat, trackers: {}}
+        @user_stats[user_tracker_stat.user_id][:trackers][user_tracker_stat.tracker_name] = user_tracker_stat
+      end
+    end    
+    
+    #    @time_checks_bug= User.
+    #      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
+    #    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
+    #    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
+    #    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
+    #    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
+    #    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+    #    .order("#{Tracker.table_name}.id")
+    #    .where("#{Tracker.table_name}.name='bug'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+    #      
+    #    @time_checks_enhancement= User.
+    #      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
+    #    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
+    #    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
+    #    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
+    #    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
+    #    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+    #    .order("#{Tracker.table_name}.id")
+    #    .where("#{Tracker.table_name}.name='enhancement'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
       
 
       
-    @missed_due_dates=User.select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
+    missed_due_dates=User.
+    select("#{User.table_name}.firstname,#{User.table_name}.id as user_id, count(#{Tracker.
+    table_name}.id)as missed_dates")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
     .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
     .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")      
-    .select("count(#{Tracker.table_name}.id)as missed_dates")
     .group("#{User.table_name}.id,#{Issue.table_name}.id")
     .where(
       "#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on 
         and #{Issue.table_name}.due_date is not NULL
         and  #{Issue.table_name }.due_date >=? 
         and  #{Issue.table_name }.due_date <=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
     
-   
+    missed_due_dates.each do |missed_due_dates|
+      @user_stats[missed_due_dates.user_id] ||= {user: missed_due_dates, trackers: {}}
       
+      @user_stats[missed_due_dates.user_id][:missed_due_dates] = missed_due_dates
+    end
   end
  
 
  
-  def user_time_activity_report_weekly
-  
-    
-    @trackers=Tracker.all
-    @time_checks_rnd= User.
-      select(" #{User.table_name}.firstname")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    .order("#{Tracker.table_name}.id")
-    .where("#{Tracker.table_name}.name='rnd_tracker'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
-    
-    @time_checks_bug= User.
-      select(" #{User.table_name}.firstname")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    .order("#{Tracker.table_name}.id")
-    .where("#{Tracker.table_name}.name='bug'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
-    @time_checks_enhancement= User.
-      select(" #{User.table_name}.firstname")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    .order("#{Tracker.table_name}.id")
-    .where("#{Tracker.table_name}.name='enhancement'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
-    #.where("#{Tracker.table_name}.name='enhancement'")
-      
-    @missed_due_dates=User.select(" #{User.table_name}.firstname")
-    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")      
-    .select("count(#{Tracker.table_name}.id)as missed_dates")
-    .group("#{User.table_name}.id,#{Issue.table_name}.id")
-    .where("#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on and #{Issue.table_name}.due_date is not NULL and  #{Issue.table_name }.due_date >=? and  #{Issue.table_name }.due_date <=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
-    
-    #   .where("(#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on or #{Issue.table_name }.due_date <?)and #{Issue.table_name}.due_date is not NULL ", Date.today)
-      
-      
-  end
  
   def user_time_activity_report_monthly
 
- 
-
+    @trackers=Tracker.all
     @months_and_years=User.
       select("Distinct #{User.table_name}.id as user_id,month(#{TimeEntry.table_name}.spent_on) as month,year(#{TimeEntry.table_name}.spent_on) as year")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
@@ -187,6 +165,54 @@ and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.mon
         count_users=count_users+1
       end
     end
+    
+    @time_spent_on_tracker = {}
+    @missed_dates = {}
+    @months_and_years.each do |user|   
+      @trackers.each do |tracker|
+          
+        @time_spent_on_tracker[tracker.name+user.user_id.to_s+user.month.to_s+user.year.to_s] = User.
+          select(" #{User.table_name}.firstname,year(#{TimeEntry.table_name}.spent_on)as year,month(#{TimeEntry.table_name}.spent_on) as month")
+        .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
+        .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
+        .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
+        .group("#{Tracker.table_name}.id,#{User.table_name}.id,year(#{TimeEntry.table_name}.spent_on),month(#{TimeEntry.table_name}.spent_on)")
+        .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+        .order("year(#{TimeEntry.table_name}.spent_on),month(#{TimeEntry.table_name}.spent_on),#{Tracker.table_name}.id")
+        .where("#{Tracker.table_name}.name=?
+              and #{TimeEntry.table_name}.spent_on>=? 
+              and  #{TimeEntry.table_name}.spent_on<=? 
+              and month(#{TimeEntry.table_name}.spent_on)=? 
+              and year(#{TimeEntry.table_name}.spent_on)=?
+              and #{User.table_name}.id=?",tracker.name,params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
+
+     
+      end
+      
+      @missed_dates[user.user_id.to_s+user.month.to_s+user.year.to_s]=User.
+        select(" #{User.table_name}.firstname,
+      year(#{TimeEntry.table_name}.spent_on)as year,
+      month(#{TimeEntry.table_name}.spent_on) as month,
+      count(#{Tracker.table_name}.id)as missed_dates")
+      .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
+      .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
+      .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")      
+      .group("#{User.table_name}.id,
+      #{Issue.table_name}.id,
+      year(#{TimeEntry.table_name}.spent_on),
+      month(#{TimeEntry.table_name}.spent_on)")
+      .where("#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on 
+      and #{Issue.table_name}.due_date is not NULL 
+    and #{TimeEntry.table_name}.spent_on>=? 
+              and  #{TimeEntry.table_name}.spent_on<=? 
+and month(#{TimeEntry.table_name}.spent_on)=? 
+              and year(#{TimeEntry.table_name}.spent_on)=?
+              and #{User.table_name}.id=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
+      .order("year(#{Issue.table_name}.start_date),month(#{Issue.table_name}.start_date)")
+      
+    end
+
+   
      
     i=0
     @time_rnd=Array.new(count_users)

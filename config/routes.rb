@@ -20,8 +20,6 @@ get "user_time_checks/user_time_activity_report_monthly"
 post "user_time_checks/user_time_activity_report_monthly"
 
 
-post "user_time_checks/user_time_activity_report_weekly"
-get "user_time_checks/user_time_activity_report_weekly"
 
 
 
