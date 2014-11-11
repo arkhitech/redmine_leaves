@@ -1,0 +1,61 @@
+
+<%=define_grid @time_report_grid, hide_submit_button: true, hide_reset_button: true, hide_csv_button: false do |e|
+
+  #e.column name: l(:field_user_id), html: {style: 'text-align: center'}, 
+  #:attribute => 'user_id',#model:'User',
+  #detach_with_id: 'user_filter'   do |t|
+  #t.user.name unless t.user.nil? 
+  ##t.user.grou
+  #end
+  e.column name: l(:field_user_id), html: {style: 'text-align: center'}, 
+    :attribute => 'user_id',
+    detach_with_id: 'user_filter' ,
+    custom_filter: User.active.collect{|u|[u.name, u.id]}  do |t|
+    t.user.name unless t.user.nil? 
+    end
+
+  e.column name: 'Average Clock-in', html: {style: 'text-align: center'} do |t|
+    unless t.avg_check_in_time.nil?
+      time=Time.at(t.avg_check_in_time)
+      t= time.in_time_zone
+      t.to_formatted_s(:time) 
+    end
+    end
+
+  e.column name: 'Average Clock-out', html: {style: 'text-align: center'} do |t|
+    unless t.avg_check_out_time.nil?
+      time=Time.at(t.avg_check_out_time)
+      t= time.in_time_zone
+      t.to_formatted_s(:time) 
+    end
+    end
+
+  e.column name: l(:field_check_in_time), html: {style: 'text-align: center' }, 
+    :attribute => 'check_in_time'  , 
+    detach_with_id: 'check_in_time_filter' 
+
+  e.column name: l(:field_check_out_time), html: {style: 'text-align: center'}, 
+    :attribute => 'check_out_time', 
+    detach_with_id: 'check_out_time_filter'
+
+
+
+
+
+  e.column name: 'Average Time Spent', html: {style: 'text-align: center'}   do |t|
+
+
+    unless t.average_time.nil?
+
+      output=(t.average_time.to_i/60).to_s
+
+      output+':'+(t.average_time.to_i%60).to_s
+
+
+    end
+
+
+  end
+
+
+  end %>

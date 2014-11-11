@@ -6,6 +6,18 @@ module UserTimeChecksHelper
   include Helpers
   include FormTagHelper
   
+  def user_time_reporting
+    if User.current.allowed_to_globally?(:view_time_reports,{})
+      #      return deny_access
+      return true
+      
+    else
+#      return deny_access
+      return false
+    end
+  end
+  
+    
   def edit_leave_options(user_leave_user_id)
     edit_leave_groups = Setting.plugin_redmine_leaves['edit_attendance']
     edit_leave_users = User.active.joins(:groups).
@@ -27,4 +39,5 @@ module UserTimeChecksHelper
     end    
   end  
 
+  
 end

@@ -163,6 +163,11 @@ en:
    
    #user_time_check
    auto_generated_comment: "Auto-Generated Check-Out"
+   field_user_id: "User name"
+   field_user_name: "User Name"
+   field_check_out_time: "Check Out Time"
+   field_check_in_time: "Check In Time"
+   field_time_spent: "Time Spent" 
    
-   
-   
+   label_Timeentry_plural : "User Time Entries"
+   label_Timereport: "User Time Report"
