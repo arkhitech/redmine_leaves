@@ -1,0 +1,112 @@
+<%= render template: "layouts/user_time_analytics" %>
+<br>
+<h2> User Time Activity Report</h2>
+
+<%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
+
+<table>
+    <tr align="left">
+      <th><%= "Date From"%></th>
+    </tr>  
+    <tr align="left">
+      <td><%= text_field_tag "date_from",
+           (params[:date_from]) || Date.today - 1.month %>
+        <%= calendar_for 'date_from' %>
+      </td>    
+    </tr>
+    <tr align="left">
+      <th><%=" Date To" %></th>
+    </tr>
+    <tr align="left">
+      <td> <%= text_field_tag "date_to",
+          (params[:date_to]) ||Date.today %> 
+        <%= calendar_for 'date_to' %>
+      </td>    
+    </tr>
+  </table>
+
+<br><br>
+
+  <table border="1" id='user-time-activity-report'>
+    <thead>
+      <tr align="center">
+        <th><%= "User Name " %></th>
+        <th><%= "Missed due dates " %></th>
+        <% unless @trackers.nil? ||  @trackers.empty? %>
+          <% @trackers.each do |tracker| %>
+            <th>
+              #<%= " #{tracker.name} Handled"%>
+            </th> 
+            <th>
+              <%= "Time Spent on #{tracker.name}" %>
+            </th>
+          <%end%>
+        <%end%>
+      </tr>
+    </thead>
+    <tbody>
+      <% @user_stats.each_pair do |user_id, user_stats| %>
+        <tr  align="center" >
+          <%user = user_stats[:user]%>
+          <td>
+            <%= "#{user.firstname} #{user.lastname}"%>
+          </td>
+          <td>
+            <% t = user_stats[:missed_due_dates] %>
+            <% if t %>
+              <%=  t.missed_dates   %>
+            <% else %>
+              0
+            <% end %>
+          </td>
+          <%@trackers.each do |tracker|%>
+            <td>
+              <% t = user_stats[:trackers][tracker.name] %>
+              <% if t %>
+                <%=t.num_of_trackers %>
+              <% else %>
+                0
+              <% end %>
+            </td> 
+            <td>
+              <% if t %>
+                <%= t.time_spent.to_s %>
+              <% else %>
+                0
+              <% end %>
+            </td>
+          <%end%>
+        </tr>
+      <%end%>
+    </tbody>
+  </table>
+
+<%= submit_tag 'Apply' %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

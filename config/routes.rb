@@ -11,7 +11,19 @@ match '/create_time_entries' => 'user_time_checks#create_time_entries'
 get "user_time_checks/check_in"
 get "user_time_checks/check_out"
 get "user_time_checks/checkout_timelog_success"
- 
+get "user_time_checks/user_time_reporting"
+get "user_time_checks/user_time_reporting_weekly"
+get "user_time_checks/user_time_reporting_monthly"
+get "user_time_checks/user_time_activity_report"
+post "user_time_checks/user_time_activity_report"
+get "user_time_checks/user_time_activity_report_monthly"
+post "user_time_checks/user_time_activity_report_monthly"
+
+
+
+
+
+
 #match '/home', to: 'user_time_checks#home', via: 'get'
 match '/check_in' => 'user_time_checks#check_in'
 match '/check_out' => 'user_time_checks#check_out'
