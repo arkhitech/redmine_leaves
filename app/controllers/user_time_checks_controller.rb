@@ -11,34 +11,23 @@ class UserTimeChecksController < ApplicationController
     unless Redmine::Plugin.installed?(:redmine_wice_grid)
       flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
       @time_checks = UserTimeCheck.group(:user)
-      #.includes(:user)
-    
       unless User.current.allowed_to_globally?(:view_time_reports,{})
         return deny_access
       end
       sort_init 'updated_at', 'desc'
       sort_update %w(user check_in_time check_out_time)
-
-      #    @transfer_pages, @transfers = paginate Transfer.where(project_id: @project).order(sort_clause)
       if params[:sort].present?
         @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
       else
         @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
       end
       respond_with @time_checks
-    
-      
-      
     else
-
-
-    
-       
-      time_checks= UserTimeCheck.select("TIME_TO_SEC(CONVERT_TZ(check_out_time,'+05:00','+00:00')) as check_out_time_secs, CONVERT_TZ(check_out_time,'+05:00','+00:00') as check_out_time_time, #{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
+      #   TIME_TO_SEC(CONVERT_TZ(check_out_time,'+05:00','+00:00')) as check_out_time_secs, CONVERT_TZ(check_out_time,'+05:00','+00:00') as check_out_time_time,
+      time_checks= UserTimeCheck.
+        select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
         joins("LEFT JOIN #{TimeEntry.table_name} on DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
         group("#{UserTimeCheck.table_name}.id")
-
-    
       @time_check_grid = initialize_grid(time_checks,
         :name => 'time_checks_grid',
         conditions: ["check_in_time >  ?", Time.now - 6.months],
@@ -49,11 +38,6 @@ class UserTimeChecksController < ApplicationController
       export_grid_if_requested('time_checks_grid' => 'time_check_grid')
 
     end       
-    
-  
-  
-  
-  
   end
   
  
@@ -75,7 +59,10 @@ class UserTimeChecksController < ApplicationController
           
       @time_spent_on_tracker[tracker.name] = User.
         select("#{User.table_name}.lastname, #{User.table_name}.firstname, #{User.
-        table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+        table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.
+        table_name}.name as tracker_name,count(#{Tracker.
+        table_name}.name)as num_of_trackers,sum(#{TimeEntry.
+        table_name}.hours ) as time_spent")
       .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
       .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
       .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
@@ -90,7 +77,9 @@ class UserTimeChecksController < ApplicationController
     @trackers.each do |tracker|
       user_tracker_stats = User.
         select("#{User.table_name}.lastname, #{User.table_name}.firstname, #{User.
-        table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+        table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.
+        table_name}.name as tracker_name,count(#{Tracker.
+        table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
       .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
       .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
       .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
@@ -105,32 +94,10 @@ class UserTimeChecksController < ApplicationController
         @user_stats[user_tracker_stat.user_id][:trackers][user_tracker_stat.tracker_name] = user_tracker_stat
       end
     end    
-    
-    #    @time_checks_bug= User.
-    #      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
-    #    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    #    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    #    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    #    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    #    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    #    .order("#{Tracker.table_name}.id")
-    #    .where("#{Tracker.table_name}.name='bug'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-    #      
-    #    @time_checks_enhancement= User.
-    #      select(" #{User.table_name}.firstname,#{User.table_name}.id as user_id")
-    #    .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    #    .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
-    #    .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-    #    .group("#{Tracker.table_name}.id,#{User.table_name}.id")
-    #    .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
-    #    .order("#{Tracker.table_name}.id")
-    #    .where("#{Tracker.table_name}.name='enhancement'and #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
-      
-
-      
+     
     missed_due_dates=User.
-    select("#{User.table_name}.firstname,#{User.table_name}.id as user_id, count(#{Tracker.
-    table_name}.id)as missed_dates")
+      select("#{User.table_name}.firstname,#{User.table_name}.id as user_id, count(#{Tracker.
+      table_name}.id)as missed_dates")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
     .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
     .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")      
@@ -290,9 +257,6 @@ and month(#{TimeEntry.table_name}.spent_on)=?
       i=i+1
     end
  
-    p '*'*50
-    p @time_rnd
-    p '*'*50 
     @trackers=Tracker.all
     
  
@@ -308,24 +272,17 @@ and month(#{TimeEntry.table_name}.spent_on)=?
     unless Redmine::Plugin.installed?(:redmine_wice_grid)
       flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
       @time_checks = UserTimeCheck.group(:user)
-      #.includes(:user)
-    
       unless User.current.allowed_to_globally?(:view_time_reports,{})
         return deny_access
       end
       sort_init 'updated_at', 'desc'
       sort_update %w(user check_in_time check_out_time)
-
-      #    @transfer_pages, @transfers = paginate Transfer.where(project_id: @project).order(sort_clause)
       if params[:sort].present?
         @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
       else
         @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
       end
       respond_with @time_checks
-    
-      
-      
     else
       #      
       #  SEC_TO_TIME(AVG(TIME_TO_SEC(check_in_time))) as avg_check_in_time,
@@ -350,10 +307,6 @@ avg(time_spent) as average_time")
 
     end       
     
-  
-  
-  
-  
   end
   
 
@@ -451,11 +404,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
         :csv_file_name => 'UserTimeMonthly')#,
              
       export_grid_if_requested('time_checks_grid' => 'time_report_grid_monthly')
-          
-      #      
-      #      
-      
-
+     
     end  
   end    
   
@@ -565,10 +514,8 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     else
       render 'checkout_timelog_success'
     end
-         
     
   end
   
  
-  
 end
