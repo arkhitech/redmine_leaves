@@ -8,21 +8,21 @@ class UserTimeChecksController < ApplicationController
   
   def index
   
-    unless Redmine::Plugin.installed?(:redmine_wice_grid)
-      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
-      @time_checks = UserTimeCheck.group(:user)
-      unless User.current.allowed_to_globally?(:view_time_reports,{})
-        return deny_access
-      end
-      sort_init 'updated_at', 'desc'
-      sort_update %w(user check_in_time check_out_time)
-      if params[:sort].present?
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
-      else
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
-      end
-      respond_with @time_checks
-    else
+#    unless Redmine::Plugin.installed?(:redmine_wice_grid)
+#      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
+##      @time_checks = UserTimeCheck.group(:user)
+##      unless User.current.allowed_to_globally?(:view_time_reports,{})
+##        return deny_access
+##      end
+##      sort_init 'updated_at', 'desc'
+##      sort_update %w(user check_in_time check_out_time)
+##      if params[:sort].present?
+##        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
+##      else
+##        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
+##      end
+##      respond_with @time_checks
+#    else
       #   TIME_TO_SEC(CONVERT_TZ(check_out_time,'+05:00','+00:00')) as check_out_time_secs, CONVERT_TZ(check_out_time,'+05:00','+00:00') as check_out_time_time,
       time_checks= UserTimeCheck.
         select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
@@ -37,7 +37,7 @@ class UserTimeChecksController < ApplicationController
      
       export_grid_if_requested('time_checks_grid' => 'time_check_grid')
 
-    end       
+#    end       
   end
   
  
@@ -269,21 +269,21 @@ and month(#{TimeEntry.table_name}.spent_on)=?
 
   def user_time_reporting
   
-    unless Redmine::Plugin.installed?(:redmine_wice_grid)
-      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
-      @time_checks = UserTimeCheck.group(:user)
-      unless User.current.allowed_to_globally?(:view_time_reports,{})
-        return deny_access
-      end
-      sort_init 'updated_at', 'desc'
-      sort_update %w(user check_in_time check_out_time)
-      if params[:sort].present?
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
-      else
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
-      end
-      respond_with @time_checks
-    else
+#    unless Redmine::Plugin.installed?(:redmine_wice_grid)
+#      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
+##      @time_checks = UserTimeCheck.group(:user)
+##      unless User.current.allowed_to_globally?(:view_time_reports,{})
+##        return deny_access
+##      end
+##      sort_init 'updated_at', 'desc'
+##      sort_update %w(user check_in_time check_out_time)
+##      if params[:sort].present?
+##        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
+##      else
+##        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
+##      end
+##      respond_with @time_checks
+#    else
       #      
       #  SEC_TO_TIME(AVG(TIME_TO_SEC(check_in_time))) as avg_check_in_time,
       # SEC_TO_TIME(AVG(TIME_TO_SEC(check_out_time))) as avg_check_out_time,
@@ -305,7 +305,7 @@ avg(time_spent) as average_time")
      
       export_grid_if_requested('time_checks_grid' => 'time_report_grid')
 
-    end       
+#    end       
     
   end
   
@@ -316,21 +316,21 @@ avg(time_spent) as average_time")
   
     unless Redmine::Plugin.installed?(:redmine_wice_grid)
       flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
-      @time_checks = UserTimeCheck.group(:user)
-    
-      unless User.current.allowed_to_globally?(:view_time_reports,{})
-        return deny_access
-      end
-      sort_init 'updated_at', 'desc'
-      sort_update %w(user check_in_time check_out_time)
-
-      #    @transfer_pages, @transfers = paginate Transfer.where(project_id: @project).order(sort_clause)
-      if params[:sort].present?
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
-      else
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
-      end
-      respond_with @time_checks
+#      @time_checks = UserTimeCheck.group(:user)
+#    
+#      unless User.current.allowed_to_globally?(:view_time_reports,{})
+#        return deny_access
+#      end
+#      sort_init 'updated_at', 'desc'
+#      sort_update %w(user check_in_time check_out_time)
+#
+#      #    @transfer_pages, @transfers = paginate Transfer.where(project_id: @project).order(sort_clause)
+#      if params[:sort].present?
+#        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
+#      else
+#        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
+#      end
+#      respond_with @time_checks
    
     else
       
@@ -364,26 +364,26 @@ check_out_time ,user_id,
    
   def user_time_reporting_monthly
  
-    unless Redmine::Plugin.installed?(:redmine_wice_grid)
-      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
-      @time_checks = UserTimeCheck.group(:user)
-   
-    
-      unless User.current.allowed_to_globally?(:view_time_reports,{})
-        return deny_access
-      end
-      sort_init 'updated_at', 'desc'
-      sort_update %w(user check_in_time check_out_time)
-
-      #    @transfer_pages, @transfers = paginate Transfer.where(project_id: @project).order(sort_clause)
-      if params[:sort].present?
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
-      else
-        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
-      end
-      respond_with @time_checks
-   
-    else
+#    unless Redmine::Plugin.installed?(:redmine_wice_grid)
+#      flash.now[:warning] = "Please install 'redmine_wice_grid' plugin for better pagination"
+##      @time_checks = UserTimeCheck.group(:user)
+##   
+##    
+##      unless User.current.allowed_to_globally?(:view_time_reports,{})
+##        return deny_access
+##      end
+##      sort_init 'updated_at', 'desc'
+##      sort_update %w(user check_in_time check_out_time)
+##
+##      #    @transfer_pages, @transfers = paginate Transfer.where(project_id: @project).order(sort_clause)
+##      if params[:sort].present?
+##        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order(sort_clause)
+##      else
+##        @time_check_pages, @time_checks = paginate UserTimeCheck.scoped.order('updated_at desc')
+##      end
+##      respond_with @time_checks
+#   
+#    else
       
       #       AVG(TIME_TO_SEC(check_in_time)) as avg_check_in_time,
       # AVG(TIME_TO_SEC(check_out_time)) as avg_check_out_time, 
@@ -405,7 +405,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
              
       export_grid_if_requested('time_checks_grid' => 'time_report_grid_monthly')
      
-    end  
+#    end  
   end    
   
   
