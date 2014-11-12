@@ -14,25 +14,12 @@
   e.column name: l(:field_check_in_time), html: {style: 'text-align: center' }, 
     :attribute => 'check_in_time'  , 
     detach_with_id: 'check_in_time_filter'
-  #do |user_time_check|
-    #user_time_check.check_in_time.in_time_zone(User.current.time_zone)
-    #end
 
 
   e.column name: l(:field_check_out_time), html: {style: 'text-align: center'}, 
     :attribute => 'check_out_time',  
-    # helper_style: :standard ,
   detach_with_id: 'check_out_time_filter'
-  #do |user_time_check|
-    #user_time_check.check_out_time && user_time_check.check_out_time.in_time_zone(User.current.time_zone)
-    #end
-
-  e.column name: l(:field_check_out_time), html: {style: 'text-align: center'} do |t|
-    t.check_out_time_secs
-  end
-  e.column name: l(:field_check_out_time), html: {style: 'text-align: center'} do |t|
-    t.check_out_time_time
-  end
+ 
   
   e.column name: l(:field_comments), html: {style: 'text-align: center'}, 
     :attribute => 'comments', detach_with_id: 'comments_filter'
@@ -41,20 +28,25 @@
   e.column name: l(:field_time_spent), html: {style: 'text-align: center'}, 
     :attribute => 'time_spent',filter_type: :range,
     detach_with_id: 'time_spent_filter'  do |t|
-    unless t.time_spent.nil?
-          output=(t.time_spent.to_i/60).to_s
-
-        output+':'+(t.time_spent.to_i%60).to_s
+    unless t.check_out_time.nil?
+         Time.at(t.check_out_time - t.check_in_time).utc.strftime("%H:%M")
 
 
     end
+    #unless t.time_spent.nil?
+          #output=(t.time_spent.to_i/60).to_s
+
+        #output+':'+(t.time_spent.to_i%60).to_s
+
+
+    #end
     end
 
 
   e.column name: 'Logged Time', html: {style: 'text-align: center'}do |t|
     unless t.logged_hours.nil?
 
-      t.logged_hours
+      t.logged_hours.round(2)
     end
   end
 
