@@ -175,8 +175,8 @@ and month(#{TimeEntry.table_name}.spent_on)=?
   def user_time_reporting
 
     time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
-AVG(TIME_TO_SEC(check_in_time)) as avg_check_in_time,
- AVG(TIME_TO_SEC(check_out_time)) as avg_check_out_time, 
+AVG(check_in_time) as avg_check_in_time,
+ AVG(check_out_time) as avg_check_out_time, 
 avg(time_spent) as average_time")
     .includes(:user)
     .group('user_id')
@@ -201,8 +201,8 @@ avg(time_spent) as average_time")
   
     time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
 check_out_time ,user_id,
- AVG(TIME_TO_SEC(check_in_time)) as avg_check_in_time,
- AVG(TIME_TO_SEC(check_out_time)) as avg_check_out_time, 
+ AVG(check_in_time) as avg_check_in_time,
+ AVG(check_out_time) as avg_check_out_time, 
  sum(time_spent) as time_spent,avg(time_spent) as average_time").
       includes(:user).
       group('user_id,year(check_in_time),week(check_in_time)').        
@@ -229,8 +229,8 @@ check_out_time ,user_id,
 
     time_checks = UserTimeCheck.includes(:user)
     .select("check_in_time, check_out_time, user_id,
- AVG(TIME_TO_SEC(check_in_time)) as avg_check_in_time,
- AVG(TIME_TO_SEC(check_out_time)) as avg_check_out_time, 
+ AVG(check_in_time) as avg_check_in_time,
+ AVG(check_out_time) as avg_check_out_time, 
 sum(time_spent) as time_spent,avg(time_spent) as average_time")
     .group('user_id,year(check_in_time),month(check_in_time)') 
     .order('year(check_in_time),month(check_in_time),user_id')
