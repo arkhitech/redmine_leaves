@@ -2,164 +2,117 @@
 <br>
 <h2> User Time Activity Monthly Report</h2>
 <% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>
-<%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report_monthly' do %>
-<fieldset><legend><%= l(:label_filter_plural) %></legend>
-    <table>
-      <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
-            (params[:date_from]) || Date.today - 1.month %>
-          <%= calendar_for 'date_from' %>
-        </td> </tr>
-      <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
-            (params[:date_to]) ||Date.today %> 
-          <%= calendar_for 'date_to' %>
-        </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
+  <%if @all_trackers%>
+    <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report_monthly' do %>
+      <fieldset><legend><%= l(:label_filter_plural) %></legend>
+          <table>
+            <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
+                  (params[:date_from]) || Date.today - 1.month %>
+                <%= calendar_for 'date_from' %>
+              </td> </tr>
+            <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
+                  (params[:date_to]) ||Date.today %> 
+                <%= calendar_for 'date_to' %>
+              </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
 
 
-    </table>
-  </fieldset>
-  <br><br>
+          </table>
+        </fieldset>
+        <br><br>
 
-  <table border="1" id='user-time-activity-report' class="list user time activity monthly">
-    <thead>
-      <tr align="center">
-        <th><%= "User Name " %></th>
-        <th><%= "Missed due dates " %></th>
-        <th><%= "Month " %></th>
-        <th><%= "Year " %></th>
-        <% unless @trackers.nil? ||  @trackers.empty? %>
-          <% @trackers.each do |tracker| %>
+      <table border="1" id='user-time-activity-report' class="list user time activity monthly">
+        <thead>
+            <tr align="center">
+              <th><%= "User Name " %></th>
+              <th><%= "Missed due dates " %></th>
+              <th><%= "Month " %></th>
+              <th><%= "Year " %></th>
+              <%# unless @trackers.nil? ||  @trackers.empty? %>
+                <%# @trackers.each do |tracker| %>
+                <% @all_trackers.each do |tracker|%>
 
+                  <th><%= " Num of "+tracker+" Handled"%></th> 
+                  <th>
+                  <%= "ACTUAL TIME FOR #{tracker}" %>
+              </th>
+                  <th><%= "Time Spent on "+tracker %></th>
+                <%end%>
+              <%#end%>
+            </tr>
+        </thead>
+        <tbody>
+          <% unless   @months_and_years.nil? ||    @months_and_years.empty? %> 
+            <%   @months_and_years.each do |user| %>
+              <tr  align="center" >
+                <td>
+                  <%= user.user_id%>
+                </td> 
+                <td>
+                  <% a = @missed_dates[user.user_id.to_s+user.month.to_s+user.year.to_s].first %>
+                  <% if  a %>
+                    <%=+a.missed_dates   %>
+                  <% else %>
+                    0
+                  <% end %>
+                </td> 
+                <td>
+                  <%= user.month%>
+                </td> 
+                <td>
+                  <%= user.year%>
+                </td> 
+                <% @all_trackers.each do |tracker|%>    
+                  <%# @trackers.each do |tracker| %>
+                  <td>
 
-            <th><%= " Num of "+tracker.name+" Handled"%></th> 
-            <th><%= "Time Spent on "+tracker.name %></th>
-          <%end%>
-        <%end%>
-      </tr>
-    </thead>
-    <tbody>
+                   <% t = @time_spent_on_tracker[tracker+user.user_id.to_s+user.month.to_s+user.year.to_s].first %>
+                   <% if t %>
+                     <%=t.num_of_trackers  %>
+                   <% else %>
+                   0
+                   <% end %>
+                  </td> 
+                  
+                   <td>
+                    <% if t %>
+                      <%= t.estimated_hours_on_tracker.round(2) %>
+                    <% else %>
+                      0
+                    <% end %>
+                  </td>
+                  
+                  <td>
+                   <% if t  %>
+                     <%= t.time_spent %>
+                   <% else %>
+                     0
+                   <% end %>
+                  </td>
+                <%end%><%#end of all trackers loop%>
+              </tr> 
+            <%end%>
+          <% end %><%#end of unless%>
+        </tbody>
+      </table>
 
-
-      <% unless   @months_and_years.nil? ||    @months_and_years.empty? %> 
-        <%i=0%>
-        <%   @months_and_years.each do |user| %>
-          <tr  align="center" >
-
-
-            <td>
-              <%= user.user_id%>
-            </td> 
-            <td>
-              <% a = @missed_dates[user.user_id.to_s+user.month.to_s+user.year.to_s].first %>
-              <% if  a %>
-                <%="Missed dates "+a.missed_dates.to_s   %>
-              <% else %>
-                <%="0"  %>
-              <% end %>
-            </td> 
-            <!-- RND -->
-
-            <td>
-              <%= user.month%>
-            </td> 
-            <td>
-              <%= user.year%>
-            </td> 
-
-            <% @trackers.each do |tracker| %>
-           <td>
-           
-            <% t = @time_spent_on_tracker[tracker.name+user.user_id.to_s+user.month.to_s+user.year.to_s].first %>
-            <% if t %>
-              <%="Trackers handled "+t.num_of_trackers.to_s   %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td> 
-          <td>
-            <% if t  %>
-              <%= "Time Spent "+t.time_spent.to_s if t %>
-            <% else %>
-              <%="0"  %>
-            <% end %>
-          </td>
-          
-          <%end%>
-          
-
-      <%#*<td>%>
-      <%# t = @time_rnd[i] %>
-      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
-      <%#=t[0].num_of_trackers.to_s   %>
-      <%# else %>
-      <%#="0"  %>
-      <%# end %>
-      <%#*</td>%> 
-      <%#*<td>%>
-      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
-      <%#= t[0].time_spent.to_s if t %>
-      <%# else %>
-      <%#="0"  %>
-      <%# end %>
-      <%#*</td>%>
-
-      <%#*<!-- BUG -->%>
-
-      <%#*<td>%>
-      <%# t = @time_bug[i] %>
-      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
-      <%#=t[0].num_of_trackers.to_s   %>
-      <%# else %>
-      <%#="0"  %>
-      <%# end %>
-      <%#*</td>%> 
-      <%#*<td>%>
-      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
-      <%#= t[0].time_spent.to_s if t %>
-      <%# else %>
-      <%#="0"  %>
-      <%# end %>
-      <%#*</td>%>
-      <%#*<!-- ENHANCEMENT -->%>
-
-
-      <%#*<td>%>
-      <%# t = @time_enhancement[i] %>
-      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
-      <%#t[0].num_of_trackers.to_s   %>
-      <%# else %>
-      <%#="0"  %>
-      <%# end %>
-      <%#*</td>%> 
-      <%#*<td>%>
-      <%# unless  t.nil? ||    t.empty? ||t.blank? %>
-      <%#= t[0].time_spent.to_s if t %>
-      <%# else %>
-      <%#="0"  %>
-      <%# end %>
-      <%#*</td>%>
-
-          </tr> 
-          <%i=i+1%>
-
-        <%end%>
-      <% end %>
+    <% end %>
 
 
 
 
-    </tbody>
-  </table>
+  <%else%>
 
-<% end %>
+    <p>No data to view</p>
+    <a href="/user_time_checks">Back</a>
+  <%end%>
 
 
 
 <%else%>
 
-  <p>You do not have permission to view reports</p>
-  <a href="/user_time_checks">Back</a>
+<p>You do not have permission to view reports</p>
+<a href="/user_time_checks">Back</a>
 <%end%>
-
 
 
 

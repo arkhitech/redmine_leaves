@@ -172,3 +172,5 @@ en:
    label_Timeentry_plural : "User Time Entries"
    label_Timereport: "User Time Report"
    label_filters: "Filters"
+   label_trackers: "Trackers"
+   label_tracker_instructions: "Enter trackers to display,separated by comma(,)"
