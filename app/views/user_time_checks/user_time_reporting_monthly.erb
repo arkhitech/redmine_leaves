@@ -1,6 +1,6 @@
  <%= render template: "layouts/user_time_reports" %>
 <br>
-<h2>Weekly User Time Report</h2>
+<h2>Monthly User Time Report</h2>
   <br>
  
 <% content_for :header_tags do %>
@@ -18,13 +18,13 @@
 
 
 <div class="autoscroll " style=" width:20000">
-  <%= render partial: 'time_report_grid_weekly', locals: {time_report_grid_weekly: @time_report_grid_weekly}%>
-  <%=render partial: 'time_report_grid_filter_weekly'%>
+  <%= render partial: 'time_report_grid_monthly', locals: {time_report_grid_monthly: @time_report_grid_monthly}%>
+  <%=render partial: 'time_report_grid_filter_monthly'%>
 
   <br>
   <div id="main_grid" class="autoscroll" >
   
-      <%= render_grid(@time_report_grid_weekly)%>
+      <%= render_grid(@time_report_grid_monthly)%>
     </div>
 
 

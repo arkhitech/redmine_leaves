@@ -14,15 +14,16 @@
  
 <% content_for :header_tags do %>
   <%= javascript_include_tag "jquery-ui", plugin: 'redmine_leaves'  %>
-  <%= javascript_include_tag "wice_grid", plugin: 'redmine_wice_grid'  %>
-  <%= stylesheet_link_tag 'wice_grid', plugin: 'redmine_wice_grid' %>
+  <%= javascript_include_tag "wice_grid", plugin: 'redmine_leaves'  %>
+  <%= stylesheet_link_tag 'wice_grid', plugin: 'redmine_leaves' %>
  <%= javascript_include_tag "application", plugin: 'redmine_leaves'  %>
 <% end %>
  
 
 
-
-<div class="autoscroll " style=" width:20000">
+<div class="row-fluid" >
+  <%#*<div class="span12">%>
+<div class="autoscroll " align="left">
   <%= render partial: 'time_check_grid', locals: {time_check_grid: @time_check_grid}%>
   <%=render partial: 'time_check_grid_filter'%>
 
@@ -34,7 +35,7 @@
 
 
 </div>
-
+</div>
 
 
 

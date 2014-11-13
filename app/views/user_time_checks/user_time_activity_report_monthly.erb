@@ -3,31 +3,23 @@
 <h2> User Time Activity Monthly Report</h2>
 
 <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report_monthly' do %>
+<fieldset><legend><%= l(:label_filter_plural) %></legend>
+    <table>
+      <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
+            (params[:date_from]) || Date.today - 1.month %>
+          <%= calendar_for 'date_from' %>
+        </td> </tr>
+      <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
+            (params[:date_to]) ||Date.today %> 
+          <%= calendar_for 'date_to' %>
+        </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
 
-  <table>
-    <tr align="left">
-      <th><%= "Date From"%></th>
-    </tr>  
-    <tr align="left">
-      <td><%= text_field_tag "date_from",
-          (params[:date_from]) || Date.today - 1.month %>
-        <%= calendar_for 'date_from' %>
-      </td>    
-    </tr>
-    <tr align="left">
-      <th><%=" Date To" %></th>
-    </tr>
-    <tr align="left">
-      <td> <%= text_field_tag "date_to",
-          (params[:date_to]) ||Date.today %> 
-        <%= calendar_for 'date_to' %>
-      </td>    
-    </tr>
-  </table>
 
+    </table>
+  </fieldset>
   <br><br>
 
-  <table border="1" id='user-time-activity-report'>
+  <table border="1" id='user-time-activity-report' class="list user time activity monthly">
     <thead>
       <tr align="center">
         <th><%= "User Name " %></th>
@@ -158,7 +150,6 @@
     </tbody>
   </table>
 
-  <%= submit_tag 'Apply' %>
 <% end %>
 
 
