@@ -2,8 +2,7 @@
 <br>
 <h2> User Time Activity Report</h2>
 <% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>
-= debug(@user_stats) %><%= debug(@all_trackers) %>
-<%= debug(@user_stats) %>
+
   <%if @all_trackers%>
     <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
       <fieldset><legend><%= l(:label_filter_plural) %></legend>
