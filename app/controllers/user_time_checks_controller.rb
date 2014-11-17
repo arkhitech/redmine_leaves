@@ -22,7 +22,9 @@ class UserTimeChecksController < ApplicationController
     export_grid_if_requested('time_checks_grid' => 'time_check_grid')
   
   end
-  
+  def all_trackers
+    (Setting.plugin_redmine_leaves['tracker_names'] || '').split(',').delete_if { |index| index.blank? }
+  end
  
   def user_time_activity_report
   
@@ -57,11 +59,25 @@ class UserTimeChecksController < ApplicationController
     end
     
     
-    @trackers.each do |tracker|
+    #  @trackers.each do |tracker|
+    @all_trackers=all_trackers
+
+#    Sum(CASE 
+#           WHEN CMTS_RQ.US_Pwr >=37 AND CMTS_RQ.US_Pwr <= 49 
+#             THEN 1
+#             ELSE 0 
+    all_trackers.each do |tracker|
+      
       user_tracker_stats = User.
         select("#{User.table_name}.lastname, #{User.table_name}.firstname, #{User.
         table_name}.id as user_id, #{Tracker.table_name}.id as tracker_id,#{Tracker.
-        table_name}.name as tracker_name,count(#{Tracker.
+        table_name}.name as tracker_name,
+        sum(CASE 
+                WHEN #{Issue.table_name}.estimated_hours IS NOT NULL 
+                THEN estimated_hours
+                ELSE 0
+             end) as estimated_hours_on_tracker,
+        count(#{Tracker.
         table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
       .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
       .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
@@ -70,7 +86,7 @@ class UserTimeChecksController < ApplicationController
       .order("#{Tracker.table_name}.id")
       .where("#{Tracker.table_name}.name=? AND #{TimeEntry.
         table_name}.spent_on>=? AND  #{TimeEntry.table_name}.spent_on<=?",
-        tracker.name, params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+        tracker, params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
       
       user_tracker_stats.each do |user_tracker_stat|
         @user_stats[user_tracker_stat.user_id] ||= {user: user_tracker_stat, trackers: {}}
@@ -79,7 +95,7 @@ class UserTimeChecksController < ApplicationController
     end    
      
     missed_due_dates=User.
-      select("#{User.table_name}.firstname,#{User.table_name}.id as user_id, count(#{Tracker.
+      select("#{User.table_name}.firstname,#{User.table_name}.lastname,#{User.table_name}.id as user_id, count(#{Tracker.
       table_name}.id)as missed_dates")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
     .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
@@ -118,29 +134,40 @@ class UserTimeChecksController < ApplicationController
     
     @time_spent_on_tracker = {}
     @missed_dates = {}
+    @all_trackers=all_trackers
+
+ 
     @months_and_years.each do |user|   
-      @trackers.each do |tracker|
-          
-        @time_spent_on_tracker[tracker.name+user.user_id.to_s+user.month.to_s+user.year.to_s] = User.
-          select(" #{User.table_name}.firstname,year(#{TimeEntry.table_name}.spent_on)as year,month(#{TimeEntry.table_name}.spent_on) as month")
+      # @trackers.each do |tracker|
+      all_trackers.each do |tracker|    
+        @time_spent_on_tracker[tracker+user.user_id.to_s+user.month.to_s+user.year.to_s] = User.
+          select(" #{User.table_name}.firstname,year(#{TimeEntry.table_name}.spent_on)as year,
+                month(#{TimeEntry.table_name}.spent_on) as month")
         .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
         .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
         .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
         .group("#{Tracker.table_name}.id,#{User.table_name}.id,year(#{TimeEntry.table_name}.spent_on),month(#{TimeEntry.table_name}.spent_on)")
-        .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,count(#{Tracker.table_name}.name)as num_of_trackers,sum(#{TimeEntry.table_name}.hours ) as time_spent")
+        .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,
+              count(#{Tracker.table_name}.name)as num_of_trackers,
+              sum(CASE 
+                WHEN #{Issue.table_name}.estimated_hours IS NOT NULL 
+                THEN estimated_hours
+                ELSE 0
+             end) as estimated_hours_on_tracker,
+              sum(#{TimeEntry.table_name}.hours ) as time_spent")
         .order("year(#{TimeEntry.table_name}.spent_on),month(#{TimeEntry.table_name}.spent_on),#{Tracker.table_name}.id")
         .where("#{Tracker.table_name}.name=?
               and #{TimeEntry.table_name}.spent_on>=? 
               and  #{TimeEntry.table_name}.spent_on<=? 
               and month(#{TimeEntry.table_name}.spent_on)=? 
               and year(#{TimeEntry.table_name}.spent_on)=?
-              and #{User.table_name}.id=?",tracker.name,params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
+              and #{User.table_name}.id=?",tracker,params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
 
      
       end
       
       @missed_dates[user.user_id.to_s+user.month.to_s+user.year.to_s]=User.
-        select(" #{User.table_name}.firstname,
+        select(" #{User.table_name}.firstname,#{User.table_name}.lastname,
       year(#{TimeEntry.table_name}.spent_on)as year,
       month(#{TimeEntry.table_name}.spent_on) as month,
       count(#{Tracker.table_name}.id)as missed_dates")

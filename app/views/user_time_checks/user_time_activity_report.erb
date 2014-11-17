@@ -1,86 +1,99 @@
 <%= render template: "layouts/user_time_analytics" %>
 <br>
 <h2> User Time Activity Report</h2>
+<% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>
+= debug(@user_stats) %><%= debug(@all_trackers) %>
+<%= debug(@user_stats) %>
+  <%if @all_trackers%>
+    <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
+      <fieldset><legend><%= l(:label_filter_plural) %></legend>
+        <table>
+          <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
+                (params[:date_from]) || Date.today - 1.month %>
+              <%= calendar_for 'date_from' %>
+            </td> </tr>
+          <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
+                (params[:date_to]) ||Date.today %> 
+              <%= calendar_for 'date_to' %>
+            </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
+        </table>
+      </fieldset>
+      <br><br>
+      <div class="autoscroll">
+        <table border="1" id='user-time-activity-report-table' class="list user time activity"  >
+          <thead>
+            <tr align="center">
+              <th >
+                <%= "USER NAME" %>
 
-<%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
+              </th>
 
-  <fieldset><legend><%= l(:label_filter_plural) %></legend>
-    <table>
-      <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
-            (params[:date_from]) || Date.today - 1.month %>
-          <%= calendar_for 'date_from' %>
-        </td> </tr>
-      <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
-            (params[:date_to]) ||Date.today %> 
-          <%= calendar_for 'date_to' %>
-        </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
-
-
-    </table>
-  </fieldset>
-  <br><br>
-  <div class="autoscroll">
-    <table border="1" id='user-time-activity-report-table' class="list user time activity"  >
-      <thead>
-        <tr align="center">
-          <th >
-            <%= "USER NAME" %>
-            
-          </th>
-
-          <th><%= "MISSED DUE DATES" %></th>
-          <% unless @trackers.nil? ||  @trackers.empty? %>
-            <% @trackers.each do |tracker| %>
+              <th><%= "MISSED DUE DATES" %></th>
+              <%# unless @trackers.nil? ||  @trackers.empty? %>
+              <% @all_trackers.each do |tracker|%>
+               <%# @trackers.each do |tracker| %>
               <th>
-                #<%= " #{tracker.name} HANDLED"%>
+                  #<%= " #{tracker} HANDLED"%>
               </th> 
               <th>
-                <%= "TIME SPENT ON #{tracker.name}" %>
+                  <%= "ACTUAL TIME FOR #{tracker}" %>
               </th>
+              <th>
+                  <%= "TIME SPENT ON #{tracker}" %>
+              </th>
+              <%end%>
+              <%#end%>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user_stats.each_pair do |user_id, user_stats| %>
+              <tr  align="center" class="<%= cycle "odd", "even" %>" >
+                <%user = user_stats[:user]%>
+                <td>
+                  <%= "#{user.firstname} #{user.lastname}"%>
+                </td>
+                <td>
+                  <% t = user_stats[:missed_due_dates] %>
+                  <% if t %>
+                    <%=  t.missed_dates   %>
+                  <% else %>
+                    0
+                  <% end %>
+                </td>
+                <% @all_trackers.each do |tracker|%>
+                  <%#@trackers.each do |tracker|%>
+                  <td>
+                    <% t = user_stats[:trackers][tracker] %>
+                    <% if t %>
+                      <%=t.num_of_trackers %>
+                    <% else %>
+                      0
+                    <% end %>
+                  </td> 
+                  
+                   <td>
+                    <% if t %>
+                      <%= t.estimated_hours_on_tracker.round(2) %>
+                    <% else %>
+                      0
+                    <% end %>
+                  </td>
+                  
+                  <td>
+                    <% if t %>
+                      <%= t.time_spent.round(2) %>
+                    <% else %>
+                      0
+                    <% end %>
+                  </td>
+                <%end%>
+              </tr>
             <%end%>
-          <%end%>
-        </tr>
-      </thead>
-      <tbody>
-        <% @user_stats.each_pair do |user_id, user_stats| %>
-          <tr  align="center" class="<%= cycle "odd", "even" %>" >
-            <%user = user_stats[:user]%>
-            <td>
-              <%= "#{user.firstname} #{user.lastname}"%>
-            </td>
-            <td>
-              <% t = user_stats[:missed_due_dates] %>
-              <% if t %>
-                <%=  t.missed_dates   %>
-              <% else %>
-                0
-              <% end %>
-            </td>
-            <%@trackers.each do |tracker|%>
-              <td>
-                <% t = user_stats[:trackers][tracker.name] %>
-                <% if t %>
-                  <%=t.num_of_trackers %>
-                <% else %>
-                  0
-                <% end %>
-              </td> 
-              <td>
-                <% if t %>
-                  <%= t.time_spent.round(2) %>
+          </tbody>
+        </table>
+      </div>
 
-                <% else %>
-                  0
-                <% end %>
-              </td>
-            <%end%>
-          </tr>
-        <%end%>
-      </tbody>
-    </table>
-  </div>
-
-<% end %>
+    <% end %><%#form end%>
 
 
 
@@ -89,9 +102,19 @@
 
 
 
+  <%else%>
+
+    <p>No data to view</p>
+    <a href="/user_time_checks">Back</a>
+  <%end%>
 
 
 
+<%else%>
+
+<p>You do not have permission to view reports</p>
+<a href="/user_time_checks">Back</a>
+<%end%>
 
 
 
