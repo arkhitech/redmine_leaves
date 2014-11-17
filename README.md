@@ -25,7 +25,7 @@ Installation:
 
 - Run rake task to populate time_spent field in user_time_checks
 
-        rake redmine_leaves:populate_time_spent
+        RAILS_ENV=production  rake redmine_leaves:populate_time_spent
 
 - Bundle install all the gems using the following command
 
