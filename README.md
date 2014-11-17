@@ -23,6 +23,10 @@ Installation:
 
         rake redmine:plugins:migrate RAILS_ENV=production
 
+- Run rake task to populate time_spent field in user_time_checks
+
+        RAILS_ENV=production  rake redmine_leaves:populate_time_spent
+
 - Bundle install all the gems using the following command
 
         bundle install
