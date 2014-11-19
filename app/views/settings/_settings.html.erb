@@ -149,13 +149,30 @@
   <legend><strong>Time Activity Report Settings</strong></legend>
   <table>  
     <tr>
-      <td>
+      
         <table>
           <tr><legend><%= l(:label_trackers)%></legend></tr>
-    <tr><td align="middle"><%= text_field_tag('settings[tracker_names]', settings['tracker_names']) %></td></tr>
+    <tr><td align="middle">
+<%#= text_field_tag('settings[tracker_names]', settings['tracker_names']) %>
+      </td></tr>
     <tr><td><small> <%= l(:label_tracker_instructions )%> </small></td></tr>
   </table>
-</td>
+
+    <table><tr><legend><%= l(:label_trackers) %></legend></tr>
+    <tr>
+      <td>
+        <%# tracker_array = Tracker.all.map { |tracker| [tracker.name, tracker.id] } %>
+        <%#= select(tracker_array) %>
+        
+        <%= options_from_collection_for_select(Tracker.all, :id, :name) %>
+
+<%#= collection_select(:tracker, :name, Tracker.all, :id, :name, multiple: true) %>
+
+<%= select_tag('settings[tracker_names]', 
+            options_from_collection_for_select(Tracker.all, :name, :name,settings['tracker_names']), 
+            multiple: true) %>
+    </tr></table>
+     
 
 
 
