@@ -2,7 +2,8 @@
 <br>
 <h2> User Time Activity Monthly Report</h2>
 <% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>
-  <%if @all_trackers%>
+  <%#if @all_trackers%>
+ <% unless   @months_and_years.nil? ||    @months_and_years.empty? %> 
     <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report_monthly' do %>
       <fieldset><legend><%= l(:label_filter_plural) %></legend>
           <table>
@@ -43,7 +44,7 @@
           <tbody>
             <% unless   @months_and_years.nil? ||    @months_and_years.empty? %> 
               <%   @months_and_years.each do |user| %>
-                <tr  align="center" >
+                <tr  align="center" class="<%= cycle "even", "odd" %>" >
                   <td>
                      <%= "#{user.firstname} #{user.lastname}"%>
                   </td> 

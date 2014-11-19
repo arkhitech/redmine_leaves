@@ -17,7 +17,7 @@ class UserTimeCheck < ActiveRecord::Base
   
   def self.as_csv
     
-  CSV.generate do |csv|
+    CSV.generate do |csv|
       csv << ["USER ID", "User Name", "Check In Time", "Check Out Time ", "Time Spent", "Comments"] ## Header values of CSV
       all.each do |emp|
         csv << [emp.user_id, emp.user.name, emp.check_in_time, emp.check_in_time, emp.time_spent, emp.comments] ##Row values of CSV
@@ -28,13 +28,13 @@ class UserTimeCheck < ActiveRecord::Base
 
   def self.autogenerate_checkout(missed_checkout)
     if missed_checkout.check_in_time.hour < 16
-        missed_checkout.update_attributes(check_out_time: missed_checkout.check_in_time + 6.hours, 
-          comments: l(:auto_generated_comment),time_spent: 6*60)
+      missed_checkout.update_attributes(check_out_time: missed_checkout.check_in_time + 6.hours, 
+        comments: l(:auto_generated_comment),time_spent: 6*60)
     else
       #consider previously marked check_in_time as actually check_out time
-        missed_checkout.update_attributes(check_in_time: missed_checkout.check_in_time - 6.hours, 
-          check_out_time: missed_checkout.check_in_time,
-          comments: l(:auto_generated_comment),time_spent: 6*60)
+      missed_checkout.update_attributes(check_in_time: missed_checkout.check_in_time - 6.hours, 
+        check_out_time: missed_checkout.check_in_time,
+        comments: l(:auto_generated_comment),time_spent: 6*60)
 
     end
   end
@@ -44,19 +44,21 @@ class UserTimeCheck < ActiveRecord::Base
       CSV.foreach(file.path, options) do |row|      
         name = row[INDEX_ZK_NAME]
         date = row[INDEX_ZK_DATETIME]
+       # so = row[INDEX_ZK_DdateATETIME]
         first_last_name = name.split(" ")
-        user = User.where(firstname: first_last_name.first, lastname: first_last_name.last).first
-     p name 
-     p date.to_datetime
-     p user
-        
+        user = User.where(firstname: first_last_name[0], lastname: first_last_name[1]).first
+      
+      # date =format_time(so)
+          p name 
+        p date.to_datetime
+        p user
         unless name && date && user
           # missing name or date or no records found in database
           next
         end
         
-#        date = "#{date} #{Time.zone}".to_datetime
-date=date.to_datetime
+        #        date = "#{date} #{Time.zone}".to_datetime
+        date=date.to_datetime
         missed_checkouts = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_out_time IS NULL', 
             user.id, date.beginning_of_day])
@@ -67,14 +69,19 @@ date=date.to_datetime
         checkin_timechecks = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
             user.id, date.end_of_day, date.beginning_of_day])
-p checkin_timechecks
+        p checkin_timechecks
 
         
         if checkin_timechecks.empty?
-         UserTimeCheck.create(user_id: user.id, check_in_time: date,check_out_time:  nil)
-            p '*'*50
-    p user
-    p '*'*50
+          checked_dates = UserTimeCheck.
+            where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NOT NULL', 
+              user.id, date.end_of_day, date.beginning_of_day])
+          if checked_dates.empty?
+            UserTimeCheck.create(user_id: user.id, check_in_time: date,check_out_time:  nil)
+          end
+          p '*'*50
+          p user
+          p '*'*50
         else
           user_time_check = checkin_timechecks.first
           checked_time = date.to_time - user_time_check.check_in_time.to_time
@@ -88,7 +95,7 @@ p checkin_timechecks
               #difference between previous checkout and current is greater than 16, meaning that user missed out
               user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 6.hours, 
                 comments: l(:auto_generated_comment),time_spent: 6*60)
-           #   UserTimeCheck.create(user_id: user.id, check_in_time: date)
+              #   UserTimeCheck.create(user_id: user.id, check_in_time: date)
               p '$'*50
 
             else
@@ -96,12 +103,12 @@ p checkin_timechecks
             end
           elsif date.hour < 8 && difference > 1 && difference < 16
             #allow checkin/checkout for different days
-              user_time_check.update_attributes(check_out_time: date,time_spent: checked_time/60)
+            user_time_check.update_attributes(check_out_time: date,time_spent: checked_time/60)
           else
-              #difference between previous checkout and current is greater than 16, meaning that user missed out
-              autogenerate_checkout(user_time_check)
-              UserTimeCheck.create(user_id: user.id, check_in_time: date)
-              p '$'*50            
+            #difference between previous checkout and current is greater than 16, meaning that user missed out
+            autogenerate_checkout(user_time_check)
+            UserTimeCheck.create(user_id: user.id, check_in_time: date)
+            p '$'*50            
           end
         end        
       end

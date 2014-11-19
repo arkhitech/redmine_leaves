@@ -2,8 +2,8 @@
 <br>
 <h2> User Time Activity Report</h2>
 <% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>
-
-  <%if @all_trackers%>
+ <% unless   @user_stats.nil? ||    @user_stats.empty? %> 
+  <%#if @all_trackers%>
     <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
       <fieldset><legend><%= l(:label_filter_plural) %></legend>
         <table>
@@ -46,7 +46,7 @@
           </thead>
           <tbody>
             <% @user_stats.each_pair do |user_id, user_stats| %>
-              <tr  align="center" class="<%= cycle "odd", "even" %>" >
+              <tr  align="center" class="<%= cycle "even", "odd" %>" >
                 <%user = user_stats[:user]%>
                 <td>
                   <%= "#{user.firstname} #{user.lastname}"%>

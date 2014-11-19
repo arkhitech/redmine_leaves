@@ -9,15 +9,19 @@ class UserTimeChecksController < ApplicationController
   def index
   
     time_checks= UserTimeCheck.
-      select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
-      joins("LEFT JOIN #{TimeEntry.table_name} on DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
-      group("#{UserTimeCheck.table_name}.id")
-    @time_check_grid = initialize_grid(time_checks,
+      select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours")
+    .joins(" LEFT JOIN #{User.table_name} on 
+  #{User.table_name}.id = #{UserTimeCheck.table_name}.user_id")   
+   .joins(" LEFT JOIN #{TimeEntry.table_name} on 
+ #{User.table_name}.id = #{TimeEntry.table_name}.user_id and DATE(#{UserTimeCheck.table_name}.check_in_time) = #{TimeEntry.table_name}.spent_on 
+       ") 
+     .group("#{UserTimeCheck.table_name}.id")
+  @time_check_grid = initialize_grid(time_checks,
       :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
       :enable_export_to_csv => true,
       :csv_field_separator => ';',
       :csv_file_name => 'UserTimeChecks')#,
+#          conditions: ["check_in_time >  ?", Time.now - 6.months],
      
     export_grid_if_requested('time_checks_grid' => 'time_check_grid')
   
@@ -27,12 +31,18 @@ class UserTimeChecksController < ApplicationController
     #   @s=Setting.plugin_redmine_leaves['tracker_names'].split(',')
     # p"s is"
     Setting.plugin_redmine_leaves['tracker_names']
+
     #   @s[0].split(',')
     #    (Setting.plugin_redmine_leaves['tracker_names'] || '').split(',').delete_if { |index| index.blank? }
   end
  
   def user_time_activity_report
-  
+  if params[:date_from].present? && params[:date_to].present?
+        if params[:date_from] > params[:date_to]
+          flash.now[:error]=l(:error_from_greater_than_to)
+             
+      end
+end
     
     @trackers=Tracker.all
     
@@ -40,7 +50,7 @@ class UserTimeChecksController < ApplicationController
     @users_with_logged_activities=User.
       select("Distinct #{User.table_name}.id as user_id,#{User.table_name}.firstname,#{User.table_name}.lastname")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .where(" #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+    .where(" #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today )
      
     @user_stats = {}
     
@@ -74,7 +84,7 @@ class UserTimeChecksController < ApplicationController
     #             THEN 1
     #             ELSE 0 
     if @all_trackers.nil? || @all_trackers.blank?
-      @all_trackers=Trackers.all
+      @all_trackers=Tracker.all
       @all_trackers.each do |tracker|
       
         user_tracker_stats = User.
@@ -95,7 +105,7 @@ class UserTimeChecksController < ApplicationController
         .order("#{Tracker.table_name}.id")
         .where("#{Tracker.table_name}.name=? AND #{TimeEntry.
           table_name}.spent_on>=? AND  #{TimeEntry.table_name}.spent_on<=?",
-          tracker.name, params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+          tracker.name, params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today )
       
         user_tracker_stats.each do |user_tracker_stat|
           @user_stats[user_tracker_stat.user_id] ||= {user: user_tracker_stat, trackers: {}}
@@ -114,7 +124,7 @@ class UserTimeChecksController < ApplicationController
         "#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on 
         and #{Issue.table_name}.due_date is not NULL
         and  #{Issue.table_name }.due_date >=? 
-        and  #{Issue.table_name }.due_date <=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+        and  #{Issue.table_name }.due_date <=?",params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today )
     
       missed_due_dates.each do |missed_due_dates|
         @user_stats[missed_due_dates.user_id] ||= {user: missed_due_dates, trackers: {}}
@@ -142,7 +152,7 @@ class UserTimeChecksController < ApplicationController
         .order("#{Tracker.table_name}.id")
         .where("#{Tracker.table_name}.name=? AND #{TimeEntry.
           table_name}.spent_on>=? AND  #{TimeEntry.table_name}.spent_on<=?",
-          tracker, params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+          tracker, params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today )
       
         user_tracker_stats.each do |user_tracker_stat|
           @user_stats[user_tracker_stat.user_id] ||= {user: user_tracker_stat, trackers: {}}
@@ -161,7 +171,7 @@ class UserTimeChecksController < ApplicationController
         "#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on 
         and #{Issue.table_name}.due_date is not NULL
         and  #{Issue.table_name }.due_date >=? 
-        and  #{Issue.table_name }.due_date <=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+        and  #{Issue.table_name }.due_date <=?",params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today )
     
       missed_due_dates.each do |missed_due_dates|
         @user_stats[missed_due_dates.user_id] ||= {user: missed_due_dates, trackers: {}}
@@ -175,12 +185,17 @@ class UserTimeChecksController < ApplicationController
  
  
   def user_time_activity_report_monthly
-
+if params[:date_from].present? && params[:date_to].present?
+        if params[:date_from] > params[:date_to]
+          flash.now[:error]=l(:error_from_greater_than_to)
+             
+      end
+end
     @trackers=Tracker.all
     @months_and_years=User.
       select("Distinct #{User.table_name}.id as user_id,#{User.table_name}.firstname,#{User.table_name}.lastname,month(#{TimeEntry.table_name}.spent_on) as month,year(#{TimeEntry.table_name}.spent_on) as year")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
-    .where(" #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
+    .where(" #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today )
     .order("user_id")
     count_users=0
     @months_and_years.each do |user|
@@ -197,7 +212,7 @@ class UserTimeChecksController < ApplicationController
     @months_and_years.each do |user|   
       # @trackers.each do |tracker|
       if @all_trackers.nil? || @all_trackers.blank?
-        @all_trackers=Trackers.all
+        @all_trackers=Tracker.all
         @all_trackers.each do |tracker|
           @time_spent_on_tracker[tracker+user.user_id.to_s+user.month.to_s+user.year.to_s] = User.
             select(" #{User.table_name}.firstname,year(#{TimeEntry.table_name}.spent_on)as year,
@@ -220,7 +235,7 @@ class UserTimeChecksController < ApplicationController
               and  #{TimeEntry.table_name}.spent_on<=? 
               and month(#{TimeEntry.table_name}.spent_on)=? 
               and year(#{TimeEntry.table_name}.spent_on)=?
-              and #{User.table_name}.id=?",tracker,params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
+              and #{User.table_name}.id=?",tracker,params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
         end
      
       else
@@ -246,7 +261,7 @@ class UserTimeChecksController < ApplicationController
               and  #{TimeEntry.table_name}.spent_on<=? 
               and month(#{TimeEntry.table_name}.spent_on)=? 
               and year(#{TimeEntry.table_name}.spent_on)=?
-              and #{User.table_name}.id=?",tracker,params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
+              and #{User.table_name}.id=?",tracker,params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
 
      
         end
@@ -269,7 +284,7 @@ class UserTimeChecksController < ApplicationController
               and  #{TimeEntry.table_name}.spent_on<=? 
 and month(#{TimeEntry.table_name}.spent_on)=? 
               and year(#{TimeEntry.table_name}.spent_on)=?
-              and #{User.table_name}.id=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
+              and #{User.table_name}.id=?",params[:date_from]||Date.today - 6.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
       .order("year(#{Issue.table_name}.start_date),month(#{Issue.table_name}.start_date)")
       
     end
@@ -287,8 +302,8 @@ and month(#{TimeEntry.table_name}.spent_on)=?
   def user_time_reporting
 
     time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
-AVG(check_in_time) as avg_check_in_time,
- AVG(check_out_time) as avg_check_out_time, 
+SEC_TO_TIME(AVG(TIME_TO_SEC(check_in_time))) as avg_check_in_time,
+SEC_TO_TIME(AVG(TIME_TO_SEC(check_out_time))) as avg_check_out_time, 
 avg(time_spent) as average_time")
     .includes(:user)
     .group('user_id')
@@ -296,7 +311,7 @@ avg(time_spent) as average_time")
     
     @time_report_grid = initialize_grid(time_checks,
       :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
+     # conditions: ["check_in_time >  ?", Time.now - 6.months],
       :enable_export_to_csv => true,
       :csv_field_separator => ';',
       :csv_file_name => 'UserTimeCustom')#,
@@ -313,8 +328,8 @@ avg(time_spent) as average_time")
   
     time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
 check_out_time ,user_id,
- AVG(check_in_time) as avg_check_in_time,
- AVG(check_out_time) as avg_check_out_time, 
+SEC_TO_TIME(AVG(TIME_TO_SEC(check_in_time))) as avg_check_in_time,
+SEC_TO_TIME(AVG(TIME_TO_SEC(check_out_time))) as avg_check_out_time, 
  sum(time_spent) as time_spent,avg(time_spent) as average_time").
       includes(:user).
       group('user_id,year(check_in_time),week(check_in_time)').        
@@ -322,7 +337,7 @@ check_out_time ,user_id,
       
     @time_report_grid_weekly = initialize_grid(time_checks,
       :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
+     # conditions: ["check_in_time >  ?", Time.now - 6.months],
       :enable_export_to_csv => true,
       :csv_field_separator => ';',
       :csv_file_name => 'UserTimeWeekly')#,
@@ -341,8 +356,8 @@ check_out_time ,user_id,
 
     time_checks = UserTimeCheck.includes(:user)
     .select("check_in_time, check_out_time, user_id,
- AVG(check_in_time) as avg_check_in_time,
- AVG(check_out_time) as avg_check_out_time, 
+SEC_TO_TIME(AVG(TIME_TO_SEC(check_in_time))) as avg_check_in_time,
+SEC_TO_TIME(AVG(TIME_TO_SEC(check_out_time))) as avg_check_out_time, 
 sum(time_spent) as time_spent,avg(time_spent) as average_time")
     .group('user_id,year(check_in_time),month(check_in_time)') 
     .order('year(check_in_time),month(check_in_time),user_id')

@@ -170,7 +170,7 @@
 
 <%= select_tag('settings[tracker_names]', 
             options_from_collection_for_select(Tracker.all, :name, :name,settings['tracker_names']), 
-            multiple: true) %>
+            multiple: true,none: true) %>
     </tr></table>
      
 
