@@ -1,0 +1,13 @@
+
+<% if flash.any? %>
+  <div id="flash">
+    <% flash.each do |msg_type, text| %>
+ 
+        <div data-alert class="alert-box round flash <%=msg_type%>">
+          <%= text %>
+          <a href="#" class="close">&times;</a>
+        </div>
+    
+    <% end %>
+  </div>
+<% end%>

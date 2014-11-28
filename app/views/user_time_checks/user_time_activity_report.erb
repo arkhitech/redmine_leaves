@@ -1,4 +1,5 @@
-<%= render template: "layouts/user_time_analytics" %>
+    <%= render :partial => 'common/flashes' %>
+    <%= render template: "layouts/user_time_analytics" %>
 <br>
 <h2> User Time Activity Report</h2>
 <% if User.current.allowed_to_globally?(:view_time_reports,{}) -%>

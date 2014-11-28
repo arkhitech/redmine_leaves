@@ -39,7 +39,7 @@ class UserTimeChecksController < ApplicationController
   def user_time_activity_report
   if params[:date_from].present? && params[:date_to].present?
         if params[:date_from] > params[:date_to]
-          flash.now[:error]=l(:error_from_greater_than_to)
+          flash[:error]=l(:error_from_greater_than_to)
              
       end
 end
@@ -187,8 +187,10 @@ end
   def user_time_activity_report_monthly
 if params[:date_from].present? && params[:date_to].present?
         if params[:date_from] > params[:date_to]
-          flash.now[:error]=l(:error_from_greater_than_to)
-             
+
+          flash[:error]= l(:error_from_greater_than_to)
+          
+          
       end
 end
     @trackers=Tracker.all
