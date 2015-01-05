@@ -1,0 +1,47 @@
+<%= form_for @user_leave do |leave_form| %>
+  <%= error_messages_for @user_leave %>
+  <table>
+    <tr>
+      <th align="left">User/Group</th>
+      <td><%= leave_form.select(:user_id,
+              add_user_options(@user_leave.user_id),{},{multiple: true}) %></td>
+      <td><%= leave_form.select(:user_id,
+              options_from_collection_for_select(Group.all, :id, :name, @selected_group),{},{multiple: true}) %></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <th align="left">Leave Type</th>
+      <td><%= leave_form.select(:leave_type,
+              add_leave_options(@user_leave.leave_type)) %></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <th align="left">Leave Date</th>
+      <th align="center"><small>From</small></th>
+    </tr>
+    <tr>
+      <th></th>
+      <td><%= leave_form.date_select :leave_date %></td>
+    </tr>
+    <tr>
+      <th></th>
+      <th align="center"><small>To</small></th>
+    </tr>
+    <tr>  
+      <th></th>
+      <td><%= leave_form.date_select :leave_date %></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <th align="top">Comments</th>
+      <td>
+        <%= leave_form.text_field :comments %>
+        <small>(Optional)</small>
+      </td>
+    </tr>
+  </table>
+  <%= leave_form.submit 'Add' %>
+<% end %>
