@@ -19,6 +19,14 @@ module UserLeaveReportsHelper
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_own_leave_groups)
     end
   end
+
+  def edit_attendance_users
+    @edit_attendance_users ||= begin
+      edit_attendance_groups = Setting.plugin_redmine_leaves['edit_attendance']
+      User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => edit_attendance_groups)
+    end
+  end
     
   def plugin_setting(setting_name)
     (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }

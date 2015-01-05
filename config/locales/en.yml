@@ -135,7 +135,9 @@ en:
    error_from_greater_than_to: "From date can not be greater than to Date"
    
    #user_leaves_controller
-   notice_leaves_added: "Leave (s) Added!"
+   notice_leave_add: "%{leave_type} leave marked for %{user_name} for %{leave_date}"
+   error_leave_add: "%{leave_type} leave for %{user_name} for %{leave_date} could not be added. Reason: %{reason}"
+
    error_no_user_group_selected: "No User/Group Selected!"
    error_invalid_user_group_selected: "Invalid User/Group Selected!"
    notice_leaves_updated: "User Leave Updated!"
