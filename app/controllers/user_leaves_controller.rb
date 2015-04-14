@@ -12,11 +12,20 @@ class UserLeavesController < ApplicationController
     end        
   end
   
-  def create  
+  def create
+    
+    flag=false
     errors = []
     selected_users = []
     invalid_group = false
-    if params['create_user_leave']['selected_users']
+    if !params['create_user_leave']['selected_users'].blank? && !params['create_user_leave']['selected_groups'].blank?
+      errors << "select either from user or group"
+       flash.now[:error]="#{errors.join('<br/>')}"
+       flag=true
+      render 'new'
+      return
+    end
+    if params['create_user_leave']['selected_users'] 
       selected_users = params['create_user_leave']['selected_users']
     else
       selected_group_users = User.active.joins(:groups).
@@ -41,7 +50,7 @@ class UserLeavesController < ApplicationController
     end
     selected_users = check_selected_users(selected_users)
     notices = []
-    if !selected_users.empty? && errors.empty?
+    if !selected_users.empty? && errors.empty? && flag==false
       selected_users = selected_users.uniq
       selected_users.each do |user|
         leave_date = selected_date_from
