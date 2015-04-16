@@ -7,7 +7,7 @@ class UserTimeChecksController < ApplicationController
   helper :sort
   
   def index
-  
+ 
     time_checks= UserTimeCheck.
       select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
       joins("LEFT JOIN #{TimeEntry.table_name} on DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
