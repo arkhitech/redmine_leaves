@@ -1,5 +1,6 @@
 var row_id = "table#user-leave-report tr#table-row-"+<%= @user_leave.id %>;
+$(row_id).fadeOut(); 
+//*$("#flash_delete_option").html("<%= escape_javascript flash.now[:notice]=l(:label_deleted)%>");
+//$("#flash_delete_option").toggle();
 
-$("#flash_delete_option").html("<%= escape_javascript flash.now[:notice]=l(:label_deleted)%>");
-$("#flash_delete_option").toggle();
-$(row_id).fadeOut();
+ alert("<%=l(:label_deleted)%>");
