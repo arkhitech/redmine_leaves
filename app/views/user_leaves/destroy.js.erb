@@ -3,4 +3,11 @@ $(row_id).fadeOut();
 //*$("#flash_delete_option").html("<%= escape_javascript flash.now[:notice]=l(:label_deleted)%>");
 //$("#flash_delete_option").toggle();
 
- alert("<%=l(:label_deleted)%>");
+function alertWithoutNotice(message){
+    setTimeout(function(){
+        alert(message);
+    }, 1000);
+}
+alertWithoutNotice("<%=l(:label_deleted)%>");
+
+ //alert("<%=l(:label_deleted)%>");
