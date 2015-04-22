@@ -26,7 +26,7 @@
     <tr>
       <th align="left"><%= l(:label_fractional_leave ) %></th>
       <td>
-        <%= leave_form.number_field :fractional_leave,:step =>'.25', :min=> 0,:max=> 1 %>
+        <%= leave_form.number_field :fractional_leave,:step =>'.25', :min=> 0,:max=> 1.5 %>
         <small><%= l(:label_fractional_leave_optional ) %></small>
       </td>
   </table>
