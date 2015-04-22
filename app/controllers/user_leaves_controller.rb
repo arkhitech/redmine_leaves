@@ -96,6 +96,7 @@ class UserLeavesController < ApplicationController
     @user_leave.destroy
     respond_to do |format|
       format.js {}
-    end    
+    end 
   end
 end
+

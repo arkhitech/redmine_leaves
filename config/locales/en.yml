@@ -48,8 +48,7 @@ en:
    label_button_add: "Add"
    
    #user_leaves/destroy
-   label_deleted: "Deleted!"
-   
+   label_deleted: "Leave has been deleted successfully!"
    #user_leaves/edit
    label_update_leave: "Update Leave"
    label_button_update: "Update"
