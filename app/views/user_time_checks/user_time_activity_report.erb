@@ -56,33 +56,33 @@
                   <% if t %>
                     <%=  t.missed_dates   %>
                   <% else %>
-                    0
+                    
                   <% end %>
                 </td>
                 <% @all_trackers.each do |tracker|%>
                   <%#@trackers.each do |tracker|%>
                   <td>
-                    <% t = user_stats[:trackers][tracker] %>
+                    <% t= user_stats[:trackers][tracker] %>
                     <% if t %>
                       <%=t.num_of_trackers %>
                     <% else %>
-                      0
+                      
                     <% end %>
                   </td> 
                   
                    <td>
                     <% if t %>
-                      <%= t.estimated_hours_on_tracker.round(2) %>
+                      <%= t.estimated_hours_on_tracker %>
                     <% else %>
-                      0
+                      
                     <% end %>
                   </td>
                   
                   <td>
                     <% if t %>
-                      <%= t.time_spent.round(2) %>
+                      <%= t.time_spent%>
                     <% else %>
-                      0
+                      
                     <% end %>
                   </td>
                 <%end%>

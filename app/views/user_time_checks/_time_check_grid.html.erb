@@ -46,7 +46,7 @@
   e.column name: 'Logged Time', html: {style: 'text-align: center'}do |t|
     unless t.logged_hours.nil?
 
-      t.logged_hours.round(2)
+      t.logged_hours
     end
   end
 
