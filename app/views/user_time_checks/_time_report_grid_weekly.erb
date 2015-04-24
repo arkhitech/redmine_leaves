@@ -9,11 +9,11 @@
     end
   e.column name: 'Week Start Date', html: {style: 'text-align: center'} do |t|
 
-    time=Time.at(t.weekdays.beginning_of_week)
+    time=Time.at(t.weekdays.to_datetime.beginning_of_week)
     time.strftime("%F")
     end
   e.column name: 'Week End Date', html: {style: 'text-align: center'} do |t|
-    time=Time.at(t.weekdays.end_of_week)
+    time=Time.at(t.weekdays.to_datetime.end_of_week)
     time.strftime("%F")
     end
 
@@ -36,7 +36,7 @@
 
   e.column name: 'Average Clock-in', html: {style: 'text-align: center'} do |t|
     unless t.avg_check_in_time.nil?
-      time=Time.at(t.avg_check_in_time)
+      time=Time.at(t.avg_check_in_time.to_i)
       t= time.in_time_zone
       t.to_formatted_s(:time) 
     end
@@ -44,7 +44,7 @@
 
   e.column name: 'Average Clock-out', html: {style: 'text-align: center'} do |t|
     unless t.avg_check_out_time.nil?
-      time=Time.at(t.avg_check_out_time)
+      time=Time.at(t.avg_check_out_time.to_i)
       t= time.in_time_zone
       t.to_formatted_s(:time) 
     end

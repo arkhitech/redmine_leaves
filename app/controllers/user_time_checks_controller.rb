@@ -17,7 +17,7 @@ class UserTimeChecksController < ApplicationController
       conditions: ["check_in_time >  ?", Time.now - 6.months],
       :enable_export_to_csv => true,
       :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeChecks')#,
+      :csv_file_name => 'UserTimeChecks')
      
     export_grid_if_requested('time_checks_grid' => 'time_check_grid')
   
@@ -121,7 +121,7 @@ class UserTimeChecksController < ApplicationController
 
     @trackers=Tracker.all
     @months_and_years=User.
-      select("Distinct #{User.table_name}.id as user_id,month(#{TimeEntry.table_name}.spent_on) as month,year(#{TimeEntry.table_name}.spent_on) as year")
+      select("Distinct #{User.table_name}.id as user_id,extract(month from(#{TimeEntry.table_name}.spent_on)) as month,extract(year from(#{TimeEntry.table_name}.spent_on)) as year")
     .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
     .where(" #{TimeEntry.table_name}.spent_on>=? and  #{TimeEntry.table_name}.spent_on<=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today )
     .order("user_id")
@@ -141,12 +141,12 @@ class UserTimeChecksController < ApplicationController
       # @trackers.each do |tracker|
       all_trackers.each do |tracker|    
         @time_spent_on_tracker[tracker+user.user_id.to_s+user.month.to_s+user.year.to_s] = User.
-          select(" #{User.table_name}.firstname,year(#{TimeEntry.table_name}.spent_on)as year,
-                month(#{TimeEntry.table_name}.spent_on) as month")
+          select(" #{User.table_name}.firstname,extract(year from(#{TimeEntry.table_name}.spent_on))as year,
+                extract(month from(#{TimeEntry.table_name}.spent_on)) as month")
         .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
         .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
         .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")
-        .group("#{Tracker.table_name}.id,#{User.table_name}.id,year(#{TimeEntry.table_name}.spent_on),month(#{TimeEntry.table_name}.spent_on)")
+        .group("#{Tracker.table_name}.id,#{User.table_name}.id,extract(year from(#{TimeEntry.table_name}.spent_on)),extract(month from(#{TimeEntry.table_name}.spent_on))")
         .select("#{Tracker.table_name}.id as tracker_id,#{Tracker.table_name}.name as tracker_name,
               count(#{Tracker.table_name}.name)as num_of_trackers,
               sum(CASE 
@@ -155,12 +155,12 @@ class UserTimeChecksController < ApplicationController
                 ELSE 0
              end) as estimated_hours_on_tracker,
               sum(#{TimeEntry.table_name}.hours ) as time_spent")
-        .order("year(#{TimeEntry.table_name}.spent_on),month(#{TimeEntry.table_name}.spent_on),#{Tracker.table_name}.id")
+        .order("extract(year from(#{TimeEntry.table_name}.spent_on)),extract(month from(#{TimeEntry.table_name}.spent_on)),#{Tracker.table_name}.id")
         .where("#{Tracker.table_name}.name=?
               and #{TimeEntry.table_name}.spent_on>=? 
               and  #{TimeEntry.table_name}.spent_on<=? 
-              and month(#{TimeEntry.table_name}.spent_on)=? 
-              and year(#{TimeEntry.table_name}.spent_on)=?
+              and extract(month from(#{TimeEntry.table_name}.spent_on))=? 
+              and extract(year from(#{TimeEntry.table_name}.spent_on))=?
               and #{User.table_name}.id=?",tracker,params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
 
      
@@ -168,24 +168,24 @@ class UserTimeChecksController < ApplicationController
       
       @missed_dates[user.user_id.to_s+user.month.to_s+user.year.to_s]=User.
         select(" #{User.table_name}.firstname,#{User.table_name}.lastname,
-      year(#{TimeEntry.table_name}.spent_on)as year,
-      month(#{TimeEntry.table_name}.spent_on) as month,
+      extract(year from(#{TimeEntry.table_name}.spent_on))as year,
+      extract(month from(#{TimeEntry.table_name}.spent_on)) as month,
       count(#{Tracker.table_name}.id)as missed_dates")
       .joins("INNER JOIN #{TimeEntry.table_name} on #{User.table_name}.id= #{TimeEntry.table_name}.user_id")      
       .joins("INNER JOIN #{Issue.table_name} on #{Issue.table_name}.id= #{TimeEntry.table_name}.issue_id")
       .joins("INNER JOIN #{Tracker.table_name} on #{Issue.table_name}.tracker_id= #{Tracker.table_name}.id")      
       .group("#{User.table_name}.id,
       #{Issue.table_name}.id,
-      year(#{TimeEntry.table_name}.spent_on),
-      month(#{TimeEntry.table_name}.spent_on)")
+      extract(year from(#{TimeEntry.table_name}.spent_on)),
+      extract(month from(#{TimeEntry.table_name}.spent_on))")
       .where("#{Issue.table_name}.due_date< #{Issue.table_name}.closed_on 
       and #{Issue.table_name}.due_date is not NULL 
     and #{TimeEntry.table_name}.spent_on>=? 
               and  #{TimeEntry.table_name}.spent_on<=? 
-and month(#{TimeEntry.table_name}.spent_on)=? 
-              and year(#{TimeEntry.table_name}.spent_on)=?
+and extract(month from(#{TimeEntry.table_name}.spent_on))=? 
+              and extract(year from(#{TimeEntry.table_name}.spent_on))=?
               and #{User.table_name}.id=?",params[:date_from]||Date.today - 1.month,params[:date_to]||Date.today ,user.month,user.year,user.user_id)
-      .order("year(#{Issue.table_name}.start_date),month(#{Issue.table_name}.start_date)")
+      .order("extract(year from(#{Issue.table_name}.start_date)),extract(month from(#{Issue.table_name}.start_date))")
       
     end
 
@@ -200,7 +200,7 @@ and month(#{TimeEntry.table_name}.spent_on)=?
  
 
   def user_time_reporting
-    
+   
     time_checks = UserTimeCheck.select("user_id, check_in_time,check_out_time, 
                                       avg(extract(epoch from check_in_time)) * interval '1 second' as avg_check_in_time,
                                       avg(extract(epoch from check_out_time)) * interval '1 second' as avg_check_out_time, 
@@ -226,7 +226,7 @@ and month(#{TimeEntry.table_name}.spent_on)=?
   
   def user_time_reporting_weekly
   
-    time_checks = UserTimeCheck.select("check_in_time as weekdays,week(check_in_time) as week,year(check_in_time) as year,check_in_time,
+    time_checks = UserTimeCheck.select("check_in_time as weekdays,extract(week from check_in_time) as week,extract(year from check_in_time) as year,check_in_time,
 check_out_time ,user_id,
  avg(extract(epoch from check_in_time)) * interval '1 second' as avg_check_in_time,
 avg(extract(epoch from check_out_time)) * interval '1 second' as avg_check_out_time, 
@@ -255,7 +255,7 @@ avg(extract(epoch from check_out_time)) * interval '1 second' as avg_check_out_t
  
 
     time_checks = UserTimeCheck.includes(:user)
-    .select("check_in_time, check_out_time, user_id,
+    .select("check_in_time as Month,extract(month from check_in_time) as month,extract(year from check_in_time) as year,check_in_time, check_out_time, user_id,
  avg(extract(epoch from check_in_time)) * interval '1 second' as avg_check_in_time,
  avg(extract(epoch from check_out_time)) * interval '1 second' as avg_check_out_time, 
 sum(time_spent) as time_spent,AVG(time_spent) as average_time")
@@ -294,12 +294,21 @@ sum(time_spent) as time_spent,AVG(time_spent) as average_time")
   end
   
   def import
-    begin
-      UserTimeCheck.import(params[:file])
-      redirect_to user_time_checks_path, notice: l(:notice_time_check_file_imported) if params[:file]
-    rescue StandardError => e
-      puts "#{e.message}\n#{e.backtrace.join("\n")}"
+    puts "I am here"
+    if params[:file]
+      begin
+        UserTimeCheck.import(params[:file])
+        redirect_to user_time_checks_path, notice: l(:notice_time_check_file_imported)
+        return
+      rescue StandardError => e
+        puts "#{e.message}\n#{e.backtrace.join("\n")}"
+      end    
       redirect_to user_time_checks_path, :flash => { :error => l(:error_invalid_file_format) }
+    else
+      errors = []
+      errors << "Please chose your file first"
+      flash[:error]="#{errors.join('<br/>')}"
+      redirect_to user_time_checks_path
     end    
   end
   

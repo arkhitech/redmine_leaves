@@ -20,7 +20,7 @@ class UserLeavesController < ApplicationController
     invalid_group = false
     if !params['create_user_leave']['selected_users'].blank? && !params['create_user_leave']['selected_groups'].blank?
       errors << "select either from user or group"
-       flash.now[:error]="#{errors.join('<br/>')}"
+      flash.now[:error]="#{errors.join('<br/>')}"
        
       render 'new'
       return
