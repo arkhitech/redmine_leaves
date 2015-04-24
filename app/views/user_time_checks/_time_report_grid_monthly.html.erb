@@ -23,7 +23,7 @@
 
   e.column name: 'Average Clock-in', html: {style: 'text-align: center'} do |t|
     unless t.avg_check_in_time.nil?
-      time=Time.at(t.avg_check_in_time)
+      time=Time.at(t.avg_check_in_time.to_i)
       t= time.in_time_zone
       t.to_formatted_s(:time) 
     end
@@ -31,7 +31,7 @@
 
   e.column name: 'Average Clock-out', html: {style: 'text-align: center'} do |t|
     unless t.avg_check_out_time.nil?
-      time=Time.at(t.avg_check_out_time)
+      time=Time.at(t.avg_check_out_time.to_i)
       t= time.in_time_zone
       t.to_formatted_s(:time) 
     end
