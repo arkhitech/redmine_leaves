@@ -28,6 +28,6 @@ match '/home', to: 'user_time_checks#home', via: 'get'
 match '/check_in' => 'user_time_checks#check_in', via: 'get'
 match '/check_out' => 'user_time_checks#check_out' ,via: 'get'
 match '/checkout_timelog_success' => 'user_time_checks#checkout_timelog_success' ,via: 'get'
-match '/user_leave_report' => 'user_leave_reports#report', via: 'get'
-match '/user_leave_analytics' => 'user_leave_analytics#report' ,via: 'get'
+match '/user_leave_report' => 'user_leave_reports#report', via: [:get,:post]
+match '/user_leave_analytics' => 'user_leave_analytics#report' ,via: [:get,:post]
 
