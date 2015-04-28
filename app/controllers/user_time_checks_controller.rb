@@ -7,7 +7,7 @@ class UserTimeChecksController < ApplicationController
   helper :sort
   
   def index
- 
+   
     time_checks= UserTimeCheck.
       select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
       joins("LEFT JOIN #{TimeEntry.table_name} on DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
@@ -332,7 +332,7 @@ sum(time_spent) as time_spent,AVG(time_spent) as average_time")
 
     else
       @user_time_check = checkout_timechecks.first
-      @user_time_check.update_attributes(check_out_time: DateTime.now)
+      @user_time_check.update_attributes!(check_out_time: DateTime.now)
       
       
       @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
@@ -365,7 +365,7 @@ sum(time_spent) as time_spent,AVG(time_spent) as average_time")
     #    issue_ids.each_index do |idx|
     #      time_entries << TimeEntry.create(:issue_id => issue_ids[idx], :hours => params[:hours][idx])
     #    end
-
+    
     time_entry_paramss = params[:time_entries] || []
     time_entry_paramss.each do |time_entry_params|
       time_entry_this = TimeEntry.new(time_entry_params) #  This solves the .permit problem : See Model <user_id: protected>

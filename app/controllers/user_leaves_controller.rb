@@ -19,12 +19,17 @@ class UserLeavesController < ApplicationController
     selected_users = []
     invalid_group = false
     if !params['create_user_leave']['selected_users'].blank? && !params['create_user_leave']['selected_groups'].blank?
-      errors << "select either from user or group"
+      errors << "Select either  User or Group"
       flash.now[:error]="#{errors.join('<br/>')}"
-       
+      render 'new'
+      return
+    elsif params[:create_user_leave][:selected_date_from].to_time.wday==0 ||  params[:create_user_leave][:selected_date_from].to_time.wday==6
+      errors << "Can not add leave for Saturday,Sunday "
+      flash.now[:error]="#{errors.join('<br/>')}"
       render 'new'
       return
     end
+    
     if params['create_user_leave']['selected_users'] 
       selected_users = params['create_user_leave']['selected_users']
     else
@@ -42,6 +47,7 @@ class UserLeavesController < ApplicationController
       errors << "Date Field(s) cannot be empty!"
     else
       begin
+        
         selected_date_from = params['create_user_leave']['selected_date_from'].to_date#.map{|k,v| v}.join("-").to_date
         selected_date_to   = params['create_user_leave']['selected_date_to'].to_date#.map{|k,v| v}.join("-").to_date    
       rescue

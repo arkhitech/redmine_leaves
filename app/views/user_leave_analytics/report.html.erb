@@ -18,7 +18,7 @@
     <%= text_field_tag "user_leave_analytic[date_to]", 
       (params[:user_leave_analytic] && params[:user_leave_analytic][:date_to]) || Date.today %> 
     <%= calendar_for 'user_leave_analytic_date_to' %><br/></div>
-    <div style="display: inline-block; padding-right: 100px">
+    <div style="display: inline-block; padding-right: 90px; width:60px">
     <%= submit_tag 'Apply' %><br/></div>
     <div style="float: right">
     <strong><%= l(:label_user) %></strong>

@@ -5,6 +5,12 @@ class UserTimeCheck < ActiveRecord::Base
   validates :time_spent,:check_in_time, :check_out_time, :presence=> true,:on => :update
   validate :correctness_of_user_time_checks
   
+  before_validation do
+    if check_in_time && check_out_time
+      self.time_spent = (check_out_time - check_in_time)/60
+    end
+  end
+  
   class << self
     def checked_in?(user_id)
       exists?(['user_id = ? and check_out_time IS NULL', user_id])
@@ -28,13 +34,13 @@ class UserTimeCheck < ActiveRecord::Base
 
   def self.autogenerate_checkout(missed_checkout)
     if missed_checkout.check_in_time.hour < 16
-        missed_checkout.update_attributes(check_out_time: missed_checkout.check_in_time + 6.hours, 
-          comments: l(:auto_generated_comment),time_spent: 6*60)
+        missed_checkout.update_attributes!(check_out_time: missed_checkout.check_in_time + 6.hours, 
+          comments: l(:auto_generated_comment))
     else
       #consider previously marked check_in_time as actually check_out time
-        missed_checkout.update_attributes(check_in_time: missed_checkout.check_in_time - 6.hours, 
+        missed_checkout.update_attributes!(check_in_time: missed_checkout.check_in_time - 6.hours, 
           check_out_time: missed_checkout.check_in_time,
-          comments: l(:auto_generated_comment),time_spent: 6*60)
+          comments: l(:auto_generated_comment))
 
     end
   end
@@ -89,12 +95,12 @@ p checkin_timechecks
         if user_time_check.check_in_time.to_date == date.to_date
           if checked_time > 1*60*60 && checked_time < 16*60*60 
             #difference between first checkin and current pulled time is less than 16 and greater than 1 (meaning) not by mistake), so asssume checkout
-            user_time_check.update_attributes(check_out_time: date, time_spent: checked_time/60)
+            user_time_check.update_attributes!(check_out_time: date)
             p '&'*50
           elsif checked_time > 16*60*60
             #difference between previous checkout and current is greater than 16, meaning that user missed out
-            user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 6.hours, 
-              comments: l(:auto_generated_comment),time_spent: 6*60)
+            user_time_check.update_attributes!(check_out_time: user_time_check.check_in_time + 6.hours, 
+              comments: l(:auto_generated_comment))
          #   UserTimeCheck.create(user_id: user.id, check_in_time: date)
             p '$'*50
 
@@ -103,7 +109,7 @@ p checkin_timechecks
           end
         elsif date.hour < 8 && checked_time > 1*60*60 && checked_time < 16*60*60
           #allow checkin/checkout for different days
-            user_time_check.update_attributes(check_out_time: date, time_spent: checked_time/60)
+            user_time_check.update_attributes!(check_out_time: date)
         else
             #difference between previous checkout and current is greater than 16, meaning that user missed out
             autogenerate_checkout(user_time_check)

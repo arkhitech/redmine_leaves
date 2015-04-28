@@ -3,7 +3,7 @@
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
     <th><strong><%= l(:label_check_in_time)%>:</strong></th>
-    <td><%= @user_time_check.check_in_time  %></td>
+    <td><%= format_time(@user_time_check.check_in_time)  %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
     <th><strong><%= l(:label_current_user_id) %></strong></th>
