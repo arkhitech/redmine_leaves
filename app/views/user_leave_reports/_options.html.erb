@@ -1,4 +1,4 @@
-<%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
+<%=  form_tag({controller:'user_leave_reports', action: 'report'}, method: :get) do %>
   <table>
     <tr align="left">
       <th><%= l(:label_date_from) %></th>

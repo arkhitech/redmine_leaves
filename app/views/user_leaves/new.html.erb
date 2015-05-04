@@ -1,5 +1,5 @@
 <%= render template: "layouts/redmine_leaves" %>
-<h2><%= l(:label_add_leave ) %> </h2>
+<h2><%= l(:label_add_leave) %> </h2>
 <%= form_for UserLeave.new do %>
 
   <div>
@@ -9,7 +9,7 @@
       multiple: true) %>
     <%= select_tag('create_user_leave[selected_groups][]',
       add_group_options(params[:create_user_leave] && params[:create_user_leave][:selected_groups]),
-      multiple: true, disabled: @disable_group_leave) %>    
+      multiple: true) %>    
   </div><br/>
 
   <div>

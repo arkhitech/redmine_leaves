@@ -1,3 +1,5 @@
+<%= stylesheet_link_tag 'redmine_leaves',:plugin => 'redmine_leaves' %>
+<%= javascript_include_tag 'togglework', :plugin => 'redmine_leaves' %>
 <%= render template: "layouts/user_time_analytics" %>
 <br>
 <h2> User Time Activity Report</h2>
@@ -5,7 +7,8 @@
 
   <%if @all_trackers%>
     <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
-      <fieldset><legend><%= l(:label_filter_plural) %></legend>
+      <fieldset id="fs"><legend id="filtertoggle"><%= l(:label_filter_plural) %></legend>
+        <div id="filters_div" style="display: none">
         <table>
           <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
                 (params[:date_from]) || Date.today - 1.month %>
@@ -16,6 +19,7 @@
               <%= calendar_for 'date_to' %>
             </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
         </table>
+        </div>
       </fieldset>
       <br><br>
       <div class="autoscroll">
@@ -56,33 +60,33 @@
                   <% if t %>
                     <%=  t.missed_dates   %>
                   <% else %>
-                    0
+                    
                   <% end %>
                 </td>
                 <% @all_trackers.each do |tracker|%>
                   <%#@trackers.each do |tracker|%>
                   <td>
-                    <% t = user_stats[:trackers][tracker] %>
+                    <% t= user_stats[:trackers][tracker] %>
                     <% if t %>
                       <%=t.num_of_trackers %>
                     <% else %>
-                      0
+                      
                     <% end %>
                   </td> 
                   
                    <td>
                     <% if t %>
-                      <%= t.estimated_hours_on_tracker.round(2) %>
+                      <%= t.estimated_hours_on_tracker %>
                     <% else %>
-                      0
+                      
                     <% end %>
                   </td>
                   
                   <td>
                     <% if t %>
-                      <%= t.time_spent.round(2) %>
+                      <%= t.time_spent%>
                     <% else %>
-                      0
+                      
                     <% end %>
                   </td>
                 <%end%>

@@ -79,3 +79,22 @@
 }
 #user-time-analytics-menu li a:hover {background:#759FCF; color:#fff;}
 #user-time-analytics-menu li a.selected, #user-time-analytics-menu li a.selected:hover {background:#fff; color:#179;}
+ #filtertoggle {
+   cursor: pointer;
+   }
+
+   #filters_div {
+      position: relative;
+      z-index: 0;
+      top: 3px;
+      padding: 5px;
+   }
+   #fs
+   {
+     background:-moz-linear-gradient(center top , #ffffff, #eeeeef) repeat scroll 0 0 #eeeeef ;
+   }
+   .date-filter br
+   {
+     display:none;
+   }
+   

@@ -12,11 +12,23 @@ class UserLeavesController < ApplicationController
     end        
   end
   
-  def create  
+  def create
+    
+    
     errors = []
     selected_users = []
     invalid_group = false
-    if params['create_user_leave']['selected_users']
+    if !params['create_user_leave']['selected_users'].blank? && !params['create_user_leave']['selected_groups'].blank?
+      errors << "Select either  User or Group"
+      flash.now[:error]="#{errors.join('<br/>')}"
+      render 'new'
+      return
+    #elsif params[:create_user_leave][:selected_date_from].to_time.wday==0 ||  params[:create_user_leave][:selected_date_from].to_time.wday==6
+      
+      #end 
+    end
+    
+    if params['create_user_leave']['selected_users'] 
       selected_users = params['create_user_leave']['selected_users']
     else
       selected_group_users = User.active.joins(:groups).
@@ -33,6 +45,7 @@ class UserLeavesController < ApplicationController
       errors << "Date Field(s) cannot be empty!"
     else
       begin
+        
         selected_date_from = params['create_user_leave']['selected_date_from'].to_date#.map{|k,v| v}.join("-").to_date
         selected_date_to   = params['create_user_leave']['selected_date_to'].to_date#.map{|k,v| v}.join("-").to_date    
       rescue
@@ -41,7 +54,7 @@ class UserLeavesController < ApplicationController
     end
     selected_users = check_selected_users(selected_users)
     notices = []
-    if !selected_users.empty? && errors.empty?
+    if !selected_users.empty? && errors.empty? 
       selected_users = selected_users.uniq
       selected_users.each do |user|
         leave_date = selected_date_from

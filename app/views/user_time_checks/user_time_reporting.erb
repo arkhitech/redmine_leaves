@@ -4,6 +4,7 @@
  
  
 <% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'redmine_leaves',:plugin => 'redmine_leaves' %>
   <%= javascript_include_tag "jquery-ui", plugin: 'redmine_leaves'  %>
   <%= javascript_include_tag "wice_grid", plugin: 'redmine_leaves'  %>
   <%= stylesheet_link_tag 'wice_grid', plugin: 'redmine_leaves' %>
