@@ -23,11 +23,9 @@ class UserLeavesController < ApplicationController
       flash.now[:error]="#{errors.join('<br/>')}"
       render 'new'
       return
-    elsif params[:create_user_leave][:selected_date_from].to_time.wday==0 ||  params[:create_user_leave][:selected_date_from].to_time.wday==6
-      errors << "Can not add leave for Saturday,Sunday "
-      flash.now[:error]="#{errors.join('<br/>')}"
-      render 'new'
-      return
+    #elsif params[:create_user_leave][:selected_date_from].to_time.wday==0 ||  params[:create_user_leave][:selected_date_from].to_time.wday==6
+      
+      #end 
     end
     
     if params['create_user_leave']['selected_users'] 

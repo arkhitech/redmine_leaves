@@ -45,21 +45,23 @@ class UserTimeCheck < ActiveRecord::Base
     end
   end
   
-  def self.import(file, time_zone = nil, options = {:headers => false, :col_sep => "\t"} )
+  def self.import(file, time_zone = nil, options = {:headers => false, :col_sep => ","} )
     return if file.nil?
     
     time_zone ||= User.current.time_zone || Time.zone
-    options ||= {:headers => false, :col_sep => "\t"}
+    options ||= {:headers => false, :col_sep => ","}
     
-   
+    
     CSV.foreach(file.path, options) do |row|      
+      
       name = row[INDEX_ZK_NAME]
       date = row[INDEX_ZK_DATETIME]
       first_last_name = name.split(" ")
       user = User.where(firstname: first_last_name.first, lastname: first_last_name.last).first
-#     p name 
-#     p date.to_datetime
-#     p user
+   
+   p name 
+   p date.to_datetime
+   p user
 
       unless name && date && user
         # missing name or date or no records found in database
