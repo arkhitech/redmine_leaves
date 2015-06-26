@@ -20,6 +20,17 @@ module UserLeaveReportsHelper
     end
   end
 
+  def user_allowed_to_edit_leaves?
+    User.current.admin? || edit_attendance_users.include?(User.current) || edit_own_attendance_users.include?(User.current)    
+  end
+  
+  def user_allowed_to_edit_leave?(user_leave)
+    return true if User.current.admin?
+    return true if user_leave.user != User.current && edit_attendance_users.include?(User.current)
+    return true if user_leave.user == User.current && edit_own_attendance_users.include?(User.current)    
+    #else
+    false
+  end
   def edit_attendance_users
     @edit_attendance_users ||= begin
       edit_attendance_groups = Setting.plugin_redmine_leaves['edit_attendance']
@@ -27,7 +38,13 @@ module UserLeaveReportsHelper
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => edit_attendance_groups)
     end
   end
-    
+  def edit_own_attendance_users
+    @edit_own_attendance_users ||= begin
+      edit_own_attendance_groups = Setting.plugin_redmine_leaves['edit_own_attendance']
+      User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => edit_own_attendance_groups)
+    end
+  end  
   def plugin_setting(setting_name)
     (Setting.plugin_redmine_leaves[setting_name] || '').split(',').delete_if { |index| index.blank? }
   end

@@ -13,7 +13,7 @@
           <th><%= l(:label_leave_date) %></th>          
           <th><%= l(:label_weight) %></th>          
           <th><%= l(:label_comments) %></th>          
-          <% if User.current.admin? || User.current.groups.first.lastname == "HR" %>
+          <% if user_allowed_to_edit_leaves? %>
             <th><%= l(:label_action) %></th>
           <% end %>
         </tr>
@@ -30,7 +30,7 @@
                 :action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date, :selected_group_by =>'User'} %></td>
             <td><%= user_leave.fractional_leave %></td>
             <td><%= user_leave.comments %></td>
-            <% if User.current.admin? || User.current.groups.first.lastname == "HR" %>
+            <% if user_allowed_to_edit_leave?(user_leave) %>
               <td>
                 <%= link_to l(:link_edit), edit_user_leafe_path(user_leave) %> | 
                 <%= link_to l(:link_delete), user_leafe_path(user_leave), :remote => true,
