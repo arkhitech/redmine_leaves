@@ -14,93 +14,118 @@
           <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
                 (params[:date_to]) ||Date.today %> 
               <%= calendar_for 'date_to' %>
-            </td> </tr><tr><td>  <%= submit_tag 'Apply' %></td> </tr>
+            </td> </tr>
+          <tr>
+            <td>
+              <%= select_tag 'user_id', options_for_select(User.all.map{ |u| [u.name, u.id] } ), multiple: true %>
+            </td>
+          </tr>
+          <tr><td>  <%= submit_tag 'Apply' %></td> </tr>
         </table>
       </fieldset>
-      <br><br>
-      <div class="autoscroll">
-        <table border="1" id='user-time-activity-report-table' class="list user time activity"  >
-          <thead>
-            <tr align="center">
-              <th >
-                <%= "USER NAME" %>
+      <br><br>  
+    <div class="list user time activity">
+      <%if @users_grid%>
+        <%= define_grid @users_grid do |e|
+          e.column name: "USER NAME", html: {style: 'text-align: center'} do |user|
+            "#{user.firstname} #{user.lastname}"
+          end
 
-              </th>
+          #e.column name: "MISSED DUE DATES", html: {style: 'text-align: center'} do |user|
+              #missed_due_dates = Issue.joins(:custom_values).
+                #where("due_date < closed_on and #{CustomValue.table_name}.value = ? and #{CustomValue.
+                #table_name}.custom_field_id IN (?) and due_date >=? and due_date <=?", "#{user.id}", 
+                #[assigned_developer_custom_field.id, assigned_tester_custom_field.id], 
+                #@date_from || Date.today - 1.month, @date_to || Date.today)
+              #missed_due_dates.count   
+          #end
+          e.column name: "MISSED DUE DATES", html: {style: 'text-align: center'} do |user|
+             @missed_due_dates["#{user.id}"] 
+          end
+          
+          
+          
 
-              <th><%= "MISSED DUE DATES" %></th>
-              <%# unless @trackers.nil? ||  @trackers.empty? %>
-              <% @all_trackers.each do |tracker|%>
-               <%# @trackers.each do |tracker| %>
-              <th>
-                  #<%= " #{tracker} HANDLED"%>
-              </th> 
-              <th>
-                  <%= "ACTUAL TIME FOR #{tracker}" %>
-              </th>
-              <th>
-                  <%= "TIME SPENT ON #{tracker}" %>
-              </th>
-              <%end%>
-              <%#end%>
-            </tr>
-          </thead>
-          <tbody>
-            <% @user_stats.each_pair do |user_id, user_stats| %>
-              <tr  align="center" class="<%= cycle "odd", "even" %>" >
-                <%user = user_stats[:user]%>
-                <td>
-                  <%= "#{user.firstname} #{user.lastname}"%>
-                </td>
-                <td>
-                  <% t = user_stats[:missed_due_dates] %>
-                  <% if t %>
-                    <%=  t.missed_dates   %>
-                  <% else %>
-                    0
-                  <% end %>
-                </td>
-                <% @all_trackers.each do |tracker|%>
-                  <%#@trackers.each do |tracker|%>
-                  <td>
-                    <% t = user_stats[:trackers][tracker] %>
-                    <% if t %>
-                      <%=t.num_of_trackers %>
-                    <% else %>
-                      0
-                    <% end %>
-                  </td> 
-                  
-                   <td>
-                    <% if t %>
-                      <%= t.estimated_hours_on_tracker.round(2) %>
-                    <% else %>
-                      0
-                    <% end %>
-                  </td>
-                  
-                  <td>
-                    <% if t %>
-                      <%= t.time_spent.round(2) %>
-                    <% else %>
-                      0
-                    <% end %>
-                  </td>
-                <%end%>
-              </tr>
-            <%end%>
-          </tbody>
-        </table>
-      </div>
+          @all_trackers.each do |tracker|
+            if tracker.strip == "Enhancement" || tracker.strip == "Feature" || tracker.strip == "Defect" || tracker.strip == "Task"
+              e.column name: "# #{tracker} HANDLED", html: {style: 'text-align: center'} do |user|
+                t = @user_stats["#{user.id}"][:trackers]["#{tracker.strip}"] if (@user_stats.any? && @user_stats["#{user.id}"])
+                if t
+                  total_enhancements = t.num_of_trackers
+                else
+                  total_enhancements = 0
+                end
+                total_enhancements
+              end
 
-    <% end %><%#form end%>
+              e.column name: "#{tracker} ESTIMATED TIME", html: {style: 'text-align: center'} do |user|
+                t = @user_stats["#{user.id}"][:trackers]["#{tracker.strip}"] if (@user_stats.any? && @user_stats["#{user.id}"])
+                if t
+                  estimated_time = t.estimated_hours_on_tracker.to_f.round(2)
+                else
+                  estimated_time = 0
+                end
+                estimated_time
+              end
 
+              e.column name: "#{tracker} ACTUAL TIME ", html: {style: 'text-align: center'} do |user|
+                t = @user_stats["#{user.id}"][:trackers]["#{tracker.strip}"] if (@user_stats.any? && @user_stats["#{user.id}"])
+                if t
+                  actual_time_spent = t.time_spent.to_f.round(2)
+                else
+                  actual_time_spent = 0
+                end
+                actual_time_spent
+              end    
+            end
 
+          end
 
+          e.column name: "#Others HANDLED ", html: {style: 'text-align: center'} do |user|
+            others_total_trackers = 0
+            @all_trackers.each do |tracker|
+              unless tracker.strip == "Enhancement" || tracker.strip == "Feature" || tracker.strip == "Defect" || tracker.strip == "Task"
+                t = @user_stats["#{user.id}"][:trackers]["#{tracker.strip}"] if (@user_stats.any? && @user_stats["#{user.id}"])
+                if t
+                  others_total_trackers = others_total_trackers + 1
+                end
+              end
+            end
+            others_total_trackers
+          end
 
+          e.column name: "Others ESTIMATED TIME", html: {style: 'text-align: center'} do |user|
+            others_estimated_time = 0
+            @all_trackers.each do |tracker|
+              unless tracker.strip == "Enhancement" || tracker.strip == "Feature" || tracker.strip == "Defect" || tracker.strip == "Task"
+                t = @user_stats["#{user.id}"][:trackers]["#{tracker.strip}"] if (@user_stats.any? && @user_stats["#{user.id}"])
+                if t
+                  others_estimated_time = others_estimated_time + t.estimated_hours_on_tracker.to_f.round(2)
+                end
+              end
+            end
+            others_estimated_time
+          end
 
+          e.column name: "Others ACTUAL TIME", html: {style: 'text-align: center'} do |user|
+            others_actual_time = 0.00
+            @all_trackers.each do |tracker|
+              unless tracker.strip == "Enhancement" || tracker.strip == "Feature" || tracker.strip == "Defect" || tracker.strip == "Task"
+                t = @user_stats["#{user.id}"][:trackers]["#{tracker.strip}"] if (@user_stats.any? && @user_stats["#{user.id}"])
+                if t
+                  others_actual_time = others_actual_time + t.time_spent.to_f.round(2)
+                end
+              end
+            end
+            others_actual_time
+          end
 
-
-
+        end%>
+      <%end%>
+    </div>  
+    <%= render_grid(@users_grid) if @users_grid%>
+    <%end%>
+    
   <%else%>
 
     <p>No data to view</p>
@@ -111,22 +136,6 @@
 
 <%else%>
 
-<p>You do not have permission to view reports</p>
-<a href="/user_time_checks">Back</a>
+  <p>You do not have permission to view reports</p>
+  <a href="/user_time_checks">Back</a>
 <%end%>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
