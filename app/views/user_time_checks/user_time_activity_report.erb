@@ -7,15 +7,17 @@
     <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
       <fieldset><legend><%= l(:label_filter_plural) %></legend>
         <table>
-          <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
+          <tr>     <th style="text-align:left"><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
                 (params[:date_from]) || Date.today - 1.month %>
               <%= calendar_for 'date_from' %>
             </td> </tr>
-          <tr>    <th><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
+          <tr>    <th style="text-align:left"><%=" Date To:" %></th><td> <%= text_field_tag "date_to",
                 (params[:date_to]) ||Date.today %> 
               <%= calendar_for 'date_to' %>
             </td> </tr>
-          <tr>
+          
+        </table>
+        <table>
             <td>
               <%= select_tag 'user_id', options_for_select(User.all.map{ |u| [u.name, u.id] } ), multiple: true %>
             </td>
