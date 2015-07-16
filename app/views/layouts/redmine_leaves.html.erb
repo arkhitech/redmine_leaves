@@ -2,5 +2,5 @@
     <%= stylesheet_link_tag 'redmine_leaves', :plugin => 'redmine_leaves' %>
 <% end %>
 <div id="leave-menu">
-  <%= render_menu(:leave_report_menu) %>
+  <%= render_menu(:leave_report_menu, @project) %>
 </div>

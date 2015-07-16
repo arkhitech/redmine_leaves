@@ -1,5 +1,6 @@
 class UserLeavesController < ApplicationController
   unloadable
+  before_filter :find_optional_project
   
   include UserLeaveReportsHelper
   include UserLeavesHelper
@@ -10,7 +11,7 @@ class UserLeavesController < ApplicationController
     else
       return deny_access
     end        
-  end
+  end      
   
   def create  
     errors = []
@@ -63,10 +64,16 @@ class UserLeavesController < ApplicationController
       flash[:notice] = "#{notices.join('<br/>')}"
       unless errors.blank?
         flash[:error]="#{errors.join('<br/>')}"
-        render 'new'
-      else
-        redirect_to user_leave_reports_path
+#        render 'new'
       end
+#      else
+        if @project
+          redirect_to project_user_leave_reports_path(@project)
+        else
+          redirect_to user_leave_reports_path  
+        end
+        
+#      end
     else
       if invalid_group
         flash[:error] = l(:error_invalid_user_group_selected)
@@ -98,5 +105,16 @@ class UserLeavesController < ApplicationController
       format.js {}
     end 
   end
+  
+  private
+  
+  def find_optional_project
+    @project = Project.find(params[:project_id]) unless params[:project_id].blank?
+    allowed = User.current.allowed_to?({:controller => params[:controller], :action => params[:action]}, @project, :global => true)
+    allowed ? true : deny_access
+  rescue ActiveRecord::RecordNotFound
+    render_404
+  end
+  
 end
 

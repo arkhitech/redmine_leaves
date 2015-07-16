@@ -84,4 +84,14 @@ module UserLeaveReportsHelper
       options_for_select(group_by, selected_group_by)
     end
   
+    def users_options_for_view(selected_users)
+      if @project.nil?
+        user_options = User.all
+      elsif User.current.allowed_to?(:view_project_leaves, @project)
+        user_options = @project.users
+      elsif User.current.allowed_to?(:view_own_leaves, @project)
+        user_options = [User.current]
+      end
+      options_from_collection_for_select(user_options.sort_by{|e| e[:firstname]}, :id, :name, selected_users)      
+    end
   end

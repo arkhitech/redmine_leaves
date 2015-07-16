@@ -1,6 +1,9 @@
 <%= render template: "layouts/redmine_leaves" %>
 <h2><%= l(:label_add_leave ) %> </h2>
-<%= form_for UserLeave.new do %>
+<%user_leave_form = @project.nil? ? UserLeave.new : [@project, UserLeave.new]%>
+<%#user_leave_form_path = @project.nil? ? user_leave_path : project_user_leave_path(@project)%>
+
+<%= form_for user_leave_form do %>
 
   <div>
     <strong><%= l(:label_user_group) %></strong>

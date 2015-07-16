@@ -3,6 +3,9 @@ require 'redmine'
 Rails.configuration.to_prepare do
   require_dependency 'user'
   require_dependency 'redmine/helpers/calendar'
+  require_dependency 'user_leave'
+  require_dependency 'project'
+  Project.send(:include, RedminePayments::Decorators::ProjectDecorator)
   
   User.send(:include, RedmineLeaves::Patches::UserPatch)
   Redmine::Helpers::Calendar.send(:include, RedmineLeaves::Patches::LeavesInCalendarPatch)
@@ -19,8 +22,16 @@ Redmine::Plugin.register :redmine_leaves do
   version '0.1.0'
    
   
-  permission :view_time_reports, :user_time_check => :user_time_reporting
+  permission :view_time_reports, user_time_check: :user_time_reporting
+  permission :add_team_leaves, user_leaves: [:new,  :create]
   
+  permission :veiw_all_leaves, user_leave_reports: :index
+  
+  permission :add_project_leaves, user_leaves: [ :create]
+  permission :add_own_leave, user_leaves: [:create]
+  
+  permission :view_project_leaves, user_leave_reports: [:view_leaves, :generate_report, :project_index]
+  permission :view_own_leaves, user_leave_reports: [:view_leaves, :generate_report, :project_index]
   
   menu :top_menu, :time_check_in, { controller: 'user_time_checks', action: 'check_in' }, 
     caption: :caption_top_menu_check_in, if: Proc.new {!UserTimeCheck.checked_in?(User.current.id)}, last: true
@@ -40,16 +51,16 @@ Redmine::Plugin.register :redmine_leaves do
           menu :user_time_analytics_menu, :user_time_activity_report_custom, { :controller => 'user_time_checks', :action => 'user_time_activity_report'}, :caption => 'All Time'
       menu :user_time_analytics_menu, :user_time_activity_report_monthly, { :controller => 'user_time_checks', :action => 'user_time_activity_report_monthly'}, :caption => 'Monthly'
 #  
-       
+      menu :project_menu, :redmine_leaves, { controller: 'user_leave_reports', action: 'project_index' }, :caption => 'Project Members leaves', param: :project_id
       
-
   
        
        
-      menu :leave_report_menu, :user_leave_reports, { :controller => 'user_leave_reports', :action => 'index' }, :caption => 'Overview'
-      menu :leave_report_menu, :user_leaves, { :controller => 'user_leaves', :action => 'new' }, :caption => 'Add Leave'
-      menu :leave_report_menu, :user_leave_analytics, { :controller => 'user_leave_analytics', :action => 'report'}, :caption => 'Analytics'
-  
+#      menu :leave_report_menu, :user_leave_reports, { :controller => 'user_leave_reports', :action => 'index' }, :caption => 'Overview(all team)', param: :project_id
+#      menu :leave_report_menu, :user_leaves, { :controller => 'user_leaves', :action => 'new' }, :caption => 'Add Team Leave', param: :project_id
+#      menu :leave_report_menu, :user_leave_analytics, { :controller => 'user_leave_analytics', :action => 'report'}, :caption => 'Analytics'
+      menu :leave_report_menu, :mark_users_leaves, {:controller => 'user_leaves', :action => 'new'}, :caption => 'Add Leaves', param: :project_id
+      menu :leave_report_menu, :view_users_leaves, {:controller => 'user_leave_reports', :action => 'index'}, :caption => 'View Leaves', param: :project_id
       settings default: {'leave_types' => 'Annual, Sick, Unannounced',
         'default_type' => 'Unannounced'}, partial: 'settings'    
     end

@@ -9,24 +9,37 @@ module UserLeavesHelper
       where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => mark_leave)
   end
   
-  def add_user_options(selected_user)    
-    mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
-    mark_leave_users = mark_leave_options(mark_leave_groups)
-    
-    mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
-    mark_own_leave_users = mark_leave_options(mark_own_leave_groups)
-    
-    if(mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))
-      # if current user have both permissions
-      all_users = User.active
-    elsif(mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))      
-      # if current user have permission to mark leaves only
-      all_users = User.active - User.where(['id = ?', User.current.id])
-    elsif(!mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))      
-      # if current user have permission to mark own leaves
-      all_users = User.where(['id = ?', User.current.id]).active
+  def add_user_options(selected_user)
+    if @project.nil?
+      mark_leave_groups = Setting.plugin_redmine_leaves['mark_leaves']
+      mark_leave_users = mark_leave_options(mark_leave_groups)
+
+      mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
+      mark_own_leave_users = mark_leave_options(mark_own_leave_groups)
+
+      if(mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))
+        # if current user have both permissions
+        all_users = User.active
+      elsif(mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))      
+        # if current user have permission to mark leaves only
+        all_users = User.active - User.where(['id = ?', User.current.id])
+      elsif(!mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))      
+        # if current user have permission to mark own leaves
+        all_users = [User.current]
+      else
+        all_users = User.active
+      end
+      
     else
-      all_users = User.active
+      can_mark_user_leaves = User.current.allowed_to?(:add_project_leaves, @project)
+      can_mark_own_leave = User.current.allowed_to?(:add_own_leave, @project)
+      if can_mark_user_leaves && can_mark_own_leave
+        all_users = @project.users
+      elsif can_mark_user_leaves && !can_mark_own_leave
+        all_users = @project.users - User.current
+      elsif can_mark_own_leave
+        all_users = [User.current]
+      end      
     end
     
     options_from_collection_for_select(all_users.sort_by{|e| e[:firstname]}, :id, :name, selected_user)
@@ -65,6 +78,5 @@ module UserLeavesHelper
       selected_users = selected_users - [User.current.id.to_s]
     end
     selected_users
-  end
-  
+  end  
 end

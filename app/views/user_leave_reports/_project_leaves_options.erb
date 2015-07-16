@@ -1,4 +1,5 @@
-<%=  form_tag controller: 'user_leave_reports', action: 'generate_report' do %>
+<%#=  form_tag controller: 'user_leave_reports', action: 'project_report' do %>
+<%=  form_tag "/project/#{params[:project_id]}/user_leave_reports/project_index" do %>
   <table>
     <tr align="left">
       <th><%= l(:label_date_from) %></th>
@@ -38,13 +39,10 @@
       <th><%= l(:label_group) %></th>
     </tr>
     <tr align="left">
-      <td>        
-        <%= select_tag("user_leave_report[selected_users][]",
-          users_options_for_view(params[:user_leave_report] && params[:user_leave_report][:selected_users]),
-          multiple: true) %>
-        <%#= select_tag("user_leave_report[selected_users][]",
-          user_options(params[:user_leave_report] && params[:user_leave_report][:selected_users]),
-          multiple: true) %>
+      <td>
+          <%= select_tag("user_leave_report[selected_users][]",
+            options_for_select(@all_project_users.map{|u| [u.name, u.id]}, params[:user_leave_report] && params[:user_leave_report][:selected_users]),
+            multiple: true) %>
       </td>
       <td>
         <%= select_tag("user_leave_report[selected_leave_types][]",
@@ -61,7 +59,3 @@
   </table><br/>
   <%= submit_tag 'Apply' %>
 <% end %>
-
-  
-  
-  
