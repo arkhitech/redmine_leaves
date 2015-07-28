@@ -91,7 +91,8 @@ class UserLeavesController < ApplicationController
   
   def update    
     @user_leave = UserLeave.find(params[:id])
-    if @user_leave.update_attributes(params[:user_leave])
+#    if @user_leave.update_attributes(params[:user_leave])
+    if @user_leave.update_attributes(leaves_params)
       redirect_to edit_user_leafe_path(@user_leave), notice: l(:notice_leaves_updated)
     else
       redirect_to edit_user_leafe_path(@user_leave), error: l(:error_leaves_not_updated)
@@ -115,6 +116,10 @@ class UserLeavesController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render_404
   end
+
+  def leaves_params
+    params.require(:user_leave).permit(:leave_type, :leave_date, :comments, :fractional_leave)
+  end  
   
 end
 
