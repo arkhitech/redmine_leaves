@@ -160,3 +160,8 @@ input.wice-grid-save-query-field {
 li {
   line-height: 18px;
 }
+
+#export-button {
+    float: right;
+    margin-left: 5px;
+}
