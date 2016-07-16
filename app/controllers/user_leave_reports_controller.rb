@@ -62,48 +62,24 @@ class UserLeaveReportsController < ApplicationController
     end
     
     where_clause[0] = where_statements.join(' AND ') 
-    user_leaves = UserLeave.where(where_clause).order('leave_date desc')
+    @user_leave = UserLeave.where(where_clause).order('leave_date desc')
 
-    @divided_leaves={}
-    case params[:user_leave_report][:selected_group_by]
-    when 'User'
-      user_leaves.each do |user_leave|
-        if @divided_leaves[user_leave.user.name.to_sym]
-          @divided_leaves[user_leave.user.name.to_sym]<<user_leave
-        else
-          @divided_leaves[user_leave.user.name.to_sym]=[]
-          @divided_leaves[user_leave.user.name.to_sym]<<user_leave
-        end
-      end
-    when 'Leave type'
-      user_leaves.each do |user_leave|
-        if @divided_leaves[user_leave.leave_type.to_sym]
-          @divided_leaves[user_leave.leave_type.to_sym]<<user_leave
-        else
-          @divided_leaves[user_leave.leave_type.to_sym]=[]
-          @divided_leaves[user_leave.leave_type.to_sym]<<user_leave
-        end
-      end
-    when 'Date'
-      user_leaves.each do |user_leave|
-        if @divided_leaves[user_leave.leave_date.to_s.to_sym]
-          @divided_leaves[user_leave.leave_date.to_s.to_sym]<<user_leave
-        else
-          @divided_leaves[user_leave.leave_date.to_s.to_sym]=[]
-          @divided_leaves[user_leave.leave_date.to_s.to_sym]<<user_leave
-        end
-      end
-    end
-    
-    if @divided_leaves.nil? || @divided_leaves.empty?
+  if @user_leave .nil? || @user_leave .empty?
       flash.now[:error] = l(:error_no_results)
-      if params[:user_leave_report][:date_from].present? && params[:user_leave_report][:date_to].present?
-        if params[:user_leave_report][:date_from] > params[:user_leave_report][:date_to]
-          flash.now[:error]=l(:error_from_greater_than_to)
-        else
-          flash.now[:error] = l(:error_no_results)
-        end        
-      end
-    end
+  end
+      
+    @leaves_report_grid = initialize_grid(@user_leave,
+   :order => 'id',
+   :name => 'grid',
+   :order_direction => 'desc',
+   :enable_export_to_csv => true,
+   :csv_field_separator => ';',
+   :csv_file_name => 'LeavesReport')
+ 
+    export_grid_if_requested('grid' => 'grid')
+    
+    
+    
+    
   end
 end
