@@ -19,7 +19,7 @@ class UserLeaveReportsController < ApplicationController
     user_leaves = nil
     where_statements = []
     where_clause = ['']
-    selected_groups=params[:user_leave_report][:selected_groups]
+    selected_groups = params[:user_leave_report][:selected_groups]
 
     unless (params[:user_leave_report][:selected_users].nil? && selected_groups.nil?)
       where_statements << 'user_id IN (?)'

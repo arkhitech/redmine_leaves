@@ -11,7 +11,9 @@ Leaves are also integrated into the Calendar Module.
 User who does not check-in, is automatically marked as off after some cut-off period Leave Types are defined through Redmine settings. 
 User can also view the check-ins/check-outs and allowed users can edit attendance too.
 Also, attendance can be imported in the form of csv files.
-  
+
+Redmine 3+ compatible.
+
 Installation:
 -------------
 
