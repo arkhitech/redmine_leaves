@@ -7,12 +7,15 @@
     <th align="left"><%=I18n.t(:field_hours)%></th>
     <th></th><th></th>
   </tr>
-  <%for timesheet_row in @timesheet_table%>
-    <% (user = timesheet_row[:user]) && link_to(user.name, user_path(user), only_path: false, class: user.css_classes) %>
-    <% (project = timesheet_row[:project]) && link_to_project(project, only_path: false) %>
-    <% (issues = timesheet_row[:issues]) && (issues.collect {|issue|
-        issue.nil? ? 'Project': link_to_issue(issue, subject: false, only_path: false)}).join(', ') %>
-    <%= "<tr><td>#{timesheet_row.join('</td><td>')}</td></tr>".html_safe %>
+  <%@timesheet_table.each do |timesheet_row|%>
+    <%user = timesheet_row[:user]%>
+    <% timesheet_row[:user] = user && link_to(user.name, user_path(user), only_path: false, class: user.css_classes) %>
+    <%  project = timesheet_row[:project]%>
+    <% timesheet_row[:project] = project && link_to_project(project, only_path: false) %>
+    <%issues = timesheet_row[:issues]%>
+    <% timesheet_row[:issues] = issues && issues.collect {|issue|
+        issue.nil? ? 'Project': link_to_issue(issue, subject: false, only_path: false)}.join(', ') %>
+    <%= "<tr><td>#{timesheet_row.values.join('</td><td>')}</td></tr>".html_safe %>
   <%end%>      
 </table>
 

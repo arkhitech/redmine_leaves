@@ -282,7 +282,7 @@ p checkin_timechecks
       end
       
       timesheet_table = fetch_timesheet_table(time_entries_users)
-      LeaveMailer.project_timesheet(user, timesheet_table, project.name, start_date, end_date).deliver
+      LeaveMailer.project_timesheet([user], timesheet_table, project.name, start_date, end_date).deliver
     end
 
     def email_group_timesheet(receiver_group, logger_group, start_date, end_date)
@@ -327,9 +327,7 @@ p checkin_timechecks
       end
       
       timesheet_table = fetch_timesheet_table(time_entries_users)
-      receiver_users.each do |receiver_user|
-        LeaveMailer.group_timesheet(receiver_user, timesheet_table, logger_group, start_date, end_date).deliver
-      end
+      LeaveMailer.group_timesheet(receiver_users, timesheet_table, logger_group, start_date, end_date).deliver
     end
     
     def build_empty_time_entry(user_id, project, spent_on)
