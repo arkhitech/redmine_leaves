@@ -188,7 +188,7 @@
 <p>
   <label for="settings_num_min_working_hours">Working Days</label>
     <%= select_tag('settings[working_days]',
-      options_for_select(Date::DAYNAMES, settings['working_days'].to_i), multiple: true) %>
+      options_for_select(Date::DAYNAMES, settings['working_days']), multiple: true) %>
 </p>
 
 <p>

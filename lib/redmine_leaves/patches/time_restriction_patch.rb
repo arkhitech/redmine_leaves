@@ -26,7 +26,7 @@ module RedmineLeaves
         end
 
         def max_past_time_log_insert_days
-          Setting.plugin_redmine_daily_timesheet['max_past_timelog_insert_days'].to_i || 7
+          Setting.plugin_redmine_leaves['max_past_timelog_insert_days'].to_i || 7
         end
         private :max_past_time_log_insert_days
       end

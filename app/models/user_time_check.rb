@@ -129,7 +129,7 @@ p checkin_timechecks
     end
     def working_days
       weekdays = Setting.plugin_redmine_leaves['working_days']
-      (weekdays && weekdays.split(/\s*,\s*/)) || ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+      weekdays || ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
     end
     
     def default_leave_type
