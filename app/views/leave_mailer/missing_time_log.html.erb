@@ -1,6 +1,6 @@
-<%= @leave.user %><br/><br/>
+<%= @user %><br/><br/>
 
-<%if @logged_working_hours > 0%>
+<%if @logged_hours > 0%>
   <%= I18n.t('body_time_log_hours_not_logged_html', report_date: @report_date)%>
 <%else%>
   <%= I18n.t('body_time_log_hours_missing_html', logged_hours: @logged_hours, report_date: @report_date)%>

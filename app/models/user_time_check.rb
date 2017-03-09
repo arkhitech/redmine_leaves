@@ -224,7 +224,7 @@ p checkin_timechecks
             missing_hours_user[user.id]).deliver if missing_hours_user[user.id]                   
         else
           LeaveMailer.missing_time_log(user, start_date, end_date,
-            missing_hours_user[user.id]).deliver          
+            missing_hours_users[user.id]).deliver          
         end
       end
     end
