@@ -119,10 +119,10 @@ p checkin_timechecks
   
   class << self
     def time_loggers_group
-      Group.find_by_lastname(Setting.plugin_redmine_leaves['time_loggers_group'] || 'Staff')
+      Group.find(Setting.plugin_redmine_leaves['time_loggers_group'])
     end
     def time_log_receivers_group
-      Group.find_by_lastname(Setting.plugin_redmine_leaves['time_log_receivers_group'] || 'HR')
+      Group.find(Setting.plugin_redmine_leaves['time_log_receivers_group'])
     end
     def num_min_working_hours
       Setting.plugin_redmine_leaves['num_min_working_hours'].to_i || 8
@@ -164,16 +164,17 @@ p checkin_timechecks
       (start_date..end_date).each do |curr_date|
         num_working_hours = num_min_working_hours * (1 - error_tolerance)
         
-        missing_hours_users = TimeEntry.select("user_id, SUM(hours) as sum_hours").
-          where(spent_on: curr_date, user_id: users.map(&:id)).
-          eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}")
+        missing_hours_users = TimeEntry.where(spent_on: curr_date, 
+          user_id: users.map(&:id)).group(:user_id).
+          having("sum_hours < #{num_working_hours}").sum('hours')
+        
+        users = User.where(id: missing_hours_users.keys)
 
-        missing_hours_users.each do |missing_hours_user|
-          user = missing_hours_user.user
+        users.each do |user|
           leave_day = calculate_leave_days(user, curr_date, curr_date)
 
           unless leave_day > 0
-            leave_weight = missing_hours_user.sum_hours.to_f / num_min_working_hours
+            leave_weight = missing_hours_user[user.id].to_f / num_min_working_hours
             UserLeave.create!(user: user, leave_type: default_leave_type, comments: 'Missing time log', fractional_leave: leave_weight)
           end
         end
@@ -184,7 +185,7 @@ p checkin_timechecks
     def calculate_leave_days(user, start_date, end_date)
       leaves = user.user_leaves.where(leave_date: start_date..end_date)
       leaves.map do |leave| 
-        leave.default_fractional_leave_value > 1 ? 1 : leave.fractional_leave
+        leave.fractional_leave > 1 ? 1 : leave.fractional_leave
       end.reduce(:+).to_f      
     end
     private :calculate_leave_days
@@ -203,27 +204,27 @@ p checkin_timechecks
       total_days = total_working_days_between(start_date, end_date)
       num_working_hours = total_days * num_min_working_hours
       
-      missing_hours_users = TimeEntry.select("user_id, SUM(hours) as sum_hours").
-        where(spent_on: start_date..end_date, user_id: users.map(&:id)).
-        eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}")
+      missing_hours_users = TimeEntry.where(spent_on: start_date..end_date, 
+        user_id: users.map(&:id)).group(:user_id).
+        having("sum(hours) < ?", num_working_hours).sum("hours")
+      users = User.where(id: missing_hours_users.keys)
       
-      missing_hours_users.each do |missing_hours_user|
-        user = missing_hours_user.user
+      users.each do |user|
         leave_days = calculate_leave_days(user, start_date, end_date)
         
         if leave_days > 0
           #recalculate missing hours for user
           num_working_hours = (total_days - leave_days) * num_min_working_hours
 
-          missing_hours_user = TimeEntry.select("user_id, SUM(hours) as sum_hours").
-            where(spent_on: start_date..end_date, user_id: user.id).
-            eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}").first
+          missing_hours_user = TimeEntry.where(spent_on: start_date..end_date, 
+            user_id: user.id).group(:user_id).
+            having("sum(hours) < ?", num_working_hours).sum('hours')
           
           LeaveMailer.missing_time_log(user, start_date, end_date,
-            missing_hours_user.sum_hours.to_f).deliver if missing_hours_user                    
+            missing_hours_user[user.id]).deliver if missing_hours_user[user.id]                   
         else
           LeaveMailer.missing_time_log(user, start_date, end_date,
-            missing_hours_user.sum_hours.to_f).deliver          
+            missing_hours_user[user.id]).deliver          
         end
       end
     end
