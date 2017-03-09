@@ -145,7 +145,7 @@ p checkin_timechecks
       users = User.in_group(time_loggers_group).where(status: User::STATUS_ACTIVE)
       
       
-      email_group_timesheet(User.in_group(time_log_receivers_group), time_loggers_group, start_date, end_date) if report_projects
+      email_group_timesheet(time_log_receivers_group, time_loggers_group, start_date, end_date) if report_projects
       
       email_project_timesheets(projects, start_date, end_date) if report_projects
 
