@@ -1,0 +1,18 @@
+<table width="100%" border="1">
+  <tr>
+    <th align="left"><%=I18n.t(:field_user)%></th>
+    <th align="left"><%=I18n.t(:field_project)%></th>
+    <th align="left"><%=I18n.t(:field_activity)%></th>
+    <th align="left"><%=I18n.t(:field_issue)%></th>
+    <th align="left"><%=I18n.t(:field_hours)%></th>
+    <th></th><th></th>
+  </tr>
+  <%for timesheet_row in @timesheet_table%>
+    <% (user = timesheet_row[:user]) && link_to(user.name, user_path(user), only_path: false, class: user.css_classes) %>
+    <% (project = timesheet_row[:project]) && link_to_project(project, only_path: false) %>
+    <% (issues = timesheet_row[:issues]) && (issues.collect {|issue|
+        issue.nil? ? 'Project': link_to_issue(issue, subject: false, only_path: false)}).join(', ') %>
+    <%= "<tr><td>#{timesheet_row.join('</td><td>')}</td></tr>".html_safe %>
+  <%end%>      
+</table>
+

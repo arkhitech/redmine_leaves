@@ -155,6 +155,7 @@ en:
    #leave_mailer
    subject_leave_marked_for: "%{fraction} Leave Marked for %{leave_date)"
    subject_project_timesheet: "Daily Timesheet Report - %{project} - %{report_date}"
+   subject_group_timesheet: "Daily Timesheet Report - %{group} - %{report_date}"
    
    subject_missing_time_log: "Missing Time Log - %{user.name} - %{report_date}"
    

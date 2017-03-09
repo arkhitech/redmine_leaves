@@ -219,10 +219,10 @@ p checkin_timechecks
             where(spent_on: start_date..end_date, user_id: user.id).
             eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}").first
           
-          TimesheetMailer.missing_time_log(user, start_date, end_date,
+          LeaveMailer.missing_time_log(user, start_date, end_date,
             missing_hours_user.sum_hours.to_f).deliver if missing_hours_user                    
         else
-          TimesheetMailer.missing_time_log(user, start_date, end_date,
+          LeaveMailer.missing_time_log(user, start_date, end_date,
             missing_hours_user.sum_hours.to_f).deliver          
         end
       end
@@ -260,7 +260,7 @@ p checkin_timechecks
         #put empty time entries for users who have not logged their time
         billable_users_for_project.each do |billable_user|
           time_entries_users[billable_user] ||= {
-            time_entries: build_empty_time_entry(billable_user, project, end_date),
+            time_entries: [build_empty_time_entry(billable_user, project, end_date)],
             user_leaves: []            
           }
         end
@@ -282,7 +282,7 @@ p checkin_timechecks
       end
       
       timesheet_table = fetch_timesheet_table(time_entries_users)
-      TimesheetMailer.project_timesheet(user, timesheet_table, project.name, start_date, end_date).deliver
+      LeaveMailer.project_timesheet(user, timesheet_table, project.name, start_date, end_date).deliver
     end
 
     def email_group_timesheet(receiver_group, logger_group, start_date, end_date)
@@ -308,7 +308,7 @@ p checkin_timechecks
         #put empty time entries for users who have not logged their time
         users.each do |billable_user|
           time_entries_users[billable_user] ||= {
-            time_entries: build_empty_time_entry(billable_user, nil, end_date),
+            time_entries: [build_empty_time_entry(billable_user, nil, end_date)],
             user_leaves: []
           }
         end
@@ -328,7 +328,7 @@ p checkin_timechecks
       
       timesheet_table = fetch_timesheet_table(time_entries_users)
       receiver_users.each do |receiver_user|
-        TimesheetMailer.project_timesheet(receiver_user, timesheet_table, logger_group.last_name, start_date, end_date).deliver
+        LeaveMailer.group_timesheet(receiver_user, timesheet_table, logger_group, start_date, end_date).deliver
       end
     end
     

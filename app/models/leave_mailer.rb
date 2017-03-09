@@ -18,6 +18,13 @@ class LeaveMailer < ActionMailer::Base
       project: project, report_date: report_date))
   end
 
+  def group_timesheet(user, timesheet_table, group, start_date, end_date)
+    @timesheet_table = timesheet_table
+    @report_date = start_date == end_date ? I18n.l(end_date) : "#{I18n.l(start_date)} - #{I18n.l(end_date)}"
+    mail(to: user.mail, subject: I18n.t('subject_group_timesheet', 
+      group: group.lastname, report_date: report_date))
+  end
+  
   def missing_time_log(user, start_date, end_date, logged_hours)
     @user = user
     @report_date = start_date == end_date ? I18n.l(end_date) : "#{I18n.l(start_date)} - #{I18n.l(end_date)}"
