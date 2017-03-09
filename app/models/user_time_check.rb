@@ -259,7 +259,10 @@ p checkin_timechecks
         @@default_activity ||= TimeEntryActivity.first
         #put empty time entries for users who have not logged their time
         billable_users_for_project.each do |billable_user|
-          time_entries_users[billable_user] ||= [build_empty_time_entry(billable_user, project, end_date)]
+          time_entries_users[billable_user] ||= {
+            time_entries: build_empty_time_entry(billable_user, project, end_date),
+            user_leaves: []            
+          }
         end
       end
 
@@ -305,7 +308,8 @@ p checkin_timechecks
         #put empty time entries for users who have not logged their time
         users.each do |billable_user|
           time_entries_users[billable_user] ||= {
-            time_entries: build_empty_time_entry(billable_user, nil, end_date)
+            time_entries: build_empty_time_entry(billable_user, nil, end_date),
+            user_leaves: []
           }
         end
       end
