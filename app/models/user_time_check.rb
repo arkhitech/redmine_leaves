@@ -251,7 +251,7 @@ p checkin_timechecks
                               includes(:activity, :project, :user)
       time_entries_users = {}
       time_entries_billable.each do |time_entry|
-        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
       end
 
@@ -267,10 +267,17 @@ p checkin_timechecks
                              billable_users_for_project, project, start_date, end_date).
                              includes(:activity, :project, :user)
       time_entries_billable.each do |time_entry|
-        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
       end
 
+      user_leaves = UserLeave.where(leave_date: start_date..end_date).includes(:user)
+      user_leaves.each do |user_leave|
+        time_entries_users[user_leave.user] ||= {time_entries: [], user_leaves: []}
+        time_entries_users[user_leave.user][:user_leaves] << user_leave
+        
+      end
+      
       timesheet_table = fetch_timesheet_table(time_entries_users)
       TimesheetMailer.project_timesheet(user, timesheet_table, project.name, start_date, end_date).deliver
     end
@@ -289,7 +296,7 @@ p checkin_timechecks
                               includes(:activity, :project, :user)
       time_entries_users = {}
       time_entries_billable.each do |time_entry|
-        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
       end
 
@@ -297,15 +304,24 @@ p checkin_timechecks
         @@default_activity ||= TimeEntryActivity.first
         #put empty time entries for users who have not logged their time
         users.each do |billable_user|
-          time_entries_users[billable_user] ||= [build_empty_time_entry(billable_user, nil, end_date)]
+          time_entries_users[billable_user] ||= {
+            time_entries: build_empty_time_entry(billable_user, nil, end_date)
+          }
         end
       end
 
       time_entries_billable.each do |time_entry|
-        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
       end
 
+      user_leaves = UserLeave.where(leave_date: start_date..end_date).includes(:user)
+      user_leaves.each do |user_leave|
+        time_entries_users[user_leave.user] ||= {time_entries: [], user_leaves: []}
+        time_entries_users[user_leave.user][:user_leaves] << user_leave
+        
+      end
+      
       timesheet_table = fetch_timesheet_table(time_entries_users)
       receiver_users.each do |receiver_user|
         TimesheetMailer.project_timesheet(receiver_user, timesheet_table, logger_group.last_name, start_date, end_date).deliver
@@ -331,8 +347,8 @@ p checkin_timechecks
     def fetch_timesheet_table(time_entries_users)
       timesheet_table = []
       time_entries_users.each_pair do |user, time_leave_entries|
-        time_entries = time_leave_entries[:time_entries]#: [], leaves: {}}
-        leaves = time_leave_entries[:leaves]#: [], leaves: {}}
+        time_entries = time_leave_entries[:time_entries]#: [], user_leaves: []}
+        leaves = time_leave_entries[:user_leaves]#: [], user_leaves: []}
         project_total={}          #hash to get the project total against particular project
         user_project_activity_hours = {} #hash to build a particular model Users=>Projects=>activities=>issues
         for time_entry in time_entries
