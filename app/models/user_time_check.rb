@@ -269,7 +269,7 @@ p checkin_timechecks
       time_entries_other = TimeEntry.where("user_id NOT IN (?) and project_id = ? and spent_on >= ? and spent_on <= ?", 
                              billable_users_for_project, project, start_date, end_date).
                              includes(:activity, :project, :user)
-      time_entries_billable.each do |time_entry|
+      time_entries_other.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
       end
@@ -314,11 +314,14 @@ p checkin_timechecks
         end
       end
 
-      time_entries_billable.each do |time_entry|
+      time_entries_other = TimeEntry.where("user_id NOT IN (?) and project_id = ? and spent_on >= ? and spent_on <= ?", 
+                             billable_users_for_project, project, start_date, end_date).
+                             includes(:activity, :project, :user)
+      time_entries_other.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
       end
-
+      
       user_leaves = UserLeave.where(leave_date: start_date..end_date).includes(:user)
       user_leaves.each do |user_leave|
         time_entries_users[user_leave.user] ||= {time_entries: [], user_leaves: []}
