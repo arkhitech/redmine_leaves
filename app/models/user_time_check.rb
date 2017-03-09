@@ -314,8 +314,8 @@ p checkin_timechecks
         end
       end
 
-      time_entries_other = TimeEntry.where("user_id NOT IN (?) and project_id = ? and spent_on >= ? and spent_on <= ?", 
-                             billable_users_for_project, project, start_date, end_date).
+      time_entries_other = TimeEntry.where("user_id NOT IN (?) and spent_on >= ? and spent_on <= ?", 
+                             users.map(&:id), start_date, end_date).
                              includes(:activity, :project, :user)
       time_entries_other.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
