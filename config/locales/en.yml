@@ -153,8 +153,15 @@ en:
   
    #MODELS
    #leave_mailer
-   label_leave_marked_for: "Leave Marked for"
+   subject_leave_marked_for: "%{fraction} Leave Marked for %{leave_date)"
+   subject_project_timesheet: "Daily Timesheet Report - %{project} - %{report_date}"
    
+   subject_missing_time_log: "Missing Time Log - %{user.name} - %{report_date}"
+   
+   body_timelog_hours_not_logged_html: "You have not logged your time for %{report_date}"
+   body_timelog_hours_missing_html: "You have only logged %{logged_hours} for %{report_date}"
+   body_affirm_missing_time_log_html: "Please update your time log to ensure time is logged completely. You will not be able to log time after three days and your leave will be marked."
+   footer_missing_time_log_html: "Thank you for your co-operation."
    #log_time_remainder_mailer
    label_reminder_for_time_log: "Time Log Reminder for Issue#"
    

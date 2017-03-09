@@ -1,5 +1,5 @@
 namespace :redmine_leaves do
-  task :populate_time_spent => :environment do
+  task populate_time_spent: :environment do
    
     missing_timespent = UserTimeCheck.where("time_spent is NULL and check_out_time is NOT NULL")
     unless missing_timespent.blank?

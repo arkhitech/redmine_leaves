@@ -1,0 +1,14 @@
+<%= @leave.user %><br/><br/>
+
+<%if @logged_working_hours > 0%>
+  <%= I18n.t('body_time_log_hours_not_logged_html', report_date: @report_date)%>
+<%else%>
+  <%= I18n.t('body_time_log_hours_missing_html', logged_hours: @logged_hours, report_date: @report_date)%>
+<%end%>
+<%= I18n.t('body_time_log_hours_missing_html')%>
+<%= I18n.t('body_affirm_missing_time_log_html')%>
+<br/><br/>
+<%= I18n.t('footer_missing_time_log')%>
+
+
+

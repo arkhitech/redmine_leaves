@@ -33,4 +33,8 @@ namespace :redmine_leaves do
       end
     end
   end
+  
+  task report_time_logging_activity: :environment do
+    UserTimeCheck.report_activity
+  end
 end

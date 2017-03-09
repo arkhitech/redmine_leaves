@@ -116,4 +116,259 @@ p checkin_timechecks
       end   
     end
   end
+  
+  class << self
+    def time_loggers_group
+      Group.find_by_lastname(Setting.plugin_redmine_leaves['time_loggers_group'] || 'Staff')
+    end
+    def time_log_receivers_group
+      Group.find_by_lastname(Setting.plugin_redmine_leaves['time_log_receivers_group'] || 'HR')
+    end
+    def num_min_working_hours
+      Setting.plugin_redmine_leaves['num_min_working_hours'].to_i || 8
+    end
+    def working_days
+      weekdays = Setting.plugin_redmine_leaves['working_days']
+      (weekdays && weekdays.split(/\s*,\s*/)) || ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    end
+    
+    def default_leave_type
+      Setting.plugin_redmine_leaves['default_type'] || 'Annual'
+    end
+    
+    def report_activity(report_days = 1, report_projects = true, 
+        notify_missing_time = true, mark_leave_after_days = -1, error_tolerance = 0.25)
+      projects = Project.active.includes(members: :user)    #get project timesheet
+      start_date = Date.today - report_days.day
+      end_date = start_date
+
+      users = User.in_group(time_loggers_group).where(status: User::STATUS_ACTIVE)
+      
+      
+      email_group_timesheet(User.in_group(time_log_receivers_group), time_loggers_group, start_date, end_date) if report_projects
+      
+      email_project_timesheets(projects, start_date, end_date) if report_projects
+
+      email_users_missing_hours(users, start_date, end_date) if notify_missing_time
+      
+      mark_leave_for_missing_hours(users, start_date, end_date, mark_leave_after_days, error_tolerance) if mark_leave_after_days > 0
+    end
+
+    def mark_leave_for_missing_hours(users, start_date, end_date, mark_leave_after_days, error_tolerance = 0.25)
+      total_days = total_working_days_between(start_date, end_date)
+      num_working_hours = total_days * num_min_working_hours
+
+      start_date = start_date - mark_leave_after_days.days
+      end_date = end_date - mark_leave_after_days.days
+      
+      (start_date..end_date).each do |curr_date|
+        num_working_hours = num_min_working_hours * (1 - error_tolerance)
+        
+        missing_hours_users = TimeEntry.select("user_id, SUM(hours) as sum_hours").
+          where(spent_on: curr_date, user_id: users.map(&:id)).
+          eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}")
+
+        missing_hours_users.each do |missing_hours_user|
+          user = missing_hours_user.user
+          leave_day = calculate_leave_days(user, curr_date, curr_date)
+
+          unless leave_day > 0
+            leave_weight = missing_hours_user.sum_hours.to_f / num_min_working_hours
+            UserLeave.create!(user: user, leave_type: default_leave_type, comments: 'Missing time log', fractional_leave: leave_weight)
+          end
+        end
+        
+      end
+      
+    end
+    def calculate_leave_days(user, start_date, end_date)
+      leaves = user.user_leaves.where(leave_date: start_date..end_date)
+      leaves.map do |leave| 
+        leave.default_fractional_leave_value > 1 ? 1 : leave.fractional_leave
+      end.reduce(:+).to_f      
+    end
+    private :calculate_leave_days
+    
+    def total_working_days_between(start_date, end_date)
+      wdays = working_days
+      total_days = 0
+      (start_date..end_date).each do |dt|
+        total_days += 1 if wdays.include?(dt.strftime("%A"))
+      end
+      total_days
+    end
+    private :total_working_days_between
+    
+    def email_users_missing_hours(users, start_date, end_date)
+      total_days = total_working_days_between(start_date, end_date)
+      num_working_hours = total_days * num_min_working_hours
+      
+      missing_hours_users = TimeEntry.select("user_id, SUM(hours) as sum_hours").
+        where(spent_on: start_date..end_date, user_id: users.map(&:id)).
+        eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}")
+      
+      missing_hours_users.each do |missing_hours_user|
+        user = missing_hours_user.user
+        leave_days = calculate_leave_days(user, start_date, end_date)
+        
+        if leave_days > 0
+          #recalculate missing hours for user
+          num_working_hours = (total_days - leave_days) * num_min_working_hours
+
+          missing_hours_user = TimeEntry.select("user_id, SUM(hours) as sum_hours").
+            where(spent_on: start_date..end_date, user_id: user.id).
+            eager_load(:user).group(:user_id).having("sum_hours < #{num_working_hours}").first
+          
+          TimesheetMailer.missing_time_log(user, start_date, end_date,
+            missing_hours_user.sum_hours.to_f).deliver if missing_hours_user                    
+        else
+          TimesheetMailer.missing_time_log(user, start_date, end_date,
+            missing_hours_user.sum_hours.to_f).deliver          
+        end
+      end
+    end
+
+    def email_project_timesheets(projects, start_date, end_date)
+      User.current.admin = true #set admin = true so that all time entries can be fetched
+      for project in projects                     #get project Members for every project and send it to send_time_sheet_emial
+        project_members = project.members
+        for project_member in project_members
+          email_project_timesheet(project_member.user, project_member.project,
+                        start_date, end_date) if project_member.roles.
+                        detect{|role|role.allowed_to?(:receive_timesheet_email)}
+        end
+      end
+    end
+
+    def email_project_timesheet(user, project, start_date, end_date)
+      total_days = total_working_days_between(start_date, end_date)
+      return if total_days < 1 
+      #Make new object for time sheet get user ids form project and assign it to users
+
+      billable_users_for_project = billable_users(project)
+      time_entries_billable = TimeEntry.where(user_id: billable_users_for_project, 
+                              spent_on: start_date..end_date).
+                              includes(:activity, :project, :user)
+      time_entries_users = {}
+      time_entries_billable.each do |time_entry|
+        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user][:time_entries] << time_entry
+      end
+
+      if time_entries_users.size < billable_users_for_project.size
+        @@default_activity ||= TimeEntryActivity.first
+        #put empty time entries for users who have not logged their time
+        billable_users_for_project.each do |billable_user|
+          time_entries_users[billable_user] ||= [build_empty_time_entry(billable_user, project, end_date)]
+        end
+      end
+
+      time_entries_other = TimeEntry.where("user_id NOT IN (?) and project_id = ? and spent_on >= ? and spent_on <= ?", 
+                             billable_users_for_project, project, start_date, end_date).
+                             includes(:activity, :project, :user)
+      time_entries_billable.each do |time_entry|
+        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user][:time_entries] << time_entry
+      end
+
+      timesheet_table = fetch_timesheet_table(time_entries_users)
+      TimesheetMailer.project_timesheet(user, timesheet_table, project.name, start_date, end_date).deliver
+    end
+
+    def email_group_timesheet(receiver_group, logger_group, start_date, end_date)
+      #ignore project if no time is logged whatsoever
+      total_days = total_working_days_between(start_date, end_date)
+      return if total_days < 1
+      
+      receiver_users = User.in_group(receiver_group)
+      users = User.in_group(logger_group)
+      #Make new object for time sheet get user ids form project and assign it to users
+
+      time_entries_billable = TimeEntry.where(user_id: users.map(&:id), 
+                              spent_on: start_date..end_date).
+                              includes(:activity, :project, :user)
+      time_entries_users = {}
+      time_entries_billable.each do |time_entry|
+        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user][:time_entries] << time_entry
+      end
+
+      if time_entries_users.size < users.size
+        @@default_activity ||= TimeEntryActivity.first
+        #put empty time entries for users who have not logged their time
+        users.each do |billable_user|
+          time_entries_users[billable_user] ||= [build_empty_time_entry(billable_user, nil, end_date)]
+        end
+      end
+
+      time_entries_billable.each do |time_entry|
+        time_entries_users[time_entry.user] ||= {time_entries: [], leaves: {}}
+        time_entries_users[time_entry.user][:time_entries] << time_entry
+      end
+
+      timesheet_table = fetch_timesheet_table(time_entries_users)
+      receiver_users.each do |receiver_user|
+        TimesheetMailer.project_timesheet(receiver_user, timesheet_table, logger_group.last_name, start_date, end_date).deliver
+      end
+    end
+    
+    def build_empty_time_entry(user_id, project, spent_on)
+      @@default_activity ||= TimeEntryActivity.first
+      time_entry = TimeEntry.new
+      time_entry.user_id = user_id; time_entry.project = project
+      time_entry.activity = @@default_activity; time_entry.hours = 0
+      time_entry.spent_on = spent_on
+      time_entry
+    end
+    private :build_empty_time_entry
+
+    def billable_users(project)
+      users = project.members.map(&:user)
+      User.in_group(time_loggers_group).where(id: users.map(&:id))
+    end
+    private :billable_users
+    
+    def fetch_timesheet_table(time_entries_users)
+      timesheet_table = []
+      time_entries_users.each_pair do |user, time_leave_entries|
+        time_entries = time_leave_entries[:time_entries]#: [], leaves: {}}
+        leaves = time_leave_entries[:leaves]#: [], leaves: {}}
+        project_total={}          #hash to get the project total against particular project
+        user_project_activity_hours = {} #hash to build a particular model Users=>Projects=>activities=>issues
+        for time_entry in time_entries
+          project_total[time_entry.project_id] ||= 0
+          project_total[time_entry.project_id] += time_entry.hours
+          user_project_activity_hours[user] ||= {}
+          activity_hours = user_project_activity_hours[user][time_entry.project] ||= {}
+
+          activity_hours[time_entry.activity.name] ||= [[],0]
+          activity_hours[time_entry.activity.name][0] << time_entry.issue
+          activity_hours[time_entry.activity.name][1] += time_entry.hours
+        end
+
+        user_project_activity_hours.each_pair do |user, project_activity_hours|
+          user_total = 0 #total time spent by user in all projects
+          project_activity_hours.each_pair do |project, activity_hours|
+            project_total = 0 #total time spent on project
+            activity_hours.each_pair do |activity_name, issue_hours|
+              timesheet_table << {user: user, project: project, activity: activity_name,
+                issues: issue_hours[0], hours: issue_hours[1], total_heading: nil, total: nil}
+              project_total += issue_hours[1]
+            end
+            timesheet_table << {user: nil, project: nil, activity: nil,
+                issues: nil, hours: nil, total_heading: 'Project Total', total: project_total}
+            user_total += project_total
+          end
+          timesheet_table << {user: nil, project: nil, activity: nil,
+              issues: nil, hours: nil, total_heading: 'Total Leaves', 
+              total: leaves.map(&:fractional_leave).reduce(&:+).to_f}
+          timesheet_table << {user: nil, project: nil, activity: nil,
+              issues: nil, hours: nil, total_heading: 'User Total', total: user_total}
+        end
+      end
+
+      timesheet_table
+    end
+    private :fetch_timesheet_table
+  end
 end

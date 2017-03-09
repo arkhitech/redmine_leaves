@@ -160,3 +160,40 @@
 
 
 </fieldset>
+
+<fieldset class="box">
+  <legend><strong>Time Activity Report Settings</strong></legend>
+<p>
+  <label for="settings_time_loggers_group">Time Loggers Group</label>
+  <%= select_tag('settings[time_loggers_group]', 
+            options_from_collection_for_select(Group.all, :id, :name, 
+              settings['time_loggers_group']), 
+            multiple: false) %>
+</p>
+
+<p>
+  <label for="settings_time_loggers_group">Time Log Receivers Group</label>
+  <%= select_tag('settings[time_log_receivers_group]', 
+            options_from_collection_for_select(Group.all, :id, :name, 
+              settings['time_log_receivers_group']), 
+            multiple: false) %>
+</p>
+
+<p>
+  <label for="settings_num_min_working_hours">Minimum Working Hours</label>
+    <%= select_tag('settings[num_min_working_hours]',
+      options_for_select(0..10, settings['num_min_working_hours'].to_i)) %>
+</p>
+
+<p>
+  <label for="settings_num_min_working_hours">Working Days</label>
+    <%= select_tag('settings[working_days]',
+      options_for_select(Date::DAYNAMES, settings['working_days'].to_i), multiple: true) %>
+</p>
+
+<p>
+  <label for="settings_max_past_timelog_insert_days">Max Past Timelog Insert Days</label>
+    <%= select_tag('settings[max_past_timelog_insert_days]',
+      options_for_select(0..10, @settings['max_past_timelog_insert_days'].to_i)) %>
+</p>
+</fieldset>

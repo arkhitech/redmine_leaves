@@ -1,11 +1,14 @@
 require 'redmine'
 
 Rails.configuration.to_prepare do
-  require_dependency 'user'
-  require_dependency 'redmine/helpers/calendar'
-  
+  require_dependency 'user'  
   User.send(:include, RedmineLeaves::Patches::UserPatch)
+  
+  require_dependency 'redmine/helpers/calendar'
   Redmine::Helpers::Calendar.send(:include, RedmineLeaves::Patches::LeavesInCalendarPatch)
+  
+  require_dependency 'time_entry'
+  TimeEntry.send(:include, RedmineLeaves::Patches::TimeRestrictionPatch)
 end  
 
 require "#{File.join(File.dirname(__FILE__), 'config','wice_grid_config.rb')}"
@@ -18,8 +21,9 @@ Redmine::Plugin.register :redmine_leaves do
   author_url 'https://github.com/arkhitech'
   version '0.1.0'
    
+  permission :receive_timesheet_email, { }, require: :member
   
-  permission :view_time_reports, :user_time_check => :user_time_reporting
+  permission :view_time_reports, user_time_check: :user_time_reporting
   
   
   menu :top_menu, :time_check_in, { controller: 'user_time_checks', action: 'check_in' }, 
@@ -50,6 +54,12 @@ Redmine::Plugin.register :redmine_leaves do
       menu :leave_report_menu, :user_leaves, { :controller => 'user_leaves', :action => 'new' }, :caption => 'Add Leave'
       menu :leave_report_menu, :user_leave_analytics, { :controller => 'user_leave_analytics', :action => 'report'}, :caption => 'Analytics'
   
-      settings default: {'leave_types' => 'Annual, Sick, Unannounced',
-        'default_type' => 'Unannounced'}, partial: 'settings'    
+      settings default: {
+        'leave_types' => 'Annual, Sick, Unannounced',
+        'default_type' => 'Annual',
+        'time_loggers_group' => 'Staff',
+        'time_log_receivers_group' => 'HR',
+        'num_min_working_hours' => '8',
+        'max_past_timelog_insert_days' => '7'        
+      }, partial: 'settings'    
     end
