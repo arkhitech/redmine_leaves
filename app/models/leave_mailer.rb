@@ -8,7 +8,7 @@ class LeaveMailer < ActionMailer::Base
   def notify_absentee(user_leave)
     @leave = user_leave
     mail(to: @leave.user.mail, subject: I18n.t('subject_leave_marked_for', 
-        fraction: @leave.default_fractional_leave_value, leave_date: I18n.l(@leave.leave_date)))
+        fraction: @leave.fractional_leave, leave_date: I18n.l(@leave.leave_date)))
   end
   
   #send project timesheet
