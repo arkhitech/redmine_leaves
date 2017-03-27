@@ -162,7 +162,7 @@ en:
    body_time_log_hours_not_logged_html: "You have not logged your time for %{report_date}"
    body_time_log_hours_missing_html: "You have only logged %{logged_hours} for %{report_date}"
    body_affirm_missing_time_log_html: "Please update your time log to ensure time is logged completely. You will not be able to log time after three days and your leave will be marked."
-   footer_missing_time_log_html: "Thank you for your co-operation."
+   footer_missing_time_log: "Thank you for your co-operation."
    #log_time_remainder_mailer
    label_reminder_for_time_log: "Time Log Reminder for Issue#"
    

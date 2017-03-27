@@ -46,9 +46,7 @@ class UserTimeCheck < ActiveRecord::Base
         date = row[INDEX_ZK_DATETIME]
         first_last_name = name.split(" ")
         user = User.where(firstname: first_last_name.first, lastname: first_last_name.last).first
-     p name 
-     p date.to_datetime
-     p user
+        logger.debug "#{name}#{date.to_datetime}#{user}"
         
         unless name && date && user
           # missing name or date or no records found in database
@@ -56,7 +54,7 @@ class UserTimeCheck < ActiveRecord::Base
         end
         
 #        date = "#{date} #{Time.zone}".to_datetime
-date=date.to_datetime
+        date=date.to_datetime
         missed_checkouts = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_out_time IS NULL', 
             user.id, date.beginning_of_day])
@@ -67,14 +65,10 @@ date=date.to_datetime
         checkin_timechecks = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
             user.id, date.end_of_day, date.beginning_of_day])
-p checkin_timechecks
-
-        
+          logger.debug checkin_timechecks
         if checkin_timechecks.empty?
          UserTimeCheck.create(user_id: user.id, check_in_time: date,check_out_time:  nil)
-            p '*'*50
-    p user
-    p '*'*50
+            logger.debug "#{'*'*50}#{user}#{'*'*50}"
         else
           user_time_check = checkin_timechecks.first
           checked_time = date.to_time - user_time_check.check_in_time.to_time
@@ -83,13 +77,13 @@ p checkin_timechecks
             if difference > 1 && difference < 16 
               #difference between first checkin and current pulled time is less than 16 and greater than 1 (meaning) not by mistake), so asssume checkout
               user_time_check.update_attributes(check_out_time: date,time_spent: checked_time/60)
-              p '&'*50
+              logger.debug '&'*50
             elsif difference > 16
               #difference between previous checkout and current is greater than 16, meaning that user missed out
               user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 6.hours, 
                 comments: l(:auto_generated_comment),time_spent: 6*60)
            #   UserTimeCheck.create(user_id: user.id, check_in_time: date)
-              p '$'*50
+              logger.debug '$'*50
 
             else
               #ignore the check-in
@@ -206,7 +200,7 @@ p checkin_timechecks
       
       missing_hours_users = TimeEntry.where(spent_on: start_date..end_date, 
         user_id: users.map(&:id)).group(:user_id).
-        having("sum(hours) < ?", num_working_hours).sum("hours")
+        having("sum(hours) < ?", num_working_hours - 0.001).sum("hours")
       users = User.where(id: missing_hours_users.keys)
       
       users.each do |user|
@@ -218,7 +212,7 @@ p checkin_timechecks
 
           missing_hours_user = TimeEntry.where(spent_on: start_date..end_date, 
             user_id: user.id).group(:user_id).
-            having("sum(hours) < ?", num_working_hours).sum('hours')
+            having("sum(hours) < ?", num_working_hours - 0.001).sum('hours')
           
           LeaveMailer.missing_time_log(user, start_date, end_date,
             missing_hours_user[user.id]).deliver if missing_hours_user[user.id]                   
