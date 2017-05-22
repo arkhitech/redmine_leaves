@@ -5,9 +5,16 @@ class LeaveMailer < ActionMailer::Base
   def self.default_url_options
     Mailer.default_url_options
   end  
+  def cc_email_addresses
+    User.in_group(UserTimeCheck.time_log_receivers_group).map(&:mail)    
+  end
+  private :cc_email_addresses
+  
   def notify_absentee(user_leave)
     @leave = user_leave
-    mail(to: @leave.user.mail, subject: I18n.t('subject_leave_marked_for', 
+    mail(to: @leave.user.mail, 
+      cc: cc_email_addresses,
+      subject: I18n.t('subject_leave_marked_for', 
         fraction: @leave.fractional_leave, leave_date: I18n.l(@leave.leave_date)))
   end
   
@@ -30,7 +37,9 @@ class LeaveMailer < ActionMailer::Base
     @user = user
     @report_date = start_date == end_date ? I18n.l(end_date) : "#{I18n.l(start_date)} - #{I18n.l(end_date)}"
     @logged_hours = logged_hours
-    mail(to: user.mail, subject: I18n.t('subject_missing_time_log', 
+    mail(to: user.mail, 
+      cc: cc_email_addresses,
+      subject: I18n.t('subject_missing_time_log', 
         user_name: user.name, report_date: @report_date))    
   end
   
