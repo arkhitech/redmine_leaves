@@ -54,9 +54,8 @@ en:
    label_button_update: "Update"
    
    #leave_mailer/notify_absentee.html/.txt
-   text_notify_your_leave_for: "Your leave for "
-   text_notify_has_been_marked_as: " has been marked as "
-   text_notify_has_been_added_as: " has been added as "
+   text_notify_your_leave_for: "%{leave_type} leave for %{leave_date} has been marked for you with comments: %{comments}"
+   html_notify_your_leave_for: "<strong>%{leave_type}</strong> leave for <strong>%{leave_date}</strong> has been marked for you with comments:<br/><strong>%{comments}</strong>"
    
    
    #log_time_reminder_mailer/reminder_email.html/.txt
