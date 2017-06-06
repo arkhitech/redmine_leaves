@@ -16,15 +16,16 @@ module UserLeavesHelper
     mark_own_leave_groups = Setting.plugin_redmine_leaves['mark_own_leave']
     mark_own_leave_users = mark_leave_options(mark_own_leave_groups)
     
+    time_loggers_group = Group.find(Setting.plugin_redmine_leaves['time_loggers_group'])
     if(mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))
       # if current user have both permissions
-      all_users = User.active
+      all_users = User.in_group(time_loggers_group)
     elsif(mark_leave_users.include?(User.current) && !mark_own_leave_users.include?(User.current))      
       # if current user have permission to mark leaves only
-      all_users = User.active - User.where(['id = ?', User.current.id])
+      all_users = User.in_group(time_loggers_group).where.not(id: User.current.id)
     elsif(!mark_leave_users.include?(User.current) && mark_own_leave_users.include?(User.current))      
       # if current user have permission to mark own leaves
-      all_users = User.where(['id = ?', User.current.id]).active
+      all_users = User.where(id: User.current.id).active
     else
       all_users = User.active
     end

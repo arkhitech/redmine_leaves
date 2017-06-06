@@ -1,3 +1,4 @@
 <%= @leave.user %>
 
-<%= I18n.t("text_notify_your_leave_for", leave_date: @leave.leave_date, leave_type: @leave.leave_type, comments: @leave.comments) %>
+<%= I18n.t("text_notify_your_leave_for", leave_date: @leave.leave_date, 
+  leave_type: @leave.leave_type, comments: @leave.comments, fraction: @leave.fractional_leave) %>
