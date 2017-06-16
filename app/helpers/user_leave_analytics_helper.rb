@@ -1,4 +1,5 @@
 module UserLeaveAnalyticsHelper
+  include UserLeaveReportsHelper
   
   def all_leave_types
     (Setting.plugin_redmine_leaves['leave_types'] || '').split(',').delete_if { |index| index.blank? }
