@@ -2,7 +2,6 @@ class UserLeaveAnalyticsController < ApplicationController
   unloadable  
   
   include UserLeaveAnalyticsHelper
-  
   def report    
     
     if params[:user_leave_analytic]
@@ -15,35 +14,31 @@ class UserLeaveAnalyticsController < ApplicationController
       end_date   = params[:user_leave_analytic][:date_to]
       user       = params[:user_leave_analytic][:selected_user]
     else
-      start_date = Date.today - 1.year
+      start_date = Date.today.beginning_of_year
       end_date   = Date.today
       user       = User.current.id
     end
 
     flash_message = ""
 
-    @bar1 = LazyHighCharts::HighChart.new('graph') do |f|
+    @bar3 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title({ :text=>"Overall Leaves Taken/Given - Bar Chart"})
       f.options[:xAxis][:categories] = ['Leave Type']
-      if start_date.blank? || end_date.blank?
-        start_date=Date.today-1.year
-        end_date=Date.today
-      end
       all_leave_types.each do |leave|
         f.series(:type=> 'column',:name=> leave,:data=> [leaves_count_for(User.active, leave, start_date, end_date)])
       end
     end
     result = 0
-    @bar1.series_data.each do |data|
+    @bar3.series_data.each do |data|
       result += data[:data].first
     end    
     flash_message ="No Results Found for Overall Leaves Taken/Given<br/>" if result==0
 
-    @pie1 = LazyHighCharts::HighChart.new('pie') do |f|
+    @pie3 = LazyHighCharts::HighChart.new('pie') do |f|
       f.chart({:defaultSeriesType=>"pie" , :margin=> [50, 50, 50, 50]} )
       series = {
         :type=> 'pie',
-        :name=> 'Leave Types',        
+        :name=> 'Group Leave Types',        
         :data=> populate_pie_chart_for_user(User.active, start_date,end_date)
       }
       f.series(series)
@@ -98,7 +93,7 @@ class UserLeaveAnalyticsController < ApplicationController
         })
     end
     
-    @bar3 = LazyHighCharts::HighChart.new('graph') do |f|
+    @bar1 = LazyHighCharts::HighChart.new('graph') do |f|
       f.title({ :text=>"Type of Leaves taken by #{User.find(user).name} - Bar Chart"})
       f.options[:xAxis][:categories] = ['Leave Type']
       
@@ -107,16 +102,16 @@ class UserLeaveAnalyticsController < ApplicationController
       end
     end
     result = 0
-    @bar3.series_data.each do |data|
+    @bar1.series_data.each do |data|
       result += data[:data].first
     end    
     flash_message +="No Results Found for Type of Leaves taken by #{User.find(user).name}" if result==0
     
-    @pie3 = LazyHighCharts::HighChart.new('pie') do |f|
+    @pie1 = LazyHighCharts::HighChart.new('pie') do |f|
       f.chart({:defaultSeriesType=>"pie" , :margin=> [50, 50, 50, 50]} )
       series = {
         :type=> 'pie',
-        :name=> 'Group Leaves',
+        :name=> 'User Leave Types',
         :data=> populate_pie_chart_for_user(user, start_date,end_date)
       }
       f.series(series)

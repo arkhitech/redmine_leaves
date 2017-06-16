@@ -23,9 +23,9 @@
     <div style="float: right">
     <strong><%= l(:label_user) %></strong>
     <%= select_tag "user_leave_analytic[selected_user]",
-      options_from_collection_for_select(User.active.sort_by{|e| e[:firstname]}, :id, :name, 
+      user_options(
       ((params[:user_leave_analytic] && params[:user_leave_analytic][:selected_user]) || User.current.id)), 
-      {:onchange => "this.form.submit();"} %></div>
+      {onchange: "this.form.submit();", include_blank: true} %></div>
   </div>
 
 
