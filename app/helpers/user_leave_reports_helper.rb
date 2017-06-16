@@ -52,7 +52,8 @@ module UserLeaveReportsHelper
   def eligible_for_leave_users
     group_ids = Setting.plugin_redmine_leaves['eligible_for_leave_groups']
     if group_ids.blank?
-      @eligible_users=User.active.all
+      time_loggers_group = Group.find(Setting.plugin_redmine_leaves['time_loggers_group'])
+      @eligible_users = User.in_group(time_loggers_group)
 #     @eligible_users.order('users.name ASC').all.map{ |c| [c.name, c.id] }
       @eligible_users.sort_by{|e| e[:firstname]}
     else

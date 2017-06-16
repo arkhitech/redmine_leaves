@@ -1,5 +1,5 @@
 <%= @leave.user %><br/><br/>
 
 <%= I18n.t("html_notify_your_leave_for_html", leave_date: @leave.leave_date, 
-  leave_type: @leave.leave_type, comments: @leave.comments, fraction: @leave.fractional_leave) %>
+  leave_type: @leave.leave_type, comments: @leave.comments, fraction: @leave.fractional_leave).html_safe %>
 
