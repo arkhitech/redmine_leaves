@@ -11,7 +11,7 @@ class LeaveMailer < ActionMailer::Base
   private :cc_email_addresses
   
   def notify_absentee(user_leave)
-    @total_leaves = UserLeave.where(user_id: user, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year)
+    @total_yearly_leaves = UserLeave.where(user_id: user_leave.user_id, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year).count
     @leave = user_leave
     mail(to: @leave.user.mail, 
       cc: cc_email_addresses,
