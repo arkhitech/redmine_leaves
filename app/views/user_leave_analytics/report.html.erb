@@ -11,7 +11,7 @@
     <div style="display: inline-block; padding-right: 50px">
     <strong><%= l(:label_date_from) %></strong>
     <%= text_field_tag "user_leave_analytic[date_from]", 
-      (params[:user_leave_analytic] && params[:user_leave_analytic][:date_from]) || (Date.today - 1.year) %>
+      (params[:user_leave_analytic] && params[:user_leave_analytic][:date_from]) || (Date.today.beginning_of_year) %>
     <%= calendar_for 'user_leave_analytic_date_from' %><br/></div>
     <div style="display: inline-block; padding-right: 50px">
     <strong><%= l(:label_date_to) %></strong> 

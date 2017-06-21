@@ -21,9 +21,7 @@ class UserLeavesController < ApplicationController
     else
       selected_group_users = User.active.joins(:groups).
         where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => params['create_user_leave']['selected_groups'])
-      selected_group_users.each do |group_user|
-        selected_users << User.find(group_user).id.to_s
-      end
+      selected_users = User.where(id: selected_group_users.map(&:id))
       if selected_users.count == 1
         invalid_group = true
       end
@@ -54,7 +52,10 @@ class UserLeavesController < ApplicationController
             errors << l(:error_leave_add, user_name: user_leave.user.name, leave_type: user_leave.leave_type, 
                         leave_date: user_leave.leave_date, reason: user_leave.errors.full_messages.join('<br/>'))
           else
-            notices << l(:notice_leave_add, user_name: user_leave.user.name, leave_type: user_leave.leave_type, leave_date: user_leave.leave_date)
+            total_leaves = UserLeave.where(user_id: user, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year)
+            notices << l(:notice_leave_add, user_name: user_leave.user.name, 
+              leave_type: user_leave.leave_type, 
+              leave_date: user_leave.leave_date, total_yearly_leaves: total_leaves)
           end 
         end       
       end
