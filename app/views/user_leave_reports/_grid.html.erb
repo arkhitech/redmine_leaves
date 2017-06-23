@@ -11,14 +11,14 @@
 
       
  g.column name: l(:label_leave_type),in_csv: false,attribute: 'leave_type',detach_with_id: :leave_type_filter do |user_leave|
-    link_to user_leave.leave_type, :controller => 'user_leave_reports',:action=> 'report',:user_leave_report=>{:selected_leave_types=>user_leave.leave_type, :selected_group_by =>'User'}
+    link_to user_leave.leave_type, :controller => 'user_leave_reports',action: 'report',user_leave_report:{selected_leave_types: user_leave.leave_type, :selected_group_by =>'User'}
  end
  g.column name: l(:label_leave_type),in_html: false,attribute: 'leave_type',detach_with_id: :leave_type_filter do |user_leave|
     user_leave.leave_type
  end
       
  g.column name: l(:label_leave_date),in_csv: false,attribute: 'leave_date',detach_with_id: :leave_date_filter do |user_leave|
-    link_to user_leave.leave_date, :controller => 'user_leave_reports',:action=> 'report',:user_leave_report=>{:date_from=>user_leave.leave_date,:date_to=>user_leave.leave_date, :selected_group_by =>'User'}
+    link_to user_leave.leave_date, :controller => 'user_leave_reports',action: 'report',user_leave_report:{date_from: user_leave.leave_date,date_to: user_leave.leave_date, :selected_group_by =>'User'}
  end
  g.column name: l(:label_leave_date),in_html: false,attribute: 'leave_date',detach_with_id: :leave_date_filter do |user_leave|
     user_leave.leave_date

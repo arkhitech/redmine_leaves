@@ -54,8 +54,8 @@ en:
    label_button_update: "Update"
    
    #leave_mailer/notify_absentee.html/.txt
-   text_notify_your_leave_for: "%{fraction} %{leave_type}(%{total_yearly_leaves}) leave for %{leave_date} has been marked for you with comments: %{comments}"
-   text_notify_your_leave_for_html: "<strong>%{fraction} %{leave_type}(%{total_yearly_leaves})</strong> leave for <strong>%{leave_date}</strong> has been marked for you with comments:<br/><strong>%{comments}</strong>"
+   text_notify_your_leave_for: "%{fraction} %{leave_type}(%{total_yearly_leaves}) leave on %{leave_date} has been marked for %{user_name} with comments: %{comments}"
+   text_notify_your_leave_for_html: "<strong>%{fraction} %{leave_type}(%{total_yearly_leaves})</strong> leave on <strong>%{leave_date}</strong> has been marked for %{user_name} with comments:<br/><strong>%{comments}</strong>"
    
    
    #log_time_reminder_mailer/reminder_email.html/.txt
@@ -152,7 +152,7 @@ en:
   
    #MODELS
    #leave_mailer
-   subject_leave_marked_for: "%{fraction} %{leave_type} Leave Marked for %{leave_date}"
+   subject_leave_marked_for: "Leave - %{user_name} - %{fraction} %{leave_type}(%{total_yearly_leaves}) %{leave_date}"
    subject_project_timesheet: "Daily Timesheet Report - %{project} - %{report_date}"
    subject_group_timesheet: "Daily Timesheet Report - %{group} - %{report_date}"
    

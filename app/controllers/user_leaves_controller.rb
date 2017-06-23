@@ -52,18 +52,18 @@ class UserLeavesController < ApplicationController
             errors << l(:error_leave_add, user_name: user_leave.user.name, leave_type: user_leave.leave_type, 
                         leave_date: user_leave.leave_date, reason: user_leave.errors.full_messages.join('<br/>'))
           else
-            total_yearly_leaves = UserLeave.where(user_id: user, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year).count
+            total_yearly_leaves = UserLeave.where(user_id: user, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year).sum(:fractional_leave)
             notices << l(:notice_leave_add, user_name: user_leave.user.name, 
               leave_type: user_leave.leave_type, 
               leave_date: user_leave.leave_date, total_yearly_leaves: total_yearly_leaves)
           end 
         end       
       end
-      errors=errors.flatten.uniq
-      notices=notices.flatten.uniq
+      errors = errors.flatten.uniq
+      notices = notices.flatten.uniq
       flash[:notice] = "#{notices.join('<br/>')}"
       unless errors.blank?
-        flash[:error]="#{errors.join('<br/>')}"
+        flash[:error] = "#{errors.join('<br/>')}"
         render 'new'
       else
         redirect_to user_leave_reports_path

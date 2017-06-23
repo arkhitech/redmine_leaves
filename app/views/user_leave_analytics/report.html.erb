@@ -1,5 +1,5 @@
 <% content_for :header_tags do %>
-  <%= javascript_include_tag "highcharts", :plugin=> 'redmine_leaves' %>
+  <%= javascript_include_tag "highcharts", plugin: 'redmine_leaves' %>
 <% end %>
 
 <%=  form_tag controller: 'user_leave_analytics', action: 'report' do %>
@@ -23,8 +23,7 @@
     <div style="float: right">
     <strong><%= l(:label_user) %></strong>
     <%= select_tag "user_leave_analytic[selected_user]",
-      user_options(
-      ((params[:user_leave_analytic] && params[:user_leave_analytic][:selected_user]) || User.current.id)), 
+      user_options(@user.id), 
       {onchange: "this.form.submit();"} %></div>
   </div>
 

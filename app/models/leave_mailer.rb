@@ -11,12 +11,14 @@ class LeaveMailer < ActionMailer::Base
   private :cc_email_addresses
   
   def notify_absentee(user_leave)
-    @total_yearly_leaves = UserLeave.where(user_id: user_leave.user_id, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year).count
+    @total_yearly_leaves = UserLeave.where(user_id: user_leave.user_id, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year).sum(:fractional_leave)
     @leave = user_leave
     mail(to: @leave.user.mail, 
       cc: cc_email_addresses,
       subject: I18n.t('subject_leave_marked_for', 
-        fraction: @leave.fractional_leave, leave_type: @leave.leave_type, leave_date: I18n.l(@leave.leave_date)))
+        user_name: @leave.user.name,
+        fraction: @leave.fractional_leave, total_yearly_leaves: @total_yearly_leaves,
+        leave_type: @leave.leave_type, leave_date: I18n.l(@leave.leave_date)))
   end
   
   #send project timesheet

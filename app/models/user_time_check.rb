@@ -2,7 +2,7 @@ class UserTimeCheck < ActiveRecord::Base
   unloadable
   belongs_to :user
   
-  validates :time_spent,:check_in_time, :check_out_time, :presence=> true,:on => :update
+  validates :time_spent,:check_in_time, :check_out_time, presence: true,:on => :update
   validate :correctness_of_user_time_checks
   
   class << self
