@@ -379,7 +379,7 @@ class UserTimeCheck < ActiveRecord::Base
               issues: nil, hours: nil, total_heading: 'Total Leaves', 
               total: leaves.map(&:fractional_leave).reduce(&:+).to_f}
           timesheet_table << {user: nil, project: nil, activity: nil,
-              issues: nil, hours: nil, total_heading: 'User Total', total: user_total}
+              issues: nil, hours: nil, total_heading: '<strong>User Total</strong>', total: user_total}
         end
       end
 

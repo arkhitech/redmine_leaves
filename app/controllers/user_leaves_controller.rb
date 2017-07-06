@@ -15,16 +15,11 @@ class UserLeavesController < ApplicationController
   def create  
     errors = []
     selected_users = []
-    invalid_group = false
     if params['create_user_leave']['selected_users']
       selected_users = params['create_user_leave']['selected_users']
     else
-      selected_group_users = User.active.joins(:groups).
-        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => params['create_user_leave']['selected_groups'])
-      selected_users = User.where(id: selected_group_users.map(&:id))
-      if selected_users.count == 1
-        invalid_group = true
-      end
+      selected_users = User.active.joins(:groups).
+        where("#{User.table_name_prefix}groups_users#{User.table_name_suffix}.id" => params['create_user_leave']['selected_groups']).map(&:id)
     end
     if params['create_user_leave']['selected_date_from'].blank? || 
         params['create_user_leave']['selected_date_to'].blank?
@@ -61,21 +56,16 @@ class UserLeavesController < ApplicationController
       end
       errors = errors.flatten.uniq
       notices = notices.flatten.uniq
-      flash[:notice] = "#{notices.join('<br/>')}"
       unless errors.blank?
-        flash[:error] = "#{errors.join('<br/>')}"
+        flash.now[:notice] = "#{notices.join('<br/>')}"
+        flash.now[:error] = "#{errors.join('<br/>')}"
         render 'new'
       else
-        redirect_to user_leave_reports_path
+        redirect_to user_leave_reports_path, notice: "#{notices.join('<br/>')}"
       end
     else
-      if invalid_group
-        flash[:error] = l(:error_invalid_user_group_selected)
-        render 'new'
-      else
-        flash[:error] = l(:error_no_user_group_selected)
-        render 'new'
-      end
+      flash.now[:error] = l(:error_no_user_group_selected)
+      render 'new'
     end
   end
   

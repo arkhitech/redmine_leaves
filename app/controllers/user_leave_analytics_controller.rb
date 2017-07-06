@@ -4,9 +4,9 @@ class UserLeaveAnalyticsController < ApplicationController
   include UserLeaveAnalyticsHelper
   def report    
     
-    start_date = params[:user_leave_analytic][:date_from].presence || Date.today.beginning_of_year
-    end_date = params[:user_leave_analytic][:date_to].presence || Date.today
-    user_id       = params[:user_leave_analytic][:selected_user] || User.current.id
+    start_date = params[:user_leave_analytic] && params[:user_leave_analytic][:date_from].presence || Date.today.beginning_of_year
+    end_date = params[:user_leave_analytic] && params[:user_leave_analytic][:date_to].presence || Date.today
+    user_id       = params[:user_leave_analytic] && params[:user_leave_analytic][:selected_user] || User.current.id
     @user = User.find(user_id)
     flash_message = ""
 
