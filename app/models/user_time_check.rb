@@ -197,19 +197,24 @@ class UserTimeCheck < ActiveRecord::Base
     def email_users_missing_hours(users, start_date, end_date)
       total_days = total_working_days_between(start_date, end_date)
       num_working_hours = total_days * num_min_working_hours
+      user_ids = users.map(&:id)
+      
+      logged_time_user_ids = User.joins(:time_entries).where("#{TimeEntry.table_name}.spent_on" => start_date..end_date, 
+        "#{User.table_name}.id" => user_ids).ids
       
       missing_hours_users = TimeEntry.where(spent_on: start_date..end_date, 
-        user_id: users.map(&:id)).group(:user_id).
+        user_id: logged_time_user_ids).group(:user_id).
         having("sum(hours) < ?", num_working_hours - 0.001).sum("hours")
-      users = User.where(id: missing_hours_users.keys)
+      users_missing_time = User.where(id: missing_hours_users.keys)
       
-      users.each do |user|
+      users_missing_time.each do |user|
         leave_days = calculate_leave_days(user, start_date, end_date)
         
         if leave_days > 0
           #recalculate missing hours for user
           num_working_hours = (total_days - leave_days) * num_min_working_hours
-
+          
+          #take into account leave time for user
           missing_hours_user = TimeEntry.where(spent_on: start_date..end_date, 
             user_id: user.id).group(:user_id).
             having("sum(hours) < ?", num_working_hours - 0.001).sum('hours')
@@ -221,6 +226,24 @@ class UserTimeCheck < ActiveRecord::Base
             missing_hours_users[user.id]).deliver          
         end
       end
+      
+      no_hours_user_ids = user_ids - logged_time_user_ids
+      users_no_time = User.where(id: no_hours_user_ids)
+      users_no_time.each do |user|
+        leave_days = calculate_leave_days(user, start_date, end_date)        
+        if leave_days > 0
+          #recalculate missing hours for user
+          num_working_hours = (total_days - leave_days) * num_min_working_hours
+          
+          if num_working_hours > 0          
+            LeaveMailer.missing_time_log(user, start_date, end_date, 0).deliver
+          end
+        else
+          LeaveMailer.missing_time_log(user, start_date, end_date, 0).deliver          
+        end
+      end
+      
+      
     end
 
     def email_project_timesheets(projects, start_date, end_date)
