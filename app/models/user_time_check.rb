@@ -134,7 +134,8 @@ class UserTimeCheck < ActiveRecord::Base
         notify_missing_time = true, mark_leave_after_days = -1, error_tolerance = 0.25)
       projects = Project.active.includes(members: :user)    #get project timesheet
       start_date = Date.today - report_days.day
-      end_date = start_date
+      end_date = Date.today - 1.day
+      end_date = start_date if start_date > end_date
 
       users = User.in_group(time_loggers_group).where(status: User::STATUS_ACTIVE)
       
