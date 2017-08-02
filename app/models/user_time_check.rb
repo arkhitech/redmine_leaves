@@ -156,27 +156,40 @@ class UserTimeCheck < ActiveRecord::Base
       start_date = start_date - mark_leave_after_days.days
       end_date = end_date - mark_leave_after_days.days
       
+        user_ids = users.map(&:id)
       (start_date..end_date).each do |curr_date|
         num_working_hours = num_min_working_hours * (1 - error_tolerance)
         
+        logged_time_user_ids = User.joins(:time_entries).where("#{TimeEntry.table_name}.spent_on" => curr_date, 
+          "#{User.table_name}.id" => user_ids).ids
+      
         missing_hours_users = TimeEntry.where(spent_on: curr_date, 
-          user_id: users.map(&:id)).group(:user_id).
+          user_id: logged_time_user_ids).group(:user_id).
           having("sum_hours < #{num_working_hours}").sum('hours')
-        
-        users = User.where(id: missing_hours_users.keys)
+              
+        users_missing_time = User.where(id: missing_hours_users.keys)
 
-        users.each do |user|
+        users_missing_time.each do |user|
           leave_day = calculate_leave_days(user, curr_date, curr_date)
 
           unless leave_day > 0
-            leave_weight = missing_hours_user[user.id].to_f / num_min_working_hours
+            leave_weight = (num_min_working_hours - missing_hours_user[user.id].to_f) / num_min_working_hours
             UserLeave.create!(user: user, leave_type: default_leave_type, comments: 'Missing time log', fractional_leave: leave_weight)
           end
         end
         
-      end
-      
+        no_hours_user_ids = user_ids - logged_time_user_ids
+        users_no_time = User.where(id: no_hours_user_ids)
+        users_no_time.each do |user|
+          leave_days = calculate_leave_days(user, curr_date, curr_date)        
+          unless leave_days > 0
+            leave_weight = 1
+            UserLeave.create!(user: user, leave_type: default_leave_type, comments: 'Missing time log', fractional_leave: leave_weight)
+          end
+        end        
+      end      
     end
+    
     def calculate_leave_days(user, start_date, end_date)
       leaves = user.user_leaves.where(leave_date: start_date..end_date)
       leaves.map do |leave| 
@@ -243,8 +256,6 @@ class UserTimeCheck < ActiveRecord::Base
           LeaveMailer.missing_time_log(user, start_date, end_date, 0).deliver          
         end
       end
-      
-      
     end
 
     def email_project_timesheets(projects, start_date, end_date)
