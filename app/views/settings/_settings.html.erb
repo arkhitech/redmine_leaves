@@ -186,12 +186,6 @@
 </p>
 
 <p>
-  <label for="settings_num_min_working_hours">Working Days</label>
-    <%= select_tag('settings[working_days]',
-      options_for_select(Date::DAYNAMES, settings['working_days']), multiple: true) %>
-</p>
-
-<p>
   <label for="settings_max_past_timelog_insert_days">Max Past Timelog Insert Days</label>
     <%= select_tag('settings[max_past_timelog_insert_days]',
       options_for_select(0..10, @settings['max_past_timelog_insert_days'].to_i)) %>

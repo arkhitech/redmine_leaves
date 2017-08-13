@@ -1,5 +1,8 @@
 class UserTimeCheck < ActiveRecord::Base
   unloadable
+  
+  include Redmine::Utils::DateCalculation
+  
   belongs_to :user
   
   validates :time_spent,:check_in_time, :check_out_time, presence: true,:on => :update
@@ -121,10 +124,6 @@ class UserTimeCheck < ActiveRecord::Base
     def num_min_working_hours
       Setting.plugin_redmine_leaves['num_min_working_hours'].to_i || 8
     end
-    def working_days
-      weekdays = Setting.plugin_redmine_leaves['working_days']
-      weekdays || ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-    end
     
     def default_leave_type
       Setting.plugin_redmine_leaves['default_type'] || 'Annual'
@@ -133,10 +132,13 @@ class UserTimeCheck < ActiveRecord::Base
     def report_activity(report_days = 1, report_projects = true, 
         notify_missing_time = true, mark_leave_after_days = -1, error_tolerance = 0.25)
       projects = Project.active.includes(members: :user)    #get project timesheet
+            
       start_date = Date.today - report_days.day
       end_date = Date.today - 1.day
       end_date = start_date if start_date > end_date
 
+      return if working_days(start_date, end_date) < 1
+      
       users = User.in_group(time_loggers_group).where(status: User::STATUS_ACTIVE)
       
       
@@ -150,7 +152,7 @@ class UserTimeCheck < ActiveRecord::Base
     end
 
     def mark_leave_for_missing_hours(users, start_date, end_date, mark_leave_after_days, error_tolerance = 0.25)
-      total_days = total_working_days_between(start_date, end_date)
+      total_days = working_days(start_date, end_date)
       num_working_hours = total_days * num_min_working_hours
 
       start_date = start_date - mark_leave_after_days.days
@@ -198,18 +200,9 @@ class UserTimeCheck < ActiveRecord::Base
     end
     private :calculate_leave_days
     
-    def total_working_days_between(start_date, end_date)
-      wdays = working_days
-      total_days = 0
-      (start_date..end_date).each do |dt|
-        total_days += 1 if wdays.include?(dt.strftime("%A"))
-      end
-      total_days
-    end
-    private :total_working_days_between
     
     def email_users_missing_hours(users, start_date, end_date)
-      total_days = total_working_days_between(start_date, end_date)
+      total_days = working_days(start_date, end_date)
       num_working_hours = total_days * num_min_working_hours
       user_ids = users.map(&:id)
       
@@ -271,7 +264,7 @@ class UserTimeCheck < ActiveRecord::Base
     end
 
     def email_project_timesheet(user, project, start_date, end_date)
-      total_days = total_working_days_between(start_date, end_date)
+      total_days = working_days(start_date, end_date)
       return if total_days < 1 
       #Make new object for time sheet get user ids form project and assign it to users
 
@@ -317,7 +310,7 @@ class UserTimeCheck < ActiveRecord::Base
 
     def email_group_timesheet(receiver_group, logger_group, start_date, end_date)
       #ignore project if no time is logged whatsoever
-      total_days = total_working_days_between(start_date, end_date)
+      total_days = working_days(start_date, end_date)
       return if total_days < 1
       
       receiver_users = User.in_group(receiver_group)
