@@ -5,7 +5,7 @@ class UserTimeCheck < ActiveRecord::Base
   
   belongs_to :user
   
-  validates :time_spent,:check_in_time, :check_out_time, presence: true,:on => :update
+  validates :time_spent, :check_in_time, :check_out_time, presence: true, on: :update
   validate :correctness_of_user_time_checks
   
   class << self
@@ -20,7 +20,7 @@ class UserTimeCheck < ActiveRecord::Base
   
   def self.as_csv
     
-  CSV.generate do |csv|
+    CSV.generate do |csv|
       csv << ["USER ID", "User Name", "Check In Time", "Check Out Time ", "Time Spent", "Comments"] ## Header values of CSV
       all.each do |emp|
         csv << [emp.user_id, emp.user.name, emp.check_in_time, emp.check_in_time, emp.time_spent, emp.comments] ##Row values of CSV
@@ -31,13 +31,13 @@ class UserTimeCheck < ActiveRecord::Base
 
   def self.autogenerate_checkout(missed_checkout)
     if missed_checkout.check_in_time.hour < 16
-        missed_checkout.update_attributes(check_out_time: missed_checkout.check_in_time + 6.hours, 
-          comments: l(:auto_generated_comment),time_spent: 6*60)
+      missed_checkout.update_attributes(check_out_time: missed_checkout.check_in_time + 6.hours, 
+        comments: l(:auto_generated_comment),time_spent: 6*60)
     else
       #consider previously marked check_in_time as actually check_out time
-        missed_checkout.update_attributes(check_in_time: missed_checkout.check_in_time - 6.hours, 
-          check_out_time: missed_checkout.check_in_time,
-          comments: l(:auto_generated_comment),time_spent: 6*60)
+      missed_checkout.update_attributes(check_in_time: missed_checkout.check_in_time - 6.hours, 
+        check_out_time: missed_checkout.check_in_time,
+        comments: l(:auto_generated_comment),time_spent: 6*60)
 
     end
   end
@@ -56,7 +56,7 @@ class UserTimeCheck < ActiveRecord::Base
           next
         end
         
-#        date = "#{date} #{Time.zone}".to_datetime
+        #        date = "#{date} #{Time.zone}".to_datetime
         date=date.to_datetime
         missed_checkouts = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_out_time IS NULL', 
@@ -68,10 +68,10 @@ class UserTimeCheck < ActiveRecord::Base
         checkin_timechecks = UserTimeCheck.
           where(['user_id = ? AND check_in_time < ? AND check_in_time > ? AND check_out_time IS NULL', 
             user.id, date.end_of_day, date.beginning_of_day])
-          logger.debug checkin_timechecks
+        logger.debug checkin_timechecks
         if checkin_timechecks.empty?
-         UserTimeCheck.create(user_id: user.id, check_in_time: date,check_out_time:  nil)
-            logger.debug "#{'*'*50}#{user}#{'*'*50}"
+          UserTimeCheck.create(user_id: user.id, check_in_time: date,check_out_time:  nil)
+          logger.debug "#{'*'*50}#{user}#{'*'*50}"
         else
           user_time_check = checkin_timechecks.first
           checked_time = date.to_time - user_time_check.check_in_time.to_time
@@ -85,7 +85,7 @@ class UserTimeCheck < ActiveRecord::Base
               #difference between previous checkout and current is greater than 16, meaning that user missed out
               user_time_check.update_attributes(check_out_time: user_time_check.check_in_time + 6.hours, 
                 comments: l(:auto_generated_comment),time_spent: 6*60)
-           #   UserTimeCheck.create(user_id: user.id, check_in_time: date)
+              #   UserTimeCheck.create(user_id: user.id, check_in_time: date)
               logger.debug '$'*50
 
             else
@@ -93,12 +93,12 @@ class UserTimeCheck < ActiveRecord::Base
             end
           elsif date.hour < 8 && difference > 1 && difference < 16
             #allow checkin/checkout for different days
-              user_time_check.update_attributes(check_out_time: date,time_spent: checked_time/60)
+            user_time_check.update_attributes(check_out_time: date,time_spent: checked_time/60)
           else
-              #difference between previous checkout and current is greater than 16, meaning that user missed out
-              autogenerate_checkout(user_time_check)
-              UserTimeCheck.create(user_id: user.id, check_in_time: date)
-              p '$'*50            
+            #difference between previous checkout and current is greater than 16, meaning that user missed out
+            autogenerate_checkout(user_time_check)
+            UserTimeCheck.create(user_id: user.id, check_in_time: date)
+            p '$'*50            
           end
         end        
       end
@@ -137,7 +137,7 @@ class UserTimeCheck < ActiveRecord::Base
       end_date = Date.today - 1.day
       end_date = start_date if start_date > end_date
 
-      return if working_days(start_date, end_date) < 1
+      return if working_days(start_date, end_date + 1.day) < 1
       
       users = User.in_group(time_loggers_group).where(status: User::STATUS_ACTIVE)
       
@@ -158,7 +158,7 @@ class UserTimeCheck < ActiveRecord::Base
       start_date = start_date - mark_leave_after_days.days
       end_date = end_date - mark_leave_after_days.days
       
-        user_ids = users.map(&:id)
+      user_ids = users.map(&:id)
       (start_date..end_date).each do |curr_date|
         num_working_hours = num_min_working_hours * (1 - error_tolerance)
         
@@ -257,8 +257,8 @@ class UserTimeCheck < ActiveRecord::Base
         project_members = project.members
         for project_member in project_members
           email_project_timesheet(project_member.user, project_member.project,
-                        start_date, end_date) if project_member.roles.
-                        detect{|role|role.allowed_to?(:receive_timesheet_email)}
+            start_date, end_date) if project_member.roles.
+            detect{|role|role.allowed_to?(:receive_timesheet_email)}
         end
       end
     end
@@ -270,8 +270,8 @@ class UserTimeCheck < ActiveRecord::Base
 
       billable_users_for_project = billable_users(project)
       time_entries_billable = TimeEntry.where(user_id: billable_users_for_project, 
-                              spent_on: start_date..end_date).
-                              includes(:activity, :project, :user)
+        spent_on: start_date..end_date).
+        includes(:activity, :project, :user)
       time_entries_users = {}
       time_entries_billable.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
@@ -290,8 +290,8 @@ class UserTimeCheck < ActiveRecord::Base
       end
 
       time_entries_other = TimeEntry.where("user_id NOT IN (?) and project_id = ? and spent_on >= ? and spent_on <= ?", 
-                             billable_users_for_project, project, start_date, end_date).
-                             includes(:activity, :project, :user)
+        billable_users_for_project, project, start_date, end_date).
+        includes(:activity, :project, :user)
       time_entries_other.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
@@ -318,8 +318,8 @@ class UserTimeCheck < ActiveRecord::Base
       #Make new object for time sheet get user ids form project and assign it to users
 
       time_entries_billable = TimeEntry.where(user_id: users.map(&:id), 
-                              spent_on: start_date..end_date).
-                              includes(:activity, :project, :user)
+        spent_on: start_date..end_date).
+        includes(:activity, :project, :user)
       time_entries_users = {}
       time_entries_billable.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
@@ -338,8 +338,8 @@ class UserTimeCheck < ActiveRecord::Base
       end
 
       time_entries_other = TimeEntry.where("user_id NOT IN (?) and spent_on >= ? and spent_on <= ?", 
-                             users.map(&:id), start_date, end_date).
-                             includes(:activity, :project, :user)
+        users.map(&:id), start_date, end_date).
+        includes(:activity, :project, :user)
       time_entries_other.each do |time_entry|
         time_entries_users[time_entry.user] ||= {time_entries: [], user_leaves: []}
         time_entries_users[time_entry.user][:time_entries] << time_entry
@@ -400,14 +400,14 @@ class UserTimeCheck < ActiveRecord::Base
               project_total += issue_hours[1]
             end
             timesheet_table << {user: nil, project: nil, activity: nil,
-                issues: nil, hours: nil, total_heading: 'Project Total', total: project_total}
+              issues: nil, hours: nil, total_heading: 'Project Total', total: project_total}
             user_total += project_total
           end
           timesheet_table << {user: nil, project: nil, activity: nil,
-              issues: nil, hours: nil, total_heading: 'Total Leaves', 
-              total: leaves.map(&:fractional_leave).reduce(&:+).to_f}
+            issues: nil, hours: nil, total_heading: 'Total Leaves', 
+            total: leaves.map(&:fractional_leave).reduce(&:+).to_f}
           timesheet_table << {user: nil, project: nil, activity: nil,
-              issues: nil, hours: nil, total_heading: '<strong>User Total</strong>', total: user_total}
+            issues: nil, hours: nil, total_heading: '<strong>User Total</strong>', total: user_total}
         end
       end
 
