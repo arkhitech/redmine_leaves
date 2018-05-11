@@ -68,13 +68,11 @@ class UserLeaveReportsController < ApplicationController
       flash.now[:error] = l(:error_no_results)
   end
       
-    @leaves_report_grid = initialize_grid(@user_leave,
-   :order => 'id',
-   :name => 'grid',
-   :order_direction => 'desc',
-   :enable_export_to_csv => true,
-   :csv_field_separator => ';',
-   :csv_file_name => 'LeavesReport')
+    @leaves_report_grid = initialize_grid(@user_leave.order(id: :desc),
+      name: 'grid',
+      enable_export_to_csv: true,
+      csv_field_separator: ';',
+      csv_file_name: 'LeavesReport')
  
     export_grid_if_requested('grid' => 'grid')
     

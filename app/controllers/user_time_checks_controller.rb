@@ -12,12 +12,12 @@ class UserTimeChecksController < ApplicationController
       select("#{UserTimeCheck.table_name}.*,sum(#{TimeEntry.table_name}.hours ) as logged_hours").
       joins("LEFT JOIN #{TimeEntry.table_name} on DATE(check_in_time) <= spent_on AND DATE(check_out_time) >= spent_on").
       group("#{UserTimeCheck.table_name}.id")
-    @time_check_grid = initialize_grid(time_checks,
-      :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeChecks')#,
+    
+    @time_check_grid = initialize_grid(time_checks.where('check_in_time > ?', Time.now - 6.months),
+      name: 'time_checks_grid',
+      enable_export_to_csv: true,
+      csv_field_separator: ';',
+      csv_file_name: 'UserTimeChecks')#,
      
     export_grid_if_requested('time_checks_grid' => 'time_check_grid')
   
@@ -209,12 +209,11 @@ avg(time_spent) as average_time")
     .group('user_id')
     .where("check_out_time IS NOT NULL")#
     
-    @time_report_grid = initialize_grid(time_checks,
-      :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeCustom')#,
+    @time_report_grid = initialize_grid(time_checks.where('check_in_time >  ?', Time.now - 6.months),
+      name: 'time_checks_grid',
+      enable_export_to_csv: true,
+      csv_field_separator: ';',
+      csv_file_name: 'UserTimeCustom')#,
      
     export_grid_if_requested('time_checks_grid' => 'time_report_grid')
       
@@ -235,12 +234,11 @@ check_out_time ,user_id,
       group('user_id,year(check_in_time),week(check_in_time)').        
       order('year(check_in_time),week(check_in_time)')#.includes(:user)
       
-    @time_report_grid_weekly = initialize_grid(time_checks,
-      :name => 'time_checks_grid',
-      conditions: ["check_in_time >  ?", Time.now - 6.months],
-      :enable_export_to_csv => true,
-      :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeWeekly')#,
+    @time_report_grid_weekly = initialize_grid(time_checks.where('check_in_time >  ?', Time.now - 6.months),
+      name: 'time_checks_grid',
+      enable_export_to_csv: true,
+      csv_field_separator: ';',
+      csv_file_name: 'UserTimeWeekly')#,
      
     export_grid_if_requested('time_checks_grid' => 'time_report_grid_weekly')
    
@@ -263,11 +261,11 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     .order('year(check_in_time),month(check_in_time),user_id')
     .where("check_out_time IS NOT NULL")  
     @time_report_grid_monthly = initialize_grid(time_checks,
-      :name => 'time_checks_grid',
-      :enable_export_to_csv => true,
+      name: 'time_checks_grid',
+      enable_export_to_csv: true,
       # conditions: ["check_in_time >  ?", Time.now - 12.months],
-      :csv_field_separator => ';',
-      :csv_file_name => 'UserTimeMonthly')#,
+      csv_field_separator: ';',
+      csv_file_name: 'UserTimeMonthly')#,
              
     export_grid_if_requested('time_checks_grid' => 'time_report_grid_monthly')
   
