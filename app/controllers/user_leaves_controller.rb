@@ -44,11 +44,11 @@ class UserLeavesController < ApplicationController
             fractional_leave: params['create_user_leave']['fractional_leave'])
           leave_date += 1
           unless user_leave.save
-            errors << l(:error_leave_add, user_name: user_leave.user.name, leave_type: user_leave.leave_type, 
+            errors << t(:error_leave_add, user_name: user_leave.user.name, leave_type: user_leave.leave_type, 
                         leave_date: user_leave.leave_date, reason: user_leave.errors.full_messages.join('<br/>'))
           else
             total_yearly_leaves = UserLeave.where(user_id: user, leave_type: user_leave.leave_type).where("leave_date >= ?", Date.today.beginning_of_year).sum(:fractional_leave)
-            notices << l(:notice_leave_add, user_name: user_leave.user.name, 
+            notices << t(:notice_leave_add, user_name: user_leave.user.name, 
               leave_type: user_leave.leave_type, 
               leave_date: user_leave.leave_date, total_yearly_leaves: total_yearly_leaves)
           end 
@@ -64,7 +64,7 @@ class UserLeavesController < ApplicationController
         redirect_to user_leave_reports_path, notice: "#{notices.join('<br/>')}"
       end
     else
-      flash.now[:error] = l(:error_no_user_group_selected)
+      flash.now[:error] = t(:error_no_user_group_selected)
       render 'new'
     end
   end
@@ -76,9 +76,9 @@ class UserLeavesController < ApplicationController
   def update    
     @user_leave = UserLeave.find(params[:id])
     if @user_leave.update_attributes(params.require(:user_leave).permit!)
-      redirect_to edit_user_leafe_path(@user_leave), notice: l(:notice_leaves_updated)
+      redirect_to edit_user_leafe_path(@user_leave), notice: t(:notice_leaves_updated)
     else
-      redirect_to edit_user_leafe_path(@user_leave), error: l(:error_leaves_not_updated)
+      redirect_to edit_user_leafe_path(@user_leave), error: t(:error_leaves_not_updated)
     end    
   end
     

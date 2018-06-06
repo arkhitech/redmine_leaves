@@ -5,7 +5,7 @@
 
   <%if @all_trackers%>
     <%=  form_tag controller: 'user_time_checks', action: 'user_time_activity_report' do %>
-      <fieldset><legend><%= l(:label_filter_plural) %></legend>
+      <fieldset><legend><%= t(:label_filter_plural) %></legend>
         <table>
           <tr>     <th><%= "Date From:"%></th> <td><%= text_field_tag "date_from",
                 (params[:date_from]) || Date.today - 1.month %>

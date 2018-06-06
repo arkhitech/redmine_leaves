@@ -12,7 +12,7 @@
     end
 
 
-  e.column name: l(:field_user_id), html: {style: 'text-align: center'}, 
+  e.column name: t(:field_user_id), html: {style: 'text-align: center'}, 
     :attribute => 'user_id',
     detach_with_id: 'user_filter' ,
     custom_filter: User.active.collect{|u|[u.name, u.id]}  do |t|
@@ -45,11 +45,11 @@
     #end
     #end
 
-  e.column name: l(:field_check_in_time), html: {style: 'text-align: center' }, 
+  e.column name: t(:field_check_in_time), html: {style: 'text-align: center' }, 
     :attribute => 'check_in_time'  , 
     detach_with_id: 'check_in_time_filter'
 
-  e.column name: l(:field_check_out_time), html: {style: 'text-align: center'}, 
+  e.column name: t(:field_check_out_time), html: {style: 'text-align: center'}, 
     :attribute => 'check_out_time',  
     detach_with_id: 'check_out_time_filter'
 

@@ -1,7 +1,7 @@
 <%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
   <table>
     <tr align="left">
-      <th><%= l(:label_date_from) %></th>
+      <th><%= t(:label_date_from) %></th>
     </tr>  
     <tr align="left">
       <td><%= text_field_tag "user_leave_report[date_from]",
@@ -10,7 +10,7 @@
       </td>    
     </tr>
     <tr align="left">
-      <th><%= l(:label_date_to) %></th>
+      <th><%= t(:label_date_to) %></th>
     </tr>
     <tr align="left">
       <td> <%= text_field_tag "user_leave_report[date_to]",
@@ -24,9 +24,9 @@
   </table>
   <table>
     <tr align="left">
-      <th><%= l(:label_user) %></th>
-      <th><%= l(:label_leave_types) %></th>
-      <th><%= l(:label_group) %></th>
+      <th><%= t(:label_user) %></th>
+      <th><%= t(:label_leave_types) %></th>
+      <th><%= t(:label_group) %></th>
     </tr>
     <tr align="left">
       <td>

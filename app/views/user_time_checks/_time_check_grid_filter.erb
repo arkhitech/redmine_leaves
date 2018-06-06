@@ -1,12 +1,12 @@
 <fieldset id="filters" class="collapsible collapsed">
-  <legend onclick="toggleFieldset(this);"><%=l(:label_filters)%></legend>
+  <legend onclick="toggleFieldset(this);"><%=t(:label_filters)%></legend>
   <div style="display: none;">
 
     <table id="filters-table" style="width:60%;">
       
       <tr class="filter">
         <td class="field">
-          <label><%=l(:field_user_id)%>:</label> 
+          <label><%=t(:field_user_id)%>:</label> 
         </td>
         <td class="values">
           <%= grid_filter @time_check_grid, :user_filter%>
@@ -15,7 +15,7 @@
       
       <tr class="filter">
         <td class="field">
-          <label><%=l(:field_check_in_time)%>:</label>
+          <label><%=t(:field_check_in_time)%>:</label>
         </td>
         <td class="values">
           <%= grid_filter @time_check_grid, :check_in_time_filter%>
@@ -24,7 +24,7 @@
       
       <tr class="filter">
         <td class="field">
-          <label><%=l(:field_check_out_time)%>:</label>
+          <label><%=t(:field_check_out_time)%>:</label>
         </td>
         <td class="values">
           <%= grid_filter @time_check_grid, :check_out_time_filter%>
@@ -34,9 +34,9 @@
       
     
             <td>
-          <%= link_to l(:button_apply), '#', 
+          <%= link_to t(:button_apply), '#', 
             class: 'wg-external-submit-button icon icon-report', data: {'grid-name' => 'time_checks_grid'} %>
-          <%= link_to l(:button_clear), '#', 
+          <%= link_to t(:button_clear), '#', 
             class: 'wg-external-reset-button icon icon-reload', data: {'grid-name' => 'time_checks_grid'} %>      
           </td>
         <td></td>

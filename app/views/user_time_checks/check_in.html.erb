@@ -1,16 +1,16 @@
 
-<h2><%= l(:label_check_in)%></h2>
+<h2><%= t(:label_check_in)%></h2>
 <table>
   <tr align="left" class="<%= cycle("odd")%>" >
-    <th><strong><%= l(:label_check_in_time)%>:</strong></th>
+    <th><strong><%= t(:label_check_in_time)%>:</strong></th>
     <td><%= @user_time_check.check_in_time  %></td>
   </tr>
   <tr align="left" class="<%= cycle("even")%>">
-    <th><strong><%= l(:label_current_user_id) %></strong></th>
+    <th><strong><%= t(:label_current_user_id) %></strong></th>
     <td><%= @user_time_check.user_id %></td>
   </tr>
   <tr align="left" class="<%= cycle("odd")%>">
-    <th><strong><%= l(:label_current_user_name)%></strong> </th>
+    <th><strong><%= t(:label_current_user_name)%></strong> </th>
     <td><%= User.current.name %></td>
   </tr>
 </table>

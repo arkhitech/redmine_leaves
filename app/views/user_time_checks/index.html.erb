@@ -1,12 +1,12 @@
-<h2> <%= l(:label_attendance_summary ) %> </h2>
+<h2> <%= t(:label_attendance_summary ) %> </h2>
 <div>
 <p>
-  <strong><%= l(:label_import_csv) %></strong>
+  <strong><%= t(:label_import_csv) %></strong>
   <%= form_tag import_user_time_checks_path, multipart: true do %>
     <%= file_field_tag :file %>
-    <%= submit_tag l(:label_button_import) %>
+    <%= submit_tag t(:label_button_import) %>
     <small>
-      <%= label_tag l(:label_file_note)%>
+      <%= label_tag t(:label_file_note)%>
     </small>
   <% end %>
 </p><br>

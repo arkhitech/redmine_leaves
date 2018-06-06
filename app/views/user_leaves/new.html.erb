@@ -1,9 +1,9 @@
 <%= render template: "layouts/redmine_leaves" %>
-<h2><%= l(:label_add_leave ) %> </h2>
+<h2><%= t(:label_add_leave ) %> </h2>
 <%= form_for UserLeave.new do %>
 
   <div>
-    <strong><%= l(:label_user_group) %></strong>
+    <strong><%= t(:label_user_group) %></strong>
     <%= select_tag("create_user_leave[selected_users][]",
       add_user_options(params[:create_user_leave] && params[:create_user_leave][:selected_users]),
       multiple: true) %>
@@ -13,7 +13,7 @@
   </div><br/>
 
   <div>
-    <strong><%= l(:label_leave_type ) %></strong>
+    <strong><%= t(:label_leave_type ) %></strong>
     <%= select_tag('create_user_leave[selected_leave]',
       add_leave_options(params[:create_user_leave] && params[:create_user_leave][:selected_leave])) %>
   </div><br/>
@@ -21,12 +21,12 @@
   <div>    
 
     <div style="padding-left: 70px">
-     <strong><%= l(:label_leave_date ) %></strong>
-      <strong><%= l(:label_date_from) %></strong><br/>
+     <strong><%= t(:label_leave_date ) %></strong>
+      <strong><%= t(:label_date_from) %></strong><br/>
       <%= text_field_tag("create_user_leave[selected_date_from]",
         (params[:create_user_leave] && params[:create_user_leave][:selected_date_from]) || Date.today) %>
       <%= calendar_for 'create_user_leave_selected_date_from' %><br/>
-      <strong><%= l(:label_date_to) %></strong><br/> 
+      <strong><%= t(:label_date_to) %></strong><br/> 
       <%= text_field_tag("create_user_leave[selected_date_to]",
         (params[:create_user_leave] && params[:create_user_leave][:selected_date_to]) || Date.today) %>
       <%= calendar_for 'create_user_leave_selected_date_to' %><br>
@@ -35,24 +35,24 @@
   <br/>
 
   <div>
-    <strong><%= l(:label_comments) %></strong>
+    <strong><%= t(:label_comments) %></strong>
 
     <%= text_field_tag "create_user_leave[comments]",
       params[:create_user_leave] && params[:create_user_leave][:comments], size: 28 %>
 
-    <small><%= l(:label_optional ) %></small>
+    <small><%= t(:label_optional ) %></small>
   </div><br/>
 
   <div>
-    <strong><%= l(:label_fractional_leave) %></strong>
+    <strong><%= t(:label_fractional_leave) %></strong>
 
     <%= number_field_tag "create_user_leave[fractional_leave]",
       params[:create_user_leave] && params[:create_user_leave][:fractional_leave],
       :step =>'.25', min: -2,max: 2 %>
-    <small><%= l(:label_fractional_leave_optional ) %></small>
+    <small><%= t(:label_fractional_leave_optional ) %></small>
   </div><br/>
 
-  <%= submit_tag l(:label_button_add) %>
+  <%= submit_tag t(:label_button_add) %>
 
 <% end %>
 

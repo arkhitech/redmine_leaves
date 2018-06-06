@@ -1,6 +1,6 @@
 var row_id = "table#user-leave-report tr#table-row-"+<%= @user_leave.id %>;
 $(row_id).fadeOut(); 
-//*$("#flash_delete_option").html("<%= escape_javascript flash.now[:notice]=l(:label_deleted)%>");
+//*$("#flash_delete_option").html("<%= escape_javascript flash.now[:notice]=t(:label_deleted)%>");
 //$("#flash_delete_option").toggle();
 
 function alertWithoutNotice(message){
@@ -8,6 +8,6 @@ function alertWithoutNotice(message){
         alert(message);
     }, 1000);
 }
-alertWithoutNotice("<%=l(:label_deleted)%>");
+alertWithoutNotice("<%=t(:label_deleted)%>");
 
- //alert("<%=l(:label_deleted)%>");
+ //alert("<%=t(:label_deleted)%>");

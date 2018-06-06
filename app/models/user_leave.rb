@@ -21,10 +21,10 @@ class UserLeave < ActiveRecord::Base
   def validate_fractional_leave
     if fractional_leave
       unless (fractional_leave <= 2)
-        errors.add(:fractional_value,l(:error_fractional_value_greater_than_one))
+        errors.add(:fractional_value, t(:error_fractional_value_greater_than_one))
       end
       unless (fractional_leave >= -2)
-        errors.add(:fractional_value,l(:error_fractional_value_less_than_zero))
+        errors.add(:fractional_value, t(:error_fractional_value_less_than_zero))
       end
     end
   end

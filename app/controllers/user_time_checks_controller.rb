@@ -285,7 +285,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
       redirect_to user_time_checks_path, 
         notice: "User Time Check for <strong>#{@time_checks.user.name}</strong> 
                  on <strong>#{@time_checks.check_in_time.to_date}</strong> Updated. 
-                #{view_context.link_to l(:link_edit), edit_user_time_check_path(@time_checks)}".html_safe
+                #{view_context.link_to t(:link_edit), edit_user_time_check_path(@time_checks)}".html_safe
     else
       redirect_to edit_user_time_check_path(@time_checks), :flash => { :error => "Invalid Input!" }
     end    
@@ -294,10 +294,10 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
   def import
     begin
       UserTimeCheck.import(params[:file])
-      redirect_to user_time_checks_path, notice: l(:notice_time_check_file_imported) if params[:file]
+      redirect_to user_time_checks_path, notice: t(:notice_time_check_file_imported) if params[:file]
     rescue StandardError => e
       puts "#{e.message}\n#{e.backtrace.join("\n")}"
-      redirect_to user_time_checks_path, :flash => { :error => l(:error_invalid_file_format) }
+      redirect_to user_time_checks_path, flash: { error: t(:error_invalid_file_format) }
     end    
   end
   
@@ -307,7 +307,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     if checkin_timechecks.empty?
       @user_time_check = UserTimeCheck.create(user_id: User.current.id, check_in_time: DateTime.now)
     else
-      flash.now[:error] = l(:error_checkout_first)
+      flash.now[:error] = t(:error_checkout_first)
       @user_time_check = checkin_timechecks.first
     end
   end
@@ -316,7 +316,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     checkout_timechecks = UserTimeCheck.where(['user_id = ? AND check_out_time IS NULL', User.current.id])
     
     if checkout_timechecks.empty?
-      flash.now[:error] = l(:error_checkin_first)
+      flash.now[:error] = t(:error_checkin_first)
       @user_time_check = UserTimeCheck.new(:user_id => User.current.id)
 
     else
@@ -331,7 +331,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
       checked_time = @user_time_check.check_out_time - @user_time_check.check_in_time
          
       if logged_in_time<0.9*(checked_time/3600)
-        flash.now[:error] = l(:error_less_time_logged)
+        flash.now[:error] = t(:error_less_time_logged)
         #@assigned_issues= Issue.where(assigned_to_id: User.current.id)
         @assigned_issues= Issue.where(assigned_to_id: User.current.id).joins(:status).
           where("#{IssueStatus.table_name}.is_closed" => false)

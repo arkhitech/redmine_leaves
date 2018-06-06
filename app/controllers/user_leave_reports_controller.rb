@@ -12,7 +12,7 @@ class UserLeaveReportsController < ApplicationController
   
   def report  
     if params[:user_leave_report].nil?
-      flash.now[:error] = l(:error_no_params )
+      flash.now[:error] = t(:error_no_params )
       return
     end
     
@@ -46,7 +46,7 @@ class UserLeaveReportsController < ApplicationController
         where_statements << 'leave_date >= ?'
         where_clause << params[:user_leave_report][:date_from].to_date
       rescue StandardError
-        flash.now[:error] = l(:error_invalid_date)
+        flash.now[:error] = t(:error_invalid_date)
         return
       end
     end
@@ -56,7 +56,7 @@ class UserLeaveReportsController < ApplicationController
         where_statements << 'leave_date <= ?'
         where_clause << params[:user_leave_report][:date_to].to_date
       rescue StandardError
-        flash.now[:error] = l(:error_invalid_date)
+        flash.now[:error] = t(:error_invalid_date)
         return
       end
     end
@@ -65,7 +65,7 @@ class UserLeaveReportsController < ApplicationController
     @user_leave = UserLeave.where(where_clause).order('leave_date desc')
 
   if @user_leave .nil? || @user_leave .empty?
-      flash.now[:error] = l(:error_no_results)
+      flash.now[:error] = t(:error_no_results)
   end
       
     @leaves_report_grid = initialize_grid(@user_leave.order(id: :desc),

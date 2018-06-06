@@ -4,16 +4,16 @@
     <tr>
       <td>
         <table>
-          <tr><legend><%= l(:label_leave_types)%></legend></tr>
+          <tr><legend><%= t(:label_leave_types)%></legend></tr>
     <tr><td align="middle"><%= text_field_tag('settings[leave_types]', settings['leave_types']) %></td></tr>
-    <tr><td><small> <%= l(:label_multiple_leaves_instructions )%> </small></td></tr>
+    <tr><td><small> <%= t(:label_multiple_leaves_instructions )%> </small></td></tr>
   </table>
 </td>
 
 <td>
   <table>
     <tr>
-    <legend><%= l(:label_default_type ) %></legend></tr>
+    <legend><%= t(:label_default_type ) %></legend></tr>
     <tr>
       <td><%= text_field_tag('settings[default_type]', settings['default_type']) %></td></tr></table>
 </td>
@@ -21,7 +21,7 @@
 <td>
   <table>
     <tr>
-    <legend><%= l(:label_eligible_for_leave_groups ) %></legend></tr>
+    <legend><%= t(:label_eligible_for_leave_groups ) %></legend></tr>
 
     <tr>
       <td><%= select_tag('settings[eligible_for_leave_groups]', 
@@ -46,7 +46,7 @@
       <legend>Mark</legend>
       <tr>
         <td>
-          <table><tr><legend><%= l(:label_mark_leaves ) %></legend></tr>
+          <table><tr><legend><%= t(:label_mark_leaves ) %></legend></tr>
       <tr>
         <%= select_tag('settings[mark_leaves]', 
           options_from_collection_for_select(Group.all, :id, :name, 
@@ -56,7 +56,7 @@
     </td>
 
     <td>
-      <table><tr><legend><%= l(:label_mark_own_leave ) %></legend>
+      <table><tr><legend><%= t(:label_mark_own_leave ) %></legend>
         </tr>
         <tr>
           <%= select_tag('settings[mark_own_leave]', 
@@ -74,7 +74,7 @@
     <legend>Edit</legend>
     <tr>
       <td>
-        <table><tr><legend><%= l(:label_edit_attendance) %></legend></tr>
+        <table><tr><legend><%= t(:label_edit_attendance) %></legend></tr>
     <tr>
       <%= select_tag('settings[edit_attendance]', 
         options_from_collection_for_select(Group.all, :id, :name, 
@@ -84,7 +84,7 @@
 </td>
 
 <td>
-  <table><tr><legend><%= l(:label_edit_own_attendance) %></legend>
+  <table><tr><legend><%= t(:label_edit_own_attendance) %></legend>
     </tr>
     <tr>
       <%= select_tag('settings[edit_own_attendance]', 
@@ -106,7 +106,7 @@
   <table>
     <tr>
       <td>
-    <table><tr><legend><%= l(:label_daily_mail_reminder) %></legend></tr>
+    <table><tr><legend><%= t(:label_daily_mail_reminder) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[daily_reminder]', 
             options_from_collection_for_select(Group.all, :id, :name, 
@@ -115,7 +115,7 @@
     </tr></table>
       </td>
       <td>
-    <table><tr><legend><%= l(:label_weekly_mail_reminder) %></legend></tr>
+    <table><tr><legend><%= t(:label_weekly_mail_reminder) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[weekly_reminder]', 
             options_from_collection_for_select(Group.all, :id, :name, 
@@ -124,7 +124,7 @@
     </tr></table>
       </td>
       <td>
-    <table><tr><legend><%= l(:label_monthly_mail_reminder) %></legend></tr>
+    <table><tr><legend><%= t(:label_monthly_mail_reminder) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[monthly_reminder]', 
             options_from_collection_for_select(Group.all, :id, :name, 
@@ -151,9 +151,9 @@
     <tr>
       <td>
         <table>
-          <tr><legend><%= l(:label_trackers)%></legend></tr>
+          <tr><legend><%= t(:label_trackers)%></legend></tr>
     <tr><td align="middle"><%= text_field_tag('settings[tracker_names]', settings['tracker_names']) %></td></tr>
-    <tr><td><small> <%= l(:label_tracker_instructions )%> </small></td></tr>
+    <tr><td><small> <%= t(:label_tracker_instructions )%> </small></td></tr>
   </table>
 </td>
 

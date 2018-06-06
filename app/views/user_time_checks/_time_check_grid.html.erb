@@ -2,7 +2,7 @@
 <%=define_grid @time_check_grid, hide_submit_button: true, hide_reset_button: true, hide_csv_button: false do |e|
 
 
-  e.column name: l(:field_user_id), html: {style: 'text-align: center'}, 
+  e.column name: t(:field_user_id), html: {style: 'text-align: center'}, 
     :attribute => 'user_id',
     detach_with_id: 'user_filter' ,
     custom_filter: User.active.collect{|u|[u.name, u.id]}  do |t|
@@ -11,21 +11,21 @@
 
 
 
-  e.column name: l(:field_check_in_time), html: {style: 'text-align: center' }, 
+  e.column name: t(:field_check_in_time), html: {style: 'text-align: center' }, 
     :attribute => 'check_in_time'  , 
     detach_with_id: 'check_in_time_filter'
 
 
-  e.column name: l(:field_check_out_time), html: {style: 'text-align: center'}, 
+  e.column name: t(:field_check_out_time), html: {style: 'text-align: center'}, 
     :attribute => 'check_out_time',  
   detach_with_id: 'check_out_time_filter'
  
   
-  e.column name: l(:field_comments), html: {style: 'text-align: center'}, 
+  e.column name: t(:field_comments), html: {style: 'text-align: center'}, 
     :attribute => 'comments', detach_with_id: 'comments_filter'
 
 
-  e.column name: l(:field_time_spent), html: {style: 'text-align: center'}, 
+  e.column name: t(:field_time_spent), html: {style: 'text-align: center'}, 
     :attribute => 'time_spent',filter_type: :range,
     detach_with_id: 'time_spent_filter'  do |t|
     unless t.check_out_time.nil?

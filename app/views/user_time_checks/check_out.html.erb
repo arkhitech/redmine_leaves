@@ -8,10 +8,10 @@
 
     <% logger.debug "#{'*'*100}\nIssue populated at controller <Test> #{@assigned_issues}\n#{'*'*100}"%> 
     <% time_difference = @user_time_check.check_out_time - @user_time_check.check_in_time %>
-    <p><b><%= l(:label_total_checked_time_is)%> | <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%> </b> | <%= l(:label_hours_for_today)%>  </p>
+    <p><b><%= t(:label_total_checked_time_is)%> | <%= Time.at(time_difference).utc.strftime("%H:%M:%S")%> </b> | <%= t(:label_hours_for_today)%>  </p>
 
     <% logged_hours=@time_entries.sum(:hours)%>
-    <p><b> <%= l(:label_total_logged_time_is)%> | <%= Time.at(logged_hours*3600).utc.strftime("%H:%M:%S")%>  </b> | <%= l(:label_hours_for_today)%> </p>
+    <p><b> <%= t(:label_total_logged_time_is)%> | <%= Time.at(logged_hours*3600).utc.strftime("%H:%M:%S")%>  </b> | <%= t(:label_hours_for_today)%> </p>
     
     <% logger.debug "#{'*'*100}\nLogged hours are <Test> #{Time.at(logged_hours).utc.strftime("%H:%M:%S")}\n#{'*'*100}"%> 
 
@@ -23,7 +23,7 @@
     <br/><br/> 
     
     <% remaining_time=time_difference-(logged_hours*3600)%>
-    <p><b> <%= l(:label_please_log_remaining)%>  | <%= Time.at(remaining_time).utc.strftime("%H:%M:%S")%> </b> | <%= l(:label_hours_for_today)%> </p> 
+    <p><b> <%= t(:label_please_log_remaining)%>  | <%= Time.at(remaining_time).utc.strftime("%H:%M:%S")%> </b> | <%= t(:label_hours_for_today)%> </p> 
     <br/>
 
     <% unless @assigned_issues.blank?%>

@@ -18,7 +18,7 @@ class LogTimeReminderMailer < ActionMailer::Base
       end    
     end
     
-    mail(to: @user.mail, subject: "#{reminder} #{l(:label_reminder_for_time_log)} #{@issue.id}",
+    mail(to: @user.mail, subject: "#{reminder} #{t(:label_reminder_for_time_log)} #{@issue.id}",
       cc: group_emails)
   end
   
