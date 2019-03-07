@@ -1,21 +1,19 @@
-<%=  form_tag controller: 'user_leave_reports', action: 'report' do %>
+<%= form_tag controller: 'user_leave_reports', action: 'report' do %>
   <table>
     <tr align="left">
       <th><%= t(:label_date_from) %></th>
     </tr>  
     <tr align="left">
-      <td><%= text_field_tag "user_leave_report[date_from]",
+      <td><%= date_field_tag "user_leave_report[date_from]",
           (params[:user_leave_report] && params[:user_leave_report][:date_from]) || Date.today - 1.month %>
-        <%= calendar_for 'user_leave_report_date_from' %>
       </td>    
     </tr>
     <tr align="left">
       <th><%= t(:label_date_to) %></th>
     </tr>
     <tr align="left">
-      <td> <%= text_field_tag "user_leave_report[date_to]",
+      <td> <%= date_field_tag "user_leave_report[date_to]",
            (params[:user_leave_report] && params[:user_leave_report][:date_to]) || Date.today %> 
-        <%= calendar_for 'user_leave_report_date_to' %>
       </td>    
     </tr>
 

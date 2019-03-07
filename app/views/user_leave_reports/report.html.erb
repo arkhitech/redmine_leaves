@@ -1,8 +1,8 @@
 <% content_for :header_tags do %>
-<%= stylesheet_link_tag 'wice_grid', :plugin => 'redmine_wice_grid' %>
-<%= stylesheet_link_tag 'grid',:plugin => 'redmine_payments' %>
-<%= javascript_include_tag 'application', :plugin => 'redmine_wice_grid' %>
-<%= javascript_include_tag 'ntogglework', :plugin => 'redmine_payments' %>
+  <%= stylesheet_link_tag 'wice_grid', plugin: 'redmine_wice_grid' %>
+  <%= stylesheet_link_tag 'grid', plugin: 'redmine_payments' %>
+  <%= javascript_include_tag 'application', plugin: 'redmine_wice_grid' %>
+  <%= javascript_include_tag 'ntogglework', plugin: 'redmine_payments' %>
 <% end %>
 
 
@@ -12,12 +12,12 @@
 <%= render 'options' %><br/><br/>
 
 <div class="flash notice" id="flash_delete_option" style="display:none;"></div>
-<% unless @user_leave.nil? ||  @user_leave.empty? %>
-
-
-
-   <%= render partial: 'grid' %>
-<button id="export-button" class="wg-external-csv-export-button" data-grid-name="grid"><%=image_tag("/plugin_assets/redmine_leaves/images/icons/grid/page_white_excel.png", :alt => "home image",:title => "Export to CSV")%> Export to CSV</button>
+<% if @user_leave ||  @user_leave.empty? %>
+  <%= render partial: 'grid' %>
+  <button id="export-button" class="wg-external-csv-export-button" data-grid-name="grid">
+    <%=image_tag("/plugin_assets/redmine_leaves/images/icons/grid/page_white_excel.png", :alt => "home image",:title => "Export to CSV")%> 
+    Export to CSV
+  </button>
 
 <% end %>
 

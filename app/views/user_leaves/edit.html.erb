@@ -5,7 +5,7 @@
   <table>
     <tr>
       <th align="left"><%= t(:label_user) %></th>
-      <td><strong><%= User.find(@user_leave.user_id).name %></strong></td>
+      <td><strong><%= @user_leave.user.name %></strong></td>
     </tr>
     <tr>
       <th align="left"><%= t(:label_leave_type) %></th>

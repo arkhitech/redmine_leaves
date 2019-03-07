@@ -2,53 +2,64 @@
 
 <%=grid(@leaves_report_grid,hide_submit_button: true, hide_csv_button: false, hide_reset_button: true ,:show_filters => :always,html: {class: 'my-grid'}, header_tr_html:  {class: 'my-header'}) do |g|
  
- g.column name: t(:label_name),in_csv: false do |user_leave|
-    link_to User.find(user_leave.user_id).name, user_path(User.find(user_leave.user_id))
- end
- g.column name: t(:label_name),in_html: false do |user_leave|
-    User.find(user_leave.user_id).name
- end
-
-      
- g.column name: t(:label_leave_type),in_csv: false,attribute: 'leave_type',detach_with_id: :leave_type_filter do |user_leave|
-    link_to user_leave.leave_type, :controller => 'user_leave_reports',action: 'report',user_leave_report:{selected_leave_types: user_leave.leave_type, :selected_group_by =>'User'}
- end
- g.column name: t(:label_leave_type),in_html: false,attribute: 'leave_type',detach_with_id: :leave_type_filter do |user_leave|
-    user_leave.leave_type
- end
-      
- g.column name: t(:label_leave_date),in_csv: false,attribute: 'leave_date',detach_with_id: :leave_date_filter do |user_leave|
-    link_to user_leave.leave_date, :controller => 'user_leave_reports',action: 'report',user_leave_report:{date_from: user_leave.leave_date,date_to: user_leave.leave_date, :selected_group_by =>'User'}
- end
- g.column name: t(:label_leave_date),in_html: false,attribute: 'leave_date',detach_with_id: :leave_date_filter do |user_leave|
-    user_leave.leave_date
- end
+  g.column name: t(:label_name), in_csv: false do |user_leave|
+    link_to user_leave.user.name, user_path(user_leave.user)
+  end
+  g.column name: t(:label_name), in_html: false do |user_leave|
+     user_leave.user.name
+  end
 
 
+  g.column name: t(:label_leave_type), in_csv: false, attribute: 'leave_type', detach_with_id: :leave_type_filter do |user_leave|
+     link_to user_leave.leave_type, controller: 'user_leave_reports', action: 'report', user_leave_report:{selected_leave_types: user_leave.leave_type, selected_group_by: 'User'}
+  end
+  g.column name: t(:label_leave_type), in_html: false, attribute: 'leave_type', detach_with_id: :leave_type_filter do |user_leave|
+     user_leave.leave_type
+  end
+
+  g.column name: t(:label_leave_date), in_csv: false, attribute: 'leave_date', detach_with_id: :leave_date_filter do |user_leave|
+     link_to format_date(user_leave.leave_date), controller: 'user_leave_reports', action: 'report', user_leave_report:{date_from: user_leave.leave_date,date_to: user_leave.leave_date, selected_group_by: 'User'}
+  end
+  g.column name: t(:label_leave_date), in_html: false, attribute: 'leave_date', detach_with_id: :leave_date_filter do |user_leave|
+     format_date user_leave.leave_date
+  end
       
- g.column name: t(:label_weight),attribute: 'fractional_leave',detach_with_id: :fractional_leave_filter  do |user_leave|
-   
-    leave_types_totals [user_leave.leave_type] ||= 0
-    leave_types_totals [user_leave.leave_type] += user_leave.fractional_leave
-        
-    user_leave.fractional_leave
-    
- end
+  g.column name: t(:label_weight), attribute: 'fractional_leave', detach_with_id: :fractional_leave_filter  do |user_leave|
+
+     leave_types_totals [user_leave.leave_type] ||= 0
+     leave_types_totals [user_leave.leave_type] += user_leave.fractional_leave
+
+     user_leave.fractional_leave
+
+  end
 
       
- g.column name: t(:label_comments),attribute: 'comments',detach_with_id: :comments_filter  do |user_leave|
-    user_leave.comments
- end
+  g.column name: t(:label_comments), attribute: 'comments', detach_with_id: :comments_filter  do |user_leave|
+     user_leave.comments
+  end
 
+  g.column name: t(:field_updated_on), in_csv: false, attribute: 'updated_at', detach_with_id: 'updated_filter' do |user_leave|
+    format_date(user_leave.updated_at)
+  end
+  g.column name: t(:field_updated_on), in_html: false, attribute: 'updated_at', detach_with_id: 'updated_filter' do |user_leave|
+    format_date(user_leave.updated_at)
+  end
       
-if user_allowed_to_edit_leaves?
- g.column name: 'Edit',in_csv: false do |user_leave|
-    link_to t(:link_edit), edit_user_leafe_path(user_leave) 
-end
-g.column name: 'Delete',in_csv: false do |user_leave| 
-    link_to t(:link_delete), user_leafe_path(user_leave), :remote => true, method: :delete, data: { confirm: t(:label_confirm) }
- end
-end
+  g.column name: t(:field_created_on), in_csv: false, attribute: 'created_at', detach_with_id: 'created_filter' do |user_leave|
+    format_date(user_leave.created_at)
+  end
+  g.column name: t(:field_created_on), in_html: false, attribute: 'created_at', detach_with_id: 'created_filter' do |user_leave|
+    format_date(user_leave.created_at)
+  end
+      
+  if user_allowed_to_edit_leaves?
+   g.column name: 'Edit', in_csv: false do |user_leave|
+      link_to t(:link_edit), edit_user_leafe_path(user_leave) 
+  end
+  g.column name: 'Delete', in_csv: false do |user_leave| 
+      link_to t(:link_delete), user_leafe_path(user_leave), :remote => true, method: :delete, data: { confirm: t(:label_confirm) }
+   end
+  end
 
       
  g.last_row do |number_of_columns|
