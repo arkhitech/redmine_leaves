@@ -1,7 +1,7 @@
 class UserTimeCheck < ActiveRecord::Base
   unloadable
   
-  include Redmine::Utils::DateCalculation
+  extend Redmine::Utils::DateCalculation
   
   belongs_to :user
   
@@ -152,7 +152,7 @@ class UserTimeCheck < ActiveRecord::Base
     end
 
     def mark_leave_for_missing_hours(users, start_date, end_date, mark_leave_after_days, error_tolerance = 0.25)
-      total_days = working_days(start_date, end_date)
+      total_days = working_days(start_date, end_date + 1.day)
       num_working_hours = total_days * num_min_working_hours
 
       start_date = start_date - mark_leave_after_days.days
@@ -202,7 +202,7 @@ class UserTimeCheck < ActiveRecord::Base
     
     
     def email_users_missing_hours(users, start_date, end_date)
-      total_days = working_days(start_date, end_date)
+      total_days = working_days(start_date, end_date + 1.day)
       num_working_hours = total_days * num_min_working_hours
       user_ids = users.map(&:id)
       
@@ -264,7 +264,7 @@ class UserTimeCheck < ActiveRecord::Base
     end
 
     def email_project_timesheet(user, project, start_date, end_date)
-      total_days = working_days(start_date, end_date)
+      total_days = working_days(start_date, end_date + 1.day)
       return if total_days < 1 
       #Make new object for time sheet get user ids form project and assign it to users
 
@@ -310,7 +310,7 @@ class UserTimeCheck < ActiveRecord::Base
 
     def email_group_timesheet(receiver_group, logger_group, start_date, end_date)
       #ignore project if no time is logged whatsoever
-      total_days = working_days(start_date, end_date)
+      total_days = working_days(start_date, end_date + 1.day)
       return if total_days < 1
       
       receiver_users = User.in_group(receiver_group)
@@ -416,3 +416,4 @@ class UserTimeCheck < ActiveRecord::Base
     private :fetch_timesheet_table
   end
 end
+
