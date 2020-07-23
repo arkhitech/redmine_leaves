@@ -9,10 +9,10 @@ class UserLeave < ActiveRecord::Base
   validate :validate_fractional_leave
   validate :uniqueness_and_returns_leave_type_of_existing_leave, :on => :create
   def notify_the_absentee
-    LeaveMailer.notify_absentee(self).deliver
+    LeaveMailer.notify_absentee(self).deliver_now
   end
   private :notify_the_absentee
-  
+
   def default_fractional_leave_value
     self.fractional_leave ||= 1
   end
@@ -20,11 +20,11 @@ class UserLeave < ActiveRecord::Base
   
   def validate_fractional_leave
     if fractional_leave
-      unless (fractional_leave <= 2)
-        errors.add(:fractional_value, t(:error_fractional_value_greater_than_one))
+      unless (fractional_leave <= 3)
+        errors.add(:fractional_value, I18n.t(:error_fractional_value_greater_than_one))
       end
-      unless (fractional_leave >= -2)
-        errors.add(:fractional_value, t(:error_fractional_value_less_than_zero))
+      unless (fractional_leave >= -3)
+        errors.add(:fractional_value, I18n.t(:error_fractional_value_less_than_zero))
       end
     end
   end

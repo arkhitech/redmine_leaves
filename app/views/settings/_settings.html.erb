@@ -106,7 +106,7 @@
   <table>
     <tr>
       <td>
-    <table><tr><legend><%= t(:label_daily_mail_reminder) %></legend></tr>
+    <table><tr><legend><%= t(:label_daily_mail_reminder_cc) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[daily_reminder]', 
             options_from_collection_for_select(Group.all, :id, :name, 
@@ -115,7 +115,7 @@
     </tr></table>
       </td>
       <td>
-    <table><tr><legend><%= t(:label_weekly_mail_reminder) %></legend></tr>
+    <table><tr><legend><%= t(:label_weekly_mail_reminder_cc) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[weekly_reminder]', 
             options_from_collection_for_select(Group.all, :id, :name, 
@@ -124,7 +124,7 @@
     </tr></table>
       </td>
       <td>
-    <table><tr><legend><%= t(:label_monthly_mail_reminder) %></legend></tr>
+    <table><tr><legend><%= t(:label_monthly_mail_reminder_cc) %></legend></tr>
     <tr>
       <td><%= select_tag('settings[monthly_reminder]', 
             options_from_collection_for_select(Group.all, :id, :name, 
@@ -136,6 +136,15 @@
   </table>
 </fieldset>
 
+<fieldset class="box">
+  <legend><strong>Reminder Settings</strong></legend>
+  <p>
+    <label for="settings_cc_roles">Cc'd Project Roles:</label>
+    <%= select_tag('settings[cc_roles]',
+                  options_for_select(Role.all.collect{|r| [r.name, r.id]}, 
+                  @settings['cc_roles'])) %>
+  </p>
+</fieldset>
 
 
 
@@ -188,6 +197,6 @@
 <p>
   <label for="settings_max_past_timelog_insert_days">Max Past Timelog Insert Days</label>
     <%= select_tag('settings[max_past_timelog_insert_days]',
-      options_for_select(0..10, @settings['max_past_timelog_insert_days'].to_i)) %>
+      options_for_select(0..30, @settings['max_past_timelog_insert_days'].to_i)) %>
 </p>
 </fieldset>
