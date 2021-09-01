@@ -137,6 +137,16 @@
 </fieldset>
 
 <fieldset class="box">
+  <legend><strong>Reminder Settings</strong></legend>
+  <p>
+    <label for="settings_cc_roles">Cc'd Project Roles:</label>
+    <%= select_tag('settings[cc_roles]',
+                  options_for_select(Role.all.collect{|r| [r.name, r.id]}, 
+                  @settings['cc_roles'])) %>
+  </p>
+</fieldset>
+
+<fieldset class="box">
   <legend><strong>Time Activity Report Settings</strong></legend>
   <table>  
     <tr>
