@@ -1,9 +1,9 @@
 class UserTimeChecksController < ApplicationController
   unloadable
   
-  #  before_filter :require_login, :authorize, :only => :index
+  #  before_action :require_login, :authorize, :only => :index
   include SortHelper
-  #  before_filter  :authorize, :only => :index
+  #  before_action  :authorize, :only => :index
   helper :sort
   
   def index

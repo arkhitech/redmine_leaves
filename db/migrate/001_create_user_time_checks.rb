@@ -1,4 +1,4 @@
-class CreateUserTimeChecks < ActiveRecord::Migration
+class CreateUserTimeChecks < ActiveRecord::Migration[4.2]
   def change
     create_table :user_time_checks do |t|
       t.references :user, indexed: true

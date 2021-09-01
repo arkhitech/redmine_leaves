@@ -48,7 +48,7 @@
 
     <%= number_field_tag "create_user_leave[fractional_leave]",
       params[:create_user_leave] && params[:create_user_leave][:fractional_leave],
-      :step =>'.25', min: -2,max: 2 %>
+      :step =>'.25', min: -2,max: 2.5 %>
     <small><%= t(:label_fractional_leave_optional ) %></small>
   </div><br/>
 

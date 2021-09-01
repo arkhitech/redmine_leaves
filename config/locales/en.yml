@@ -71,9 +71,9 @@ en:
    label_eligible_for_leave_groups: "Eligible For Leave Group(s)"
    label_mark_leaves: "Mark Leaves"
    label_mark_own_leave: "Mark Own Leave"
-   label_daily_mail_reminder: "Daily Mail Reminder"
-   label_weekly_mail_reminder: "Weekly Mail Reminder"
-   label_monthly_mail_reminder: "Monthly Mail Reminder"
+   label_daily_mail_reminder_cc: "Daily Mail Reminder CC"
+   label_weekly_mail_reminder_cc: "Weekly Mail Reminder CC"
+   label_monthly_mail_reminder_cc: "Monthly Mail Reminder CC"
    label_edit_attendance: "Edit Attendance"
    label_edit_own_attendance: "Edit Own Attendance"
    

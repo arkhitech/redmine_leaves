@@ -1,4 +1,4 @@
-class AddTimestamps < ActiveRecord::Migration
+class AddTimestamps < ActiveRecord::Migration[4.2]
   def change
     add_column :user_time_checks, :created_at, :datetime, null: false
     add_column :user_time_checks, :updated_at, :datetime, null: false
