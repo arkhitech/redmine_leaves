@@ -3,7 +3,7 @@ class LeaveMailer < ActionMailer::Base
   default from: Setting.mail_from
   helper ApplicationHelper
   def self.default_url_options
-    Mailer.default_url_options
+    ::Mailer.default_url_options
   end  
 
   def cc_role_email_addresses(user)

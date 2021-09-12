@@ -3,7 +3,7 @@ class LogTimeReminderMailer < ActionMailer::Base
   default from: 'timelog_reminder@redmine.com'
   
   def self.default_url_options
-    Mailer.default_url_options
+    ::Mailer.default_url_options
   end
   
   def reminder_email(user, issue, cc_group, reminder, cc_emails = [])
