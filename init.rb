@@ -11,7 +11,7 @@ Rails.configuration.to_prepare do
   TimeEntry.send(:include, RedmineLeaves::Patches::TimeRestrictionPatch)
 end  
 
-require "#{File.join(File.dirname(__FILE__), 'config','wice_grid_config.rb')}"
+require 'wice_grid_config'
 
 Redmine::Plugin.register :redmine_leaves do
   name 'Redmine Leaves Plugin'
