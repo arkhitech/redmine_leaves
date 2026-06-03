@@ -1,5 +1,4 @@
-class UserTimeCheck < ActiveRecord::Base
-  unloadable
+class UserTimeCheck < ApplicationRecord
   
   extend Redmine::Utils::DateCalculation
   

@@ -75,7 +75,7 @@ module UserLeaveReportsHelper
     end
   
     def group_options(selected_groups)
-      all_group_types = Group.all
+      all_group_types = Group.all.collect { |g| [g.name, g.id] }
       options_for_select(all_group_types, selected_groups)
     end
     def group_by_options(selected_group_by)

@@ -8,7 +8,6 @@ module RedmineLeaves
 
         # Same as typing in the class
         base.class_eval do
-          unloadable # Send unloadable so it will not be unloaded in development
           validate :spent_on_log_time_restriction
         end
 

@@ -1,5 +1,4 @@
 class UserLeaveAnalyticsController < ApplicationController
-  unloadable  
   
   include UserLeaveAnalyticsHelper
   def report    

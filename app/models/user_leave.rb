@@ -1,5 +1,4 @@
-class UserLeave < ActiveRecord::Base
-  unloadable
+class UserLeave < ApplicationRecord
   before_save :default_fractional_leave_value
   belongs_to :user
   after_save :notify_the_absentee

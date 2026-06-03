@@ -1,5 +1,4 @@
 class UserLeavesController < ApplicationController
-  unloadable
   
   include UserLeaveReportsHelper
   include UserLeavesHelper

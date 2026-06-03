@@ -1,5 +1,4 @@
 class UserLeaveReportsController < ApplicationController
-  unloadable
   
   before_action :require_login
 

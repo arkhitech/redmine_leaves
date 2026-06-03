@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
 group :test, :development do
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'guard-rspec'
 #  gem 'spork-rails'
   gem 'guard-spork'
   gem 'childprocess'
-   
+
 end
 
 gem "whenever", ">=0.8.4"
