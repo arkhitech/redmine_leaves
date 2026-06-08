@@ -278,16 +278,16 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     @time_checks = UserTimeCheck.find(params[:id])
   end
   
-  def update    
-    @time_checks = UserTimeCheck.find(params[:id])    
-    if @time_checks.update_attributes(params[:user_time_check])
-      redirect_to user_time_checks_path, 
-        notice: "User Time Check for <strong>#{@time_checks.user.name}</strong> 
-                 on <strong>#{@time_checks.check_in_time.to_date}</strong> Updated. 
+  def update
+    @time_checks = UserTimeCheck.find(params[:id])
+    if @time_checks.update(user_time_check_params)
+      redirect_to user_time_checks_path,
+        notice: "User Time Check for <strong>#{@time_checks.user.name}</strong>
+                 on <strong>#{@time_checks.check_in_time.to_date}</strong> Updated.
                 #{view_context.link_to t(:link_edit), edit_user_time_check_path(@time_checks)}".html_safe
     else
       redirect_to edit_user_time_check_path(@time_checks), :flash => { :error => "Invalid Input!" }
-    end    
+    end
   end
   
   def import
@@ -320,7 +320,7 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
 
     else
       @user_time_check = checkout_timechecks.first
-      @user_time_check.update_attributes(check_out_time: DateTime.now)
+      @user_time_check.update(check_out_time: DateTime.now)
       
       
       @time_entries= TimeEntry.where(user_id: User.current.id , created_on: (@user_time_check.check_in_time)..@user_time_check.check_out_time, spent_on: [@user_time_check.check_in_time.to_date,@user_time_check.check_out_time.to_date])
@@ -356,9 +356,10 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
 
     time_entry_paramss = params[:time_entries] || []
     time_entry_paramss.each do |time_entry_params|
-      time_entry_this = TimeEntry.new(time_entry_params) #  This solves the .permit problem : See Model <user_id: protected>
+      time_entry_this = TimeEntry.new
+      time_entry_this.safe_attributes = time_entry_params
       time_entry_this.user_id = User.current.id
-      time_entry_this.save  
+      time_entry_this.save
       @new_time_entries << time_entry_this
     end
     #@assigned_issues= Issue.where(assigned_to_id: User.current.id)
@@ -378,6 +379,10 @@ sum(time_spent) as time_spent,avg(time_spent) as average_time")
     end
     
   end
-  
- 
+
+  private
+
+  def user_time_check_params
+    params.require(:user_time_check).permit(:check_in_time, :check_out_time, :comments)
+  end
 end
